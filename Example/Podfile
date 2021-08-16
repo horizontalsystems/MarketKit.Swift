@@ -1,13 +1,7 @@
-use_frameworks!
+platform :ios, '13'
+use_modular_headers!
 
-platform :ios, '9.0'
-
-target 'MarketKit_Example' do
-  pod 'MarketKit', :path => '../'
-
-  target 'MarketKit_Tests' do
-    inherit! :search_paths
-
-    
-  end
+target 'MarketKitExample' do
+  pod 'MarketKit.swift', :path => '../'
+  pod 'SnapKit'
 end
