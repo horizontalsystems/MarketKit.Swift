@@ -12,6 +12,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .white
         window?.rootViewController = MainController()
 
+        Singleton.instance
+
         return true
     }
 

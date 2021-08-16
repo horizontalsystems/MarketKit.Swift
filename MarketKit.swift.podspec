@@ -17,6 +17,8 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
+  s.dependency 'HsToolKit.swift', '~> 1.1'
+
   s.dependency 'RxSwift', '~> 5.0'
   s.dependency 'GRDB.swift', '~> 5.0'
   s.dependency 'ObjectMapper', '~> 4.0'

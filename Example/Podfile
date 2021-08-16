@@ -3,5 +3,7 @@ use_modular_headers!
 
 target 'MarketKitExample' do
   pod 'MarketKit.swift', :path => '../'
+  pod 'HsToolKit.swift', git: 'https://github.com/horizontalsystems/hs-tool-kit-ios'
+
   pod 'SnapKit'
 end
