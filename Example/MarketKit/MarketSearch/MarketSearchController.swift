@@ -8,7 +8,7 @@ class MarketSearchController: UIViewController {
 
     private var currentFilter: String = ""
 
-    private var coins = [Coin]()
+    private var marketCoins = [MarketCoin]()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -40,13 +40,14 @@ class MarketSearchController: UIViewController {
         tableView.register(MarketSearchCell.self, forCellReuseIdentifier: String(describing: MarketSearchCell.self))
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.keyboardDismissMode = .onDrag
 
         syncCoins()
     }
 
     private func syncCoins() {
         do {
-            coins = try Singleton.instance.kit.coins(filter: currentFilter)
+            marketCoins = try Singleton.instance.kit.marketCoins(filter: currentFilter)
             tableView.reloadData()
         } catch {
             print("Failed to sync coins: \(error)")
@@ -58,7 +59,7 @@ class MarketSearchController: UIViewController {
 extension MarketSearchController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        coins.count
+        marketCoins.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,7 +76,7 @@ extension MarketSearchController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? MarketSearchCell {
-            cell.bind(coin: coins[indexPath.row])
+            cell.bind(marketCoin: marketCoins[indexPath.row])
         }
     }
 

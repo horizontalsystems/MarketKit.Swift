@@ -19,10 +19,10 @@ class CoinSyncer {
 extension CoinSyncer {
 
     func sync() {
-        hsProvider.coinsSingle()
+        hsProvider.marketCoinsSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .subscribe(onSuccess: { [weak self] coins in
-                    self?.coinManager.handleFetched(coins: coins)
+                .subscribe(onSuccess: { [weak self] marketCoins in
+                    self?.coinManager.handleFetched(marketCoins: marketCoins)
                 }, onError: { [weak self] error in
                     self?.handleFetch(error: error)
                 })

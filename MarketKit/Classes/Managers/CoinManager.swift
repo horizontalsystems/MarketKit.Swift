@@ -9,13 +9,13 @@ class CoinManager {
 
 extension CoinManager {
 
-    func coins(filter: String) throws -> [Coin] {
-        try storage.coins(filter: filter)
+    func marketCoins(filter: String, limit: Int) throws -> [MarketCoin] {
+        try storage.marketCoins(filter: filter, limit: limit)
     }
 
-    func handleFetched(coins: [Coin]) {
+    func handleFetched(marketCoins: [MarketCoin]) {
         do {
-            try storage.save(coins: coins)
+            try storage.save(marketCoins: marketCoins)
         } catch {
             // todo
         }

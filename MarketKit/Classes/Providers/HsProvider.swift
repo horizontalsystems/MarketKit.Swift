@@ -14,8 +14,10 @@ class HsProvider {
 
 extension HsProvider {
 
-    func coinsSingle() -> Single<[Coin]> {
-        networkManager.single(url: "\(baseUrl)/coins", method: .get)
+    func marketCoinsSingle() -> Single<[MarketCoin]> {
+        networkManager.single(url: "\(baseUrl)/coins", method: .get).map { (coinResponses: [CoinResponse]) -> [MarketCoin] in
+            coinResponses.map { MarketCoin(coinResponse: $0) }
+        }
     }
 
 }

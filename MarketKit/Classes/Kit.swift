@@ -11,8 +11,8 @@ public class Kit {
 
 extension Kit {
 
-    public func coins(filter: String) throws -> [Coin] {
-        try coinManager.coins(filter: filter)
+    public func marketCoins(filter: String, limit: Int = 20) throws -> [MarketCoin] {
+        try coinManager.marketCoins(filter: filter, limit: limit)
     }
 
     public func sync() {
