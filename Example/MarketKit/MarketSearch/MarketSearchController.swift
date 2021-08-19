@@ -22,12 +22,12 @@ class MarketSearchController: UIViewController {
         super.viewDidLoad()
 
         title = "Search"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onTapAddToken))
 
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.showsCancelButton = false
         searchController.searchResultsUpdater = self
-        searchController.delegate = self
 
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -43,6 +43,11 @@ class MarketSearchController: UIViewController {
         tableView.keyboardDismissMode = .onDrag
 
         syncCoins()
+    }
+
+    @objc private func onTapAddToken() {
+        let controller = SearchReferenceController()
+        present(UINavigationController(rootViewController: controller), animated: true)
     }
 
     private func syncCoins() {
@@ -79,16 +84,6 @@ extension MarketSearchController: UITableViewDelegate {
             cell.bind(marketCoin: marketCoins[indexPath.row])
         }
     }
-
-}
-
-extension MarketSearchController: UISearchControllerDelegate {
-
-//    public func didPresentSearchController(_ searchController: UISearchController) {
-//        DispatchQueue.main.async {
-//            self.searchController.searchBar.becomeFirstResponder()
-//        }
-//    }
 
 }
 

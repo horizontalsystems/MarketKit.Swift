@@ -12,6 +12,15 @@ public class Coin: Record, Decodable {
         case uid, name, code, decimal
     }
 
+    public init(uid: String, name: String, code: String, decimal: Int) {
+        self.uid = uid
+        self.name = name
+        self.code = code
+        self.decimal = decimal
+
+        super.init()
+    }
+
     init(coinResponse: CoinResponse) {
         uid = coinResponse.uid
         name = coinResponse.name

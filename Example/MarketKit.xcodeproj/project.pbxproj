@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		11B35251C2B67EB589039CD8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35145C6C2437F71B510B4 /* MainController.swift */; };
+		11B35342FE53321A5F5DB0B0 /* SearchReferenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B353D4F2127D1561BF4462 /* SearchReferenceController.swift */; };
 		11B3554C07C5BBB567631C07 /* MarketSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359DBE558186A19566209 /* MarketSearchController.swift */; };
 		11B35623418C47308B12AB0D /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35A4EA7A63EAF1A9CD0AB /* Singleton.swift */; };
 		11B35B09FECE5F3552F25197 /* MarketSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35782DAC50E5CC3DCF4F1 /* MarketSearchCell.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		11B35145C6C2437F71B510B4 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		11B353D4F2127D1561BF4462 /* SearchReferenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchReferenceController.swift; sourceTree = "<group>"; };
 		11B35782DAC50E5CC3DCF4F1 /* MarketSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketSearchCell.swift; sourceTree = "<group>"; };
 		11B359DBE558186A19566209 /* MarketSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketSearchController.swift; sourceTree = "<group>"; };
 		11B35A4EA7A63EAF1A9CD0AB /* Singleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
@@ -74,6 +76,14 @@
 			path = MarketSearch;
 			sourceTree = "<group>";
 		};
+		11B35217B5D8D0101148D921 /* SearchReference */ = {
+			isa = PBXGroup;
+			children = (
+				11B353D4F2127D1561BF4462 /* SearchReferenceController.swift */,
+			);
+			path = SearchReference;
+			sourceTree = "<group>";
+		};
 		11B35923E293ADA4C37F5AE2 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,13 +131,14 @@
 		607FACD21AFB9204008FA782 /* Example for MarketKit */ = {
 			isa = PBXGroup;
 			children = (
+				11B35FB71D29D79342FB920E /* Core */,
 				11B35923E293ADA4C37F5AE2 /* Main */,
 				11B350172BE98AA95C6C8A68 /* MarketSearch */,
+				11B35217B5D8D0101148D921 /* SearchReference */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				D3FD056D26CA351C0089C747 /* LaunchScreen.storyboard */,
-				11B35FB71D29D79342FB920E /* Core */,
 			);
 			name = "Example for MarketKit";
 			path = MarketKit;
@@ -254,6 +265,7 @@
 				11B3554C07C5BBB567631C07 /* MarketSearchController.swift in Sources */,
 				11B35B09FECE5F3552F25197 /* MarketSearchCell.swift in Sources */,
 				11B35623418C47308B12AB0D /* Singleton.swift in Sources */,
+				11B35342FE53321A5F5DB0B0 /* SearchReferenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

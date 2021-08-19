@@ -3,16 +3,24 @@ import GRDB
 public class Platform: Record, Decodable {
     static let coin = belongsTo(Coin.self)
 
-    public let uid: String
+    public let type: String
     public let value: String
     let coinUid: String
 
     enum Columns: String, ColumnExpression {
-        case uid, value, coinUid
+        case type, value, coinUid
+    }
+
+    public init(type: String, value: String, coinUid: String) {
+        self.type = type
+        self.value = value
+        self.coinUid = coinUid
+
+        super.init()
     }
 
     init(platformResponse: PlatformResponse, coinUid: String) {
-        uid = platformResponse.uid
+        type = platformResponse.type
         value = platformResponse.value
         self.coinUid = coinUid
 
@@ -20,7 +28,7 @@ public class Platform: Record, Decodable {
     }
 
     required init(row: Row) {
-        uid = row[Columns.uid]
+        type = row[Columns.type]
         value = row[Columns.value]
         coinUid = row[Columns.coinUid]
 
@@ -32,7 +40,7 @@ public class Platform: Record, Decodable {
     }
 
     override open func encode(to container: inout PersistenceContainer) {
-        container[Columns.uid] = uid
+        container[Columns.type] = type
         container[Columns.value] = value
         container[Columns.coinUid] = coinUid
     }
@@ -42,7 +50,7 @@ public class Platform: Record, Decodable {
 extension Platform: CustomStringConvertible {
 
     public var description: String {
-        "Platform [uid: \(uid); value: \(value); coinUid: \(coinUid)]"
+        "Platform [type: \(type); value: \(value); coinUid: \(coinUid)]"
     }
 
 }

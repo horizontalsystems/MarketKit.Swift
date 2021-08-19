@@ -1,11 +1,11 @@
 import ObjectMapper
 
 class PlatformResponse: ImmutableMappable {
-    let uid: String
+    let type: String
     let value: String
 
     required init(map: Map) throws {
-        uid = try map.value("uid")
+        type = try map.value("type")
         value = try map.value("value")
     }
 

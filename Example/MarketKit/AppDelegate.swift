@@ -8,8 +8,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
 
-        window?.overrideUserInterfaceStyle = .light
-        window?.backgroundColor = .white
         window?.rootViewController = MainController()
 
         Singleton.instance

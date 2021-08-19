@@ -21,11 +21,11 @@ class Storage {
             }
 
             try db.create(table: Platform.databaseTableName) { t in
-                t.column(Platform.Columns.uid.name, .text).notNull()
+                t.column(Platform.Columns.type.name, .text).notNull()
                 t.column(Platform.Columns.value.name, .text).notNull()
                 t.column(Platform.Columns.coinUid.name, .text).notNull().indexed().references(Coin.databaseTableName, onDelete: .cascade)
 
-                t.primaryKey([Platform.Columns.uid.name, Platform.Columns.value.name, Platform.Columns.coinUid.name], onConflict: .replace)
+                t.primaryKey([Platform.Columns.type.name, Platform.Columns.value.name, Platform.Columns.coinUid.name], onConflict: .replace)
             }
         }
 
@@ -47,6 +47,16 @@ extension Storage {
         }
     }
 
+    func platformWithCoin(reference: String) throws -> PlatformWithCoin? {
+        try dbPool.read { db in
+            let request = Platform
+                    .including(required: Platform.coin)
+                    .filter(Platform.Columns.value == reference)
+
+            return try PlatformWithCoin.fetchOne(db, request)
+        }
+    }
+
     func save(marketCoins: [MarketCoin]) throws {
         _ = try dbPool.write { db in
             for marketCoin in marketCoins {
@@ -56,6 +66,13 @@ extension Storage {
                     try platform.insert(db)
                 }
             }
+        }
+    }
+
+    func save(coin: Coin, platform: Platform) throws {
+        _ = try dbPool.write { db in
+            try coin.insert(db)
+            try platform.insert(db)
         }
     }
 
