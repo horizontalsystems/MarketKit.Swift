@@ -71,13 +71,14 @@ class SearchReferenceController: UIViewController {
     }
 
     @objc private func onTapAddToken() {
+        let type = "erc20"
         let contractAddress = "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
-        let uid = "custom_\(contractAddress)"
+        let uid = "custom_\(type)_\(contractAddress)"
         let name = "Uniswap"
         let code = "UNI"
         let decimal = 18
 
-        let platform = Platform(type: "erc20", value: contractAddress, coinUid: uid)
+        let platform = Platform(type: type, value: contractAddress, coinUid: uid)
         let coin = Coin(uid: uid, name: name, code: code, decimal: decimal)
 
         do {

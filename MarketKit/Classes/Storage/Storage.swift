@@ -51,7 +51,7 @@ extension Storage {
         try dbPool.read { db in
             let request = Platform
                     .including(required: Platform.coin)
-                    .filter(Platform.Columns.value == reference)
+                    .filter(Platform.Columns.value.like(reference))
 
             return try PlatformWithCoin.fetchOne(db, request)
         }
