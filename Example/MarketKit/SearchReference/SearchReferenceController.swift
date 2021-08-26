@@ -79,7 +79,7 @@ class SearchReferenceController: UIViewController {
         let decimal = 18
 
         let platform = Platform(type: type, value: contractAddress, coinUid: uid)
-        let coin = Coin(uid: uid, name: name, code: code, decimal: decimal)
+        let coin = Coin(uid: uid, name: name, code: code, decimal: decimal, marketCapRank: 11, coinGeckoId: "uniswap")
 
         do {
             try Singleton.instance.kit.save(coin: coin, platform: platform)

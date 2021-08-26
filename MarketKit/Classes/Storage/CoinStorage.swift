@@ -18,6 +18,8 @@ class CoinStorage {
                 t.column(Coin.Columns.name.name, .text).notNull()
                 t.column(Coin.Columns.code.name, .text).notNull()
                 t.column(Coin.Columns.decimal.name, .integer).notNull()
+                t.column(Coin.Columns.marketCapRank.name, .integer)
+                t.column(Coin.Columns.coinGeckoId.name, .text)
             }
 
             try db.create(table: Platform.databaseTableName) { t in
@@ -41,6 +43,7 @@ extension CoinStorage {
             let request = Coin
                     .including(all: Coin.platforms)
                     .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
+                    .order(Coin.Columns.marketCapRank.asc)
                     .limit(limit)
 
             return try MarketCoin.fetchAll(db, request)

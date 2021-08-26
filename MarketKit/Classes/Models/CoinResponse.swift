@@ -6,6 +6,8 @@ class CoinResponse: ImmutableMappable {
     let code: String
     let decimal: Int
     let platforms: [PlatformResponse]
+    let marketCapRank: Int
+    let coinGeckoId: String
 
     required init(map: Map) throws {
         uid = try map.value("uid")
@@ -13,6 +15,8 @@ class CoinResponse: ImmutableMappable {
         code = try map.value("code")
         decimal = try map.value("decimal")
         platforms = try map.value("platforms")
+        marketCapRank = try map.value("market_cap_rank")
+        coinGeckoId = try map.value("coin_gecko_id")
     }
 
 }

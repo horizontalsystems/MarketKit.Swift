@@ -46,7 +46,7 @@ class MarketSearchCell: UITableViewCell {
     func bind(marketCoin: MarketCoin) {
         let coin = marketCoin.coin
         nameLabel.text = coin.name
-        codeLabel.text = "\(coin.code), \(coin.decimal)"
+        codeLabel.text = "\(coin.code), \(coin.decimal), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a"), cgi: \(coin.coinGeckoId.map { "\($0)" } ?? "n/a")"
         platformsLabel.text = marketCoin.platforms.map { "\($0.type) - \($0.value.prefix(5))...\($0.value.suffix(3))" }.joined(separator: "\n")
     }
 

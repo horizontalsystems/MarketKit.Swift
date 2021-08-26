@@ -19,8 +19,8 @@ extension Kit {
 
     // Coins
 
-    public var marketCoinsObservable: Observable<[MarketCoin]> {
-        coinManager.marketCoinsObservable
+    public var marketCoinsUpdatedObservable: Observable<Void> {
+        coinManager.marketCoinsUpdatedObservable
     }
 
     public func marketCoins(filter: String, limit: Int = 20) throws -> [MarketCoin] {

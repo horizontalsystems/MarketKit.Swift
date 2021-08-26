@@ -44,10 +44,10 @@ class MarketSearchController: UIViewController {
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
 
-        Singleton.instance.kit.marketCoinsObservable
+        Singleton.instance.kit.marketCoinsUpdatedObservable
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] _ in
+                .subscribe(onNext: { [weak self] in
                     self?.syncCoins()
                 })
                 .disposed(by: disposeBag)
