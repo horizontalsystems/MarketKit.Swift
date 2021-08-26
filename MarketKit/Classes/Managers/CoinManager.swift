@@ -1,7 +1,7 @@
 class CoinManager {
-    private let storage: Storage
+    private let storage: CoinStorage
 
-    init(storage: Storage) {
+    init(storage: CoinStorage) {
         self.storage = storage
     }
 

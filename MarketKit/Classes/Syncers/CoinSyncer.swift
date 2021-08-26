@@ -11,7 +11,7 @@ class CoinSyncer {
     }
 
     private func handleFetch(error: Error) {
-        print("Fetch error: \(error)")
+        print("MarketCoins fetch error: \(error)")
     }
 
 }

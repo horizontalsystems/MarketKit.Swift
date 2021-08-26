@@ -20,4 +20,8 @@ extension HsProvider {
         }
     }
 
+    func coinCategoriesSingle() -> Single<[CoinCategory]> {
+        networkManager.single(url: "\(baseUrl)/categories", method: .get)
+    }
+
 }

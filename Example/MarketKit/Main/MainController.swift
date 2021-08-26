@@ -8,8 +8,12 @@ class MainController: UITabBarController {
         let marketSearchController = MarketSearchController()
         marketSearchController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
 
+        let categoryController = CoinCategoryController()
+        categoryController.tabBarItem = UITabBarItem(title: "Categories", image: UIImage(systemName: "books.vertical"), tag: 1)
+
         viewControllers = [
             UINavigationController(rootViewController: marketSearchController),
+            UINavigationController(rootViewController: categoryController),
         ]
     }
 

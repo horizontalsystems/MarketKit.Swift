@@ -1,4 +1,5 @@
 import HsToolKit
+import GRDB
 
 extension Kit {
     private static let dataDirectoryName = "market-kit"
@@ -8,17 +9,27 @@ extension Kit {
     public static func instance(minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
-        let storage = try Storage(dataDirectoryUrl: try dataDirectoryUrl(), databaseFileName: databaseFileName)
+
+        let databaseURL = try dataDirectoryUrl().appendingPathComponent("\(databaseFileName).sqlite")
+        let dbPool = try DatabasePool(path: databaseURL.path)
+        let coinStorage = try CoinStorage(dbPool: dbPool)
+        let coinCategoryStorage = try CoinCategoryStorage(dbPool: dbPool)
 
         let networkManager = NetworkManager(logger: logger)
 
-        let coinManager = CoinManager(storage: storage)
+        let coinManager = CoinManager(storage: coinStorage)
+        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
+
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
+
         let coinSyncer = CoinSyncer(hsProvider: hsProvider, coinManager: coinManager)
+        let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
 
         return Kit(
                 coinManager: coinManager,
-                coinSyncer: coinSyncer
+                coinCategoryManager: coinCategoryManager,
+                coinSyncer: coinSyncer,
+                coinCategorySyncer: coinCategorySyncer
         )
     }
 

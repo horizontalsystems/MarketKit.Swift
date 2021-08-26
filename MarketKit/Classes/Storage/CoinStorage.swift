@@ -1,11 +1,11 @@
 import GRDB
 
-class Storage {
+class CoinStorage {
     private let dbPool: DatabasePool
 
-    init(dataDirectoryUrl: URL, databaseFileName: String) throws {
-        let databaseURL = dataDirectoryUrl.appendingPathComponent("\(databaseFileName).sqlite")
-        dbPool = try DatabasePool(path: databaseURL.path)
+    init(dbPool: DatabasePool) throws {
+        self.dbPool = dbPool
+
         try migrator.migrate(dbPool)
     }
 
@@ -34,7 +34,7 @@ class Storage {
 
 }
 
-extension Storage {
+extension CoinStorage {
 
     func marketCoins(filter: String, limit: Int) throws -> [MarketCoin] {
         try dbPool.read { db in
