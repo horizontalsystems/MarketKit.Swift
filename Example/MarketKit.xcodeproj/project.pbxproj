@@ -148,11 +148,11 @@
 				11B35923E293ADA4C37F5AE2 /* Main */,
 				11B350172BE98AA95C6C8A68 /* MarketSearch */,
 				11B35217B5D8D0101148D921 /* SearchReference */,
+				11B357B0484E2E9294348D5A /* CoinCategories */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				D3FD056D26CA351C0089C747 /* LaunchScreen.storyboard */,
-				11B357B0484E2E9294348D5A /* CoinCategories */,
 			);
 			name = "Example for MarketKit";
 			path = MarketKit;

@@ -1,5 +1,10 @@
+import RxSwift
+import RxRelay
+
 class CoinCategoryManager {
     private let storage: CoinCategoryStorage
+
+    private let coinCategoriesRelay = PublishRelay<[CoinCategory]>()
 
     init(storage: CoinCategoryStorage) {
         self.storage = storage
@@ -9,6 +14,10 @@ class CoinCategoryManager {
 
 extension CoinCategoryManager {
 
+    var coinCategoriesObservable: Observable<[CoinCategory]> {
+        coinCategoriesRelay.asObservable()
+    }
+
     func coinCategories() throws -> [CoinCategory] {
         try storage.coinCategories()
     }
@@ -16,6 +25,7 @@ extension CoinCategoryManager {
     func handleFetched(coinCategories: [CoinCategory]) {
         do {
             try storage.save(coinCategories: coinCategories)
+            coinCategoriesRelay.accept(coinCategories)
         } catch {
             // todo
         }

@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import RxSwift
 import MarketKit
 
 class MarketSearchController: UIViewController {
@@ -9,6 +10,7 @@ class MarketSearchController: UIViewController {
     private var currentFilter: String = ""
 
     private var marketCoins = [MarketCoin]()
+    private let disposeBag = DisposeBag()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -41,6 +43,14 @@ class MarketSearchController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
+
+        Singleton.instance.kit.marketCoinsObservable
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
+                .observeOn(MainScheduler.instance)
+                .subscribe(onNext: { [weak self] _ in
+                    self?.syncCoins()
+                })
+                .disposed(by: disposeBag)
 
         syncCoins()
     }

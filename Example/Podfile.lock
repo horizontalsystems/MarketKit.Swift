@@ -23,8 +23,11 @@ PODS:
     - GRDB.swift (~> 5.0)
     - HsToolKit.swift (~> 1.1)
     - ObjectMapper (~> 4.0)
+    - RxRelay (~> 5.0)
     - RxSwift (~> 5.0)
   - ObjectMapper (4.2.0)
+  - RxRelay (5.1.3):
+    - RxSwift (~> 5)
   - RxSwift (5.1.3)
   - SnapKit (5.0.1)
   - SwiftNIO (2.30.0):
@@ -71,6 +74,7 @@ SPEC REPOS:
     - CNIOWindows
     - GRDB.swift
     - ObjectMapper
+    - RxRelay
     - RxSwift
     - SnapKit
     - SwiftNIO
@@ -104,8 +108,9 @@ SPEC CHECKSUMS:
   CNIOWindows: 8f14a2ec959cd0fd6ee102384ca4d09b1cff9b4e
   GRDB.swift: ff730d72aac9ce0123138d77cc7e0331b3c8b148
   HsToolKit.swift: 88f5c25dcf2b6fde2370f0125a8864782fbb3d90
-  MarketKit.swift: 6c39705b7e9c37a2e24689eec9a4e74d65f51108
+  MarketKit.swift: ac243d060c28dd65db49d667029e223e7f73679d
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  RxRelay: 5a18c2eb2d68326ebaf0112f80d837ae41b92b97
   RxSwift: 915abbdfb62214aa89ccd0b194d44fb478019b27
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftNIO: f8ba4a53a934bf5ef6cd84ba9133903c9c760874

@@ -1,3 +1,5 @@
+import RxSwift
+
 public class Kit {
     private let coinManager: CoinManager
     private let coinCategoryManager: CoinCategoryManager
@@ -17,6 +19,10 @@ extension Kit {
 
     // Coins
 
+    public var marketCoinsObservable: Observable<[MarketCoin]> {
+        coinManager.marketCoinsObservable
+    }
+
     public func marketCoins(filter: String, limit: Int = 20) throws -> [MarketCoin] {
         try coinManager.marketCoins(filter: filter, limit: limit)
     }
@@ -30,6 +36,10 @@ extension Kit {
     }
 
     // Categories
+
+    public var coinCategoriesObservable: Observable<[CoinCategory]> {
+        coinCategoryManager.coinCategoriesObservable
+    }
 
     public func coinCategories() throws -> [CoinCategory] {
         try coinCategoryManager.coinCategories()
