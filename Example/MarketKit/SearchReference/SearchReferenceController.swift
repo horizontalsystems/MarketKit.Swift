@@ -71,15 +71,14 @@ class SearchReferenceController: UIViewController {
     }
 
     @objc private func onTapAddToken() {
-        let type = "erc20"
-        let contractAddress = "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
-        let uid = "custom_\(type)_\(contractAddress)"
+        let coinType: CoinType = .erc20(address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984")
+        let decimal = 18
+        let uid = coinType.id
         let name = "Uniswap"
         let code = "UNI"
-        let decimal = 18
 
-        let platform = Platform(type: type, value: contractAddress, coinUid: uid)
-        let coin = Coin(uid: uid, name: name, code: code, decimal: decimal, marketCapRank: 11, coinGeckoId: "uniswap")
+        let platform = Platform(coinType: coinType, decimal: decimal, coinUid: uid)
+        let coin = Coin(uid: uid, name: name, code: code, marketCapRank: 11, coinGeckoId: "uniswap")
 
         do {
             try Singleton.instance.kit.save(coin: coin, platform: platform)
@@ -95,15 +94,15 @@ class SearchReferenceController: UIViewController {
             return
         }
 
-        do {
-            if let platformWithCoin = try Singleton.instance.kit.platformWithCoin(reference: reference) {
-                label.text = "\(platformWithCoin.platform)\n\n\(platformWithCoin.coin)"
-            } else {
-                label.text = "Not found"
-            }
-        } catch {
-            label.text = error.localizedDescription
-        }
+//        do {
+//            if let platformWithCoin = try Singleton.instance.kit.platformWithCoin(reference: reference) {
+//                label.text = "\(platformWithCoin.platform)\n\n\(platformWithCoin.coin)"
+//            } else {
+//                label.text = "Not found"
+//            }
+//        } catch {
+//            label.text = error.localizedDescription
+//        }
     }
 
 }

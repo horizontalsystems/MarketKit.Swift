@@ -22,8 +22,16 @@ extension CoinManager {
         try storage.marketCoins(filter: filter, limit: limit)
     }
 
-    func platformWithCoin(reference: String) throws -> PlatformWithCoin? {
-        try storage.platformWithCoin(reference: reference)
+    func marketCoins(coinUids: [String]) throws -> [MarketCoin] {
+        try storage.marketCoins(coinUids: coinUids)
+    }
+
+    func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
+        try storage.platformCoin(coinType: coinType)
+    }
+
+    func platformCoins() throws -> [PlatformCoin] {
+        try storage.platformCoins()
     }
 
     func save(coin: Coin, platform: Platform) throws {

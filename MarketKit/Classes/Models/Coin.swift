@@ -6,19 +6,17 @@ public class Coin: Record, Decodable {
     public let uid: String
     public let name: String
     public let code: String
-    public let decimal: Int
     public let marketCapRank: Int?
     public let coinGeckoId: String?
 
     enum Columns: String, ColumnExpression {
-        case uid, name, code, decimal, marketCapRank, coinGeckoId
+        case uid, name, code, marketCapRank, coinGeckoId
     }
 
-    public init(uid: String, name: String, code: String, decimal: Int, marketCapRank: Int?, coinGeckoId: String?) {
+    public init(uid: String, name: String, code: String, marketCapRank: Int?, coinGeckoId: String?) {
         self.uid = uid
         self.name = name
         self.code = code
-        self.decimal = decimal
         self.marketCapRank = marketCapRank
         self.coinGeckoId = coinGeckoId
 
@@ -29,7 +27,6 @@ public class Coin: Record, Decodable {
         uid = coinResponse.uid
         name = coinResponse.name
         code = coinResponse.code
-        decimal = coinResponse.decimal
         marketCapRank = coinResponse.marketCapRank
         coinGeckoId = coinResponse.coinGeckoId
 
@@ -40,7 +37,6 @@ public class Coin: Record, Decodable {
         uid = row[Columns.uid]
         name = row[Columns.name]
         code = row[Columns.code]
-        decimal = row[Columns.decimal]
         marketCapRank = row[Columns.marketCapRank]
         coinGeckoId = row[Columns.coinGeckoId]
 
@@ -55,17 +51,16 @@ public class Coin: Record, Decodable {
         container[Columns.uid] = uid
         container[Columns.name] = name
         container[Columns.code] = code
-        container[Columns.decimal] = decimal
         container[Columns.marketCapRank] = marketCapRank
         container[Columns.coinGeckoId] = coinGeckoId
     }
 
 }
 
-extension Coin: CustomStringConvertible {
+extension Coin: Hashable {
 
-    public var description: String {
-        "Coin [uid: \(uid); name: \(name); code: \(code); decimal: \(decimal); marketCapRank: \(marketCapRank.map { "\($0)" } ?? "nil"); coinGeckoId: \(coinGeckoId.map { "\($0)" } ?? "nil")]"
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uid)
     }
 
 }
@@ -74,6 +69,14 @@ extension Coin: Equatable {
 
     public static func ==(lhs: Coin, rhs: Coin) -> Bool {
         lhs.uid == rhs.uid
+    }
+
+}
+
+extension Coin: CustomStringConvertible {
+
+    public var description: String {
+        "Coin [uid: \(uid); name: \(name); code: \(code); marketCapRank: \(marketCapRank.map { "\($0)" } ?? "nil"); coinGeckoId: \(coinGeckoId.map { "\($0)" } ?? "nil")]"
     }
 
 }

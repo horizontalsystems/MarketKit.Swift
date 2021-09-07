@@ -4,7 +4,6 @@ class CoinResponse: ImmutableMappable {
     let uid: String
     let name: String
     let code: String
-    let decimal: Int
     let platforms: [PlatformResponse]
     let marketCapRank: Int
     let coinGeckoId: String
@@ -13,7 +12,6 @@ class CoinResponse: ImmutableMappable {
         uid = try map.value("uid")
         name = try map.value("name")
         code = try map.value("code")
-        decimal = try map.value("decimal")
         platforms = try map.value("platforms")
         marketCapRank = try map.value("market_cap_rank")
         coinGeckoId = try map.value("coin_gecko_id")

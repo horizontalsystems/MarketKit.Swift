@@ -27,8 +27,16 @@ extension Kit {
         try coinManager.marketCoins(filter: filter, limit: limit)
     }
 
-    public func platformWithCoin(reference: String) throws -> PlatformWithCoin? {
-        try coinManager.platformWithCoin(reference: reference)
+    public func marketCoins(coinUids: [String]) throws -> [MarketCoin] {
+        try coinManager.marketCoins(coinUids: coinUids)
+    }
+
+    public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
+        try coinManager.platformCoin(coinType: coinType)
+    }
+
+    public func platformCoins() throws -> [PlatformCoin] {
+        try coinManager.platformCoins()
     }
 
     public func save(coin: Coin, platform: Platform) throws {
