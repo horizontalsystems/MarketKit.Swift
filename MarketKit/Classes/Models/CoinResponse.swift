@@ -14,7 +14,7 @@ class CoinResponse: ImmutableMappable {
         code = try map.value("code")
         platforms = try map.value("platforms")
         marketCapRank = try map.value("market_cap_rank")
-        coinGeckoId = try map.value("coin_gecko_id")
+        coinGeckoId = try map.value("coingecko_id")
     }
 
 }
