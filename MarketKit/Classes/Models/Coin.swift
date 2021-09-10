@@ -13,7 +13,7 @@ public class Coin: Record, Decodable {
         case uid, name, code, marketCapRank, coinGeckoId
     }
 
-    public init(uid: String, name: String, code: String, marketCapRank: Int?, coinGeckoId: String?) {
+    public init(uid: String, name: String, code: String, marketCapRank: Int? = nil, coinGeckoId: String? = nil) {
         self.uid = uid
         self.name = name
         self.code = code

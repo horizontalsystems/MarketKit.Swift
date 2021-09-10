@@ -31,6 +31,10 @@ extension Kit {
         try coinManager.marketCoins(coinUids: coinUids)
     }
 
+    public func marketCoins(coinTypes: [CoinType]) throws -> [MarketCoin] {
+        try coinManager.marketCoins(coinTypes: coinTypes)
+    }
+
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
         try coinManager.platformCoin(coinType: coinType)
     }
@@ -39,8 +43,20 @@ extension Kit {
         try coinManager.platformCoins()
     }
 
+    public func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
+        try coinManager.platformCoins(coinTypes: coinTypes)
+    }
+
+    public func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
+        try coinManager.platformCoins(coinTypeIds: coinTypeIds)
+    }
+
     public func save(coin: Coin, platform: Platform) throws {
         try coinManager.save(coin: coin, platform: platform)
+    }
+
+    public func coins(filter: String, limit: Int = 20) throws -> [Coin] {
+        try coinManager.coins(filter: filter, limit: limit)
     }
 
     // Categories

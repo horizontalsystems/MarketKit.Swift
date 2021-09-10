@@ -9,6 +9,18 @@ public struct PlatformCoin: FetchableRecord, Decodable {
         self.platform = platform
     }
 
+    public var marketCoin: MarketCoin {
+        MarketCoin(coin: coin, platforms: [platform])
+    }
+
+    public var name: String {
+        coin.name
+    }
+
+    public var code: String {
+        coin.code
+    }
+
     public var coinType: CoinType {
         platform.coinType
     }

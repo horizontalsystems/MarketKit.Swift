@@ -59,6 +59,25 @@ extension CoinStorage {
         }
     }
 
+    func marketCoins(coinTypes: [CoinType]) throws -> [MarketCoin] {
+        try dbPool.read { db in
+            let coinTypeIds = coinTypes.map { $0.id }
+
+            let platformRequest = Platform
+                    .including(required: Platform.coin)
+                    .filter(coinTypeIds.contains(Platform.Columns.coinType))
+
+            let platformCoins = try PlatformCoin.fetchAll(db, platformRequest)
+            let coinUids = platformCoins.map { $0.coin.uid }
+
+            let request = Coin
+                    .including(all: Coin.platforms)
+                    .filter(coinUids.contains(Coin.Columns.uid))
+
+            return try MarketCoin.fetchAll(db, request)
+        }
+    }
+
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
         try dbPool.read { db in
             let request = Platform
@@ -72,6 +91,16 @@ extension CoinStorage {
     func platformCoins() throws -> [PlatformCoin] {
         try dbPool.read { db in
             let request = Platform.including(required: Platform.coin)
+            return try PlatformCoin.fetchAll(db, request)
+        }
+    }
+
+    func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
+        try dbPool.read { db in
+            let request = Platform
+                    .including(required: Platform.coin)
+                    .filter(coinTypeIds.contains(Platform.Columns.coinType))
+
             return try PlatformCoin.fetchAll(db, request)
         }
     }
@@ -92,6 +121,16 @@ extension CoinStorage {
         _ = try dbPool.write { db in
             try coin.insert(db)
             try platform.insert(db)
+        }
+    }
+
+    func coins(filter: String, limit: Int) throws -> [Coin] {
+        try dbPool.read { db in
+            try Coin
+                    .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
+                    .order(Coin.Columns.marketCapRank.asc)
+                    .limit(limit)
+                    .fetchAll(db)
         }
     }
 
