@@ -19,7 +19,7 @@ public enum CoinType: Decodable {
         self.init(id: value)
     }
 
-    init?(type: String, reference: String?) {
+    init?(type: String, address: String?, symbol: String?) {
         switch type {
         case "bitcoin":
             self = .bitcoin
@@ -36,26 +36,26 @@ public enum CoinType: Decodable {
         case "binance-smart-chain":
             self = .binanceSmartChain
         case "erc20":
-            if let reference = reference {
-                self = .erc20(address: reference)
+            if let address = address {
+                self = .erc20(address: address)
             } else {
                 return nil
             }
         case "bep20":
-            if let reference = reference {
-                self = .bep20(address: reference)
+            if let address = address {
+                self = .bep20(address: address)
             } else {
                 return nil
             }
         case "bep2":
-            if let reference = reference {
-                self = .bep2(symbol: reference)
+            if let symbol = symbol {
+                self = .bep2(symbol: symbol)
             } else {
                 return nil
             }
         case "sol20":
-            if let reference = reference {
-                self = .sol20(address: reference)
+            if let address = address {
+                self = .sol20(address: address)
             } else {
                 return nil
             }

@@ -26,7 +26,7 @@ public class Coin: Record, Decodable {
     init(coinResponse: CoinResponse) {
         uid = coinResponse.uid
         name = coinResponse.name
-        code = coinResponse.code
+        code = coinResponse.code.uppercased()
         marketCapRank = coinResponse.marketCapRank
         coinGeckoId = coinResponse.coinGeckoId
 

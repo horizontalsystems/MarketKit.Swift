@@ -20,12 +20,15 @@ public class Platform: Record, Decodable {
     }
 
     init?(platformResponse: PlatformResponse, coinUid: String) {
-        guard let coinType = CoinType(type: platformResponse.type, reference: platformResponse.reference) else {
+        guard let decimal = platformResponse.decimal else {
+            return nil
+        }
+        guard let coinType = CoinType(type: platformResponse.type, address: platformResponse.address, symbol: platformResponse.symbol) else {
             return nil
         }
 
         self.coinType = coinType
-        decimal = platformResponse.decimal
+        self.decimal = decimal
         self.coinUid = coinUid
 
         super.init()

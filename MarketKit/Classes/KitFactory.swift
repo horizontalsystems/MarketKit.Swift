@@ -4,7 +4,7 @@ import GRDB
 extension Kit {
     private static let dataDirectoryName = "market-kit"
     private static let databaseFileName = "market-kit"
-    private static let hsApiBaseUrl = "http://10.0.1.40:3000/v1"
+    private static let hsApiBaseUrl = "http://10.0.1.32:3000/v1"
 
     public static func instance(minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
