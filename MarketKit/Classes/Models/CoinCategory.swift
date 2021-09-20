@@ -4,7 +4,7 @@ import ObjectMapper
 public class CoinCategory: Record, ImmutableMappable {
     public let uid: String
     public let name: String
-    public let descriptions: [CoinCategoryDescription]
+    public let descriptions: [String: String]
 
     enum Columns: String, ColumnExpression {
         case uid, name, descriptions
@@ -13,7 +13,7 @@ public class CoinCategory: Record, ImmutableMappable {
     public required init(map: Map) throws {
         uid = try map.value("uid")
         name = try map.value("name")
-        descriptions = try map.value("descriptions")
+        descriptions = try map.value("description")
 
         super.init()
     }
@@ -21,12 +21,7 @@ public class CoinCategory: Record, ImmutableMappable {
     required public init(row: Row) {
         uid = row[Columns.uid]
         name = row[Columns.name]
-
-        if let jsonString: String = row[Columns.descriptions], let descriptions = [CoinCategoryDescription](JSONString: jsonString) {
-            self.descriptions = descriptions
-        } else {
-            descriptions = []
-        }
+        descriptions = (try? JSONSerialization.jsonObject(with: row[Columns.descriptions]) as? [String: String]) ?? [:]
 
         super.init(row: row)
     }
@@ -38,7 +33,7 @@ public class CoinCategory: Record, ImmutableMappable {
     override open func encode(to container: inout PersistenceContainer) {
         container[Columns.uid] = uid
         container[Columns.name] = name
-        container[Columns.descriptions] = descriptions.toJSONString()
+        container[Columns.descriptions] = try? JSONSerialization.data(withJSONObject: descriptions)
     }
 
 }

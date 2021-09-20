@@ -35,7 +35,7 @@ class CoinCategoryCell: UITableViewCell {
 
     func bind(coinCategory: CoinCategory) {
         nameLabel.text = coinCategory.name
-        descriptionLabel.text = coinCategory.descriptions.map { $0.language }.joined(separator: ", ")
+        descriptionLabel.text = coinCategory.descriptions.keys.joined(separator: ", ")
     }
 
 }

@@ -16,7 +16,7 @@ class CoinCategoryStorage {
             try db.create(table: CoinCategory.databaseTableName) { t in
                 t.column(CoinCategory.Columns.uid.name, .text).notNull().primaryKey(onConflict: .replace)
                 t.column(CoinCategory.Columns.name.name, .text).notNull()
-                t.column(CoinCategory.Columns.descriptions.name, .text)
+                t.column(CoinCategory.Columns.descriptions.name, .blob)
             }
         }
 
