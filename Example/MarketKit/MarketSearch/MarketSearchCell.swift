@@ -48,7 +48,7 @@ class MarketSearchCell: UITableViewCell {
         let coin = marketCoin.coin
         nameLabel.text = coin.name
         codeLabel.text = "\(coin.code), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a"), cgi: \(coin.coinGeckoId.map { "\($0)" } ?? "n/a")"
-        platformsLabel.text = marketCoin.platforms.map { "\($0.coinType) - \($0.decimal)" }.joined(separator: "\n")
+        platformsLabel.text = marketCoin.platforms.map { "\($0.coinType) - \($0.decimals)" }.joined(separator: "\n")
     }
 
 }

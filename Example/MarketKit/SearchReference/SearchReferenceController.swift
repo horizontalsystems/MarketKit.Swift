@@ -77,7 +77,7 @@ class SearchReferenceController: UIViewController {
         let name = "Uniswap"
         let code = "UNI"
 
-        let platform = Platform(coinType: coinType, decimal: decimal, coinUid: uid)
+        let platform = Platform(coinType: coinType, decimals: decimal, coinUid: uid)
         let coin = Coin(uid: uid, name: name, code: code, marketCapRank: 11, coinGeckoId: "uniswap")
 
         do {

@@ -25,8 +25,8 @@ public struct PlatformCoin: FetchableRecord, Decodable {
         platform.coinType
     }
 
-    public var decimal: Int {
-        platform.decimal
+    public var decimals: Int {
+        platform.decimals
     }
 
 }

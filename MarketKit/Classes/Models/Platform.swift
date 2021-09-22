@@ -4,23 +4,23 @@ public class Platform: Record, Decodable {
     static let coin = belongsTo(Coin.self)
 
     public let coinType: CoinType
-    public let decimal: Int
+    public let decimals: Int
     let coinUid: String
 
     enum Columns: String, ColumnExpression {
-        case coinType, decimal, coinUid
+        case coinType, decimals, coinUid
     }
 
-    public init(coinType: CoinType, decimal: Int, coinUid: String) {
+    public init(coinType: CoinType, decimals: Int, coinUid: String) {
         self.coinType = coinType
-        self.decimal = decimal
+        self.decimals = decimals
         self.coinUid = coinUid
 
         super.init()
     }
 
     init?(platformResponse: PlatformResponse, coinUid: String) {
-        guard let decimal = platformResponse.decimal else {
+        guard let decimals = platformResponse.decimals else {
             return nil
         }
         guard let coinType = CoinType(type: platformResponse.type, address: platformResponse.address, symbol: platformResponse.symbol) else {
@@ -28,7 +28,7 @@ public class Platform: Record, Decodable {
         }
 
         self.coinType = coinType
-        self.decimal = decimal
+        self.decimals = decimals
         self.coinUid = coinUid
 
         super.init()
@@ -36,7 +36,7 @@ public class Platform: Record, Decodable {
 
     required init(row: Row) {
         coinType = CoinType(id: row[Columns.coinType])
-        decimal = row[Columns.decimal]
+        decimals = row[Columns.decimals]
         coinUid = row[Columns.coinUid]
 
         super.init(row: row)
@@ -48,7 +48,7 @@ public class Platform: Record, Decodable {
 
     override open func encode(to container: inout PersistenceContainer) {
         container[Columns.coinType] = coinType.id
-        container[Columns.decimal] = decimal
+        container[Columns.decimals] = decimals
         container[Columns.coinUid] = coinUid
     }
 
@@ -66,7 +66,7 @@ extension Platform: Hashable {
 extension Platform: Equatable {
 
     public static func ==(lhs: Platform, rhs: Platform) -> Bool {
-        lhs.coinType == rhs.coinType && lhs.decimal == rhs.decimal && lhs.coinUid == rhs.coinUid
+        lhs.coinType == rhs.coinType && lhs.decimals == rhs.decimals && lhs.coinUid == rhs.coinUid
     }
 
 }
@@ -74,7 +74,7 @@ extension Platform: Equatable {
 extension Platform: CustomStringConvertible {
 
     public var description: String {
-        "Platform [coinType: \(coinType); decimal: \(decimal); coinUid: \(coinUid)]"
+        "Platform [coinType: \(coinType); decimals: \(decimals); coinUid: \(coinUid)]"
     }
 
 }
