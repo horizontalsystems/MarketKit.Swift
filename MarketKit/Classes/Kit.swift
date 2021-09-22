@@ -5,12 +5,16 @@ public class Kit {
     private let coinCategoryManager: CoinCategoryManager
     private let coinSyncer: CoinSyncer
     private let coinCategorySyncer: CoinCategorySyncer
+    private let coinPriceManager: CoinPriceManager
+    private let coinPriceSyncManager: CoinPriceSyncManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
         self.coinCategorySyncer = coinCategorySyncer
+        self.coinPriceManager = coinPriceManager
+        self.coinPriceSyncManager = coinPriceSyncManager
     }
 
 }
@@ -51,10 +55,6 @@ extension Kit {
         try coinManager.platformCoins(coinTypeIds: coinTypeIds)
     }
 
-    public func save(coin: Coin, platform: Platform) throws {
-        try coinManager.save(coin: coin, platform: platform)
-    }
-
     public func coins(filter: String, limit: Int = 20) throws -> [Coin] {
         try coinManager.coins(filter: filter, limit: limit)
     }
@@ -72,6 +72,28 @@ extension Kit {
     public func sync() {
         coinSyncer.sync()
         coinCategorySyncer.sync()
+    }
+
+    // Coin Prices
+
+    public func refreshCoinPrices(currencyCode: String) {
+        coinPriceSyncManager.refresh(currencyCode: currencyCode)
+    }
+
+    public func coinPrice(coinUid: String, currencyCode: String) -> CoinPrice? {
+        coinPriceManager.coinPrice(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
+    public func coinPriceMap(coinUids: [String], currencyCode: String) -> [String: CoinPrice] {
+        coinPriceManager.coinPriceMap(coinUids: coinUids, currencyCode: currencyCode)
+    }
+
+    public func coinPriceObservable(coinUid: String, currencyCode: String) -> Observable<CoinPrice> {
+        coinPriceSyncManager.coinPriceObservable(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
+    public func coinPriceMapObservable(coinUids: [String], currencyCode: String) -> Observable<[String: CoinPrice]> {
+        coinPriceSyncManager.coinPriceMapObservable(coinUids: coinUids, currencyCode: currencyCode)
     }
 
 }

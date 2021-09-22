@@ -81,8 +81,8 @@ class SearchReferenceController: UIViewController {
         let coin = Coin(uid: uid, name: name, code: code, marketCapRank: 11, coinGeckoId: "uniswap")
 
         do {
-            try Singleton.instance.kit.save(coin: coin, platform: platform)
-            label.text = "Successfully saved \(name) coin"
+//            try Singleton.instance.kit.save(coin: coin, platform: platform)
+//            label.text = "Successfully saved \(name) coin"
         } catch {
             label.text = "Could not save \(name) coin: \(error)"
         }

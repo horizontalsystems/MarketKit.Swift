@@ -5,7 +5,7 @@ class CoinResponse: ImmutableMappable {
     let name: String
     let code: String
     let platforms: [PlatformResponse]
-    let marketCapRank: Int
+    let marketCapRank: Int?
     let coinGeckoId: String
 
     required init(map: Map) throws {
@@ -13,7 +13,7 @@ class CoinResponse: ImmutableMappable {
         name = try map.value("name")
         code = try map.value("code")
         platforms = try map.value("platforms")
-        marketCapRank = try map.value("market_cap_rank")
+        marketCapRank = try? map.value("market_cap_rank")
         coinGeckoId = try map.value("coingecko_id")
     }
 

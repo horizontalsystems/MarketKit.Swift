@@ -4,9 +4,8 @@ import GRDB
 extension Kit {
     private static let dataDirectoryName = "market-kit"
     private static let databaseFileName = "market-kit"
-    private static let hsApiBaseUrl = "http://10.0.1.32:3000/v1"
 
-    public static func instance(minLogLevel: Logger.Level = .error) throws -> Kit {
+    public static func instance(hsApiBaseUrl: String, minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
 
@@ -25,11 +24,19 @@ extension Kit {
         let coinSyncer = CoinSyncer(hsProvider: hsProvider, coinManager: coinManager)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
 
+        let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
+        let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
+        let coinPriceSchedulerFactory = CoinPriceSchedulerFactory(manager: coinPriceManager, provider: hsProvider, reachabilityManager: reachabilityManager, logger: logger)
+        let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
+        coinPriceManager.delegate = coinPriceSyncManager
+
         return Kit(
                 coinManager: coinManager,
                 coinCategoryManager: coinCategoryManager,
                 coinSyncer: coinSyncer,
-                coinCategorySyncer: coinCategorySyncer
+                coinCategorySyncer: coinCategorySyncer,
+                coinPriceManager: coinPriceManager,
+                coinPriceSyncManager: coinPriceSyncManager
         )
     }
 

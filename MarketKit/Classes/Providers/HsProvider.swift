@@ -1,5 +1,7 @@
 import RxSwift
 import HsToolKit
+import Alamofire
+import ObjectMapper
 
 class HsProvider {
     private let baseUrl: String
@@ -15,13 +17,32 @@ class HsProvider {
 extension HsProvider {
 
     func marketCoinsSingle() -> Single<[MarketCoin]> {
-        networkManager.single(url: "\(baseUrl)/coins", method: .get).map { (coinResponses: [CoinResponse]) -> [MarketCoin] in
+        networkManager.single(url: "\(baseUrl)/v1/coins/all", method: .get).map { (coinResponses: [CoinResponse]) -> [MarketCoin] in
             coinResponses.map { MarketCoin(coinResponse: $0) }
         }
     }
 
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
-        networkManager.single(url: "\(baseUrl)/categories", method: .get)
+        networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
+    }
+
+    func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
+        let parameters: Parameters = [
+            "ids": coinUids.joined(separator: ","),
+            "currency": currencyCode
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/prices", method: .get, parameters: parameters).map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
+            coinPriceResponsesMap.map { coinUid, coinPriceResponse in
+                CoinPrice(
+                        coinUid: coinUid,
+                        currencyCode: currencyCode,
+                        value: coinPriceResponse.price,
+                        diff: coinPriceResponse.priceChange,
+                        timestamp: coinPriceResponse.lastUpdated
+                )
+            }
+        }
     }
 
 }
