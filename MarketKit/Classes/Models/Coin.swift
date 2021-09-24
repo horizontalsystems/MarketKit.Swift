@@ -23,12 +23,12 @@ public class Coin: Record, Decodable {
         super.init()
     }
 
-    init(fullCoinResponse: FullCoinResponse) {
-        uid = fullCoinResponse.uid
-        name = fullCoinResponse.name
-        code = fullCoinResponse.code.uppercased()
-        marketCapRank = fullCoinResponse.marketCapRank
-        coinGeckoId = fullCoinResponse.coinGeckoId
+    init(coinResponse: CoinResponse) {
+        uid = coinResponse.uid
+        name = coinResponse.name
+        code = coinResponse.code.uppercased()
+        marketCapRank = coinResponse.marketCapRank
+        coinGeckoId = coinResponse.coinGeckoId
 
         super.init()
     }

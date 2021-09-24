@@ -5,14 +5,18 @@ class MainController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
 
-        let marketSearchController = MarketSearchController()
-        marketSearchController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
+        let fullCoinsController = FullCoinsController()
+        fullCoinsController.tabBarItem = UITabBarItem(title: "Full Coins", image: UIImage(systemName: "bitcoinsign.circle"), tag: 0)
+
+        let marketCoinsController = MarketCoinsController()
+        marketCoinsController.tabBarItem = UITabBarItem(title: "Market Coins", image: UIImage(systemName: "bitcoinsign.circle.fill"), tag: 1)
 
         let categoryController = CoinCategoryController()
-        categoryController.tabBarItem = UITabBarItem(title: "Categories", image: UIImage(systemName: "books.vertical"), tag: 1)
+        categoryController.tabBarItem = UITabBarItem(title: "Categories", image: UIImage(systemName: "books.vertical"), tag: 2)
 
         viewControllers = [
-            UINavigationController(rootViewController: marketSearchController),
+            UINavigationController(rootViewController: fullCoinsController),
+            UINavigationController(rootViewController: marketCoinsController),
             UINavigationController(rootViewController: categoryController),
         ]
     }

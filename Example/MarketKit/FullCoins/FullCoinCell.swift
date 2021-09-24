@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import MarketKit
 
-class MarketSearchCell: UITableViewCell {
+class FullCoinCell: UITableViewCell {
     private let nameLabel = UILabel()
     private let codeLabel = UILabel()
     private let platformsLabel = UILabel()

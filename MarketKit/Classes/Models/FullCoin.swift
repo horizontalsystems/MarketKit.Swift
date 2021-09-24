@@ -10,7 +10,7 @@ public struct FullCoin: FetchableRecord, Decodable {
     }
 
     init(fullCoinResponse: FullCoinResponse) {
-        coin = Coin(fullCoinResponse: fullCoinResponse)
+        coin = Coin(coinResponse: fullCoinResponse)
         platforms = fullCoinResponse.platforms.flatMap { Platform(platformResponse: $0, coinUid: fullCoinResponse.uid) }
     }
 

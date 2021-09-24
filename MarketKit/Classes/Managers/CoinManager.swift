@@ -3,11 +3,13 @@ import RxRelay
 
 class CoinManager {
     private let storage: CoinStorage
+    private let hsProvider: HsProvider
 
     private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
-    init(storage: CoinStorage) {
+    init(storage: CoinStorage, hsProvider: HsProvider) {
         self.storage = storage
+        self.hsProvider = hsProvider
     }
 
 }
@@ -28,6 +30,10 @@ extension CoinManager {
 
     func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
         try storage.fullCoins(coinTypes: coinTypes)
+    }
+
+    func marketCoinsSingle() -> Single<[MarketCoin]> {
+        hsProvider.marketCoinsSingle()
     }
 
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

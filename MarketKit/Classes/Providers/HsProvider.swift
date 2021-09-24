@@ -22,6 +22,12 @@ extension HsProvider {
         }
     }
 
+    func marketCoinsSingle() -> Single<[MarketCoin]> {
+        networkManager.single(url: "\(baseUrl)/v1/coins", method: .get).map { (marketCoinResponses: [MarketCoinResponse]) -> [MarketCoin] in
+            marketCoinResponses.map { MarketCoin(marketCoinResponse: $0) }
+        }
+    }
+
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
         networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
     }

@@ -16,10 +16,10 @@ extension Kit {
 
         let networkManager = NetworkManager(logger: logger)
 
-        let coinManager = CoinManager(storage: coinStorage)
-        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
-
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
+
+        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
+        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
         let coinSyncer = CoinSyncer(hsProvider: hsProvider, coinManager: coinManager)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)

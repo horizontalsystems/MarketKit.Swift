@@ -3,7 +3,7 @@ import SnapKit
 import RxSwift
 import MarketKit
 
-class MarketSearchController: UIViewController {
+class FullCoinsController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     private let tableView = UITableView()
 
@@ -23,7 +23,7 @@ class MarketSearchController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Search"
+        title = "Full Coins"
 
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
@@ -38,7 +38,7 @@ class MarketSearchController: UIViewController {
             maker.edges.equalToSuperview()
         }
 
-        tableView.register(MarketSearchCell.self, forCellReuseIdentifier: String(describing: MarketSearchCell.self))
+        tableView.register(FullCoinCell.self, forCellReuseIdentifier: String(describing: FullCoinCell.self))
         tableView.dataSource = self
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
@@ -65,33 +65,33 @@ class MarketSearchController: UIViewController {
 
 }
 
-extension MarketSearchController: UITableViewDataSource {
+extension FullCoinsController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         fullCoins.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        tableView.dequeueReusableCell(withIdentifier: String(describing: MarketSearchCell.self), for: indexPath)
+        tableView.dequeueReusableCell(withIdentifier: String(describing: FullCoinCell.self), for: indexPath)
     }
 
 }
 
-extension MarketSearchController: UITableViewDelegate {
+extension FullCoinsController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         60
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? MarketSearchCell {
+        if let cell = cell as? FullCoinCell {
             cell.bind(fullCoin: fullCoins[indexPath.row])
         }
     }
 
 }
 
-extension MarketSearchController: UISearchResultsUpdating {
+extension FullCoinsController: UISearchResultsUpdating {
 
     public func updateSearchResults(for searchController: UISearchController) {
         var filter = searchController.searchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
