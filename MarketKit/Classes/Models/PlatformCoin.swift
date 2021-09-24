@@ -9,8 +9,8 @@ public struct PlatformCoin: FetchableRecord, Decodable {
         self.platform = platform
     }
 
-    public var marketCoin: MarketCoin {
-        MarketCoin(coin: coin, platforms: [platform])
+    public var fullCoin: FullCoin {
+        FullCoin(coin: coin, platforms: [platform])
     }
 
     public var name: String {

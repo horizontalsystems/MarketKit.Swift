@@ -4,7 +4,7 @@ import RxRelay
 class CoinManager {
     private let storage: CoinStorage
 
-    private let marketCoinsUpdatedRelay = PublishRelay<Void>()
+    private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
     init(storage: CoinStorage) {
         self.storage = storage
@@ -14,20 +14,20 @@ class CoinManager {
 
 extension CoinManager {
 
-    var marketCoinsUpdatedObservable: Observable<Void> {
-        marketCoinsUpdatedRelay.asObservable()
+    var fullCoinsUpdatedObservable: Observable<Void> {
+        fullCoinsUpdatedRelay.asObservable()
     }
 
-    func marketCoins(filter: String, limit: Int) throws -> [MarketCoin] {
-        try storage.marketCoins(filter: filter, limit: limit)
+    func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
+        try storage.fullCoins(filter: filter, limit: limit)
     }
 
-    func marketCoins(coinUids: [String]) throws -> [MarketCoin] {
-        try storage.marketCoins(coinUids: coinUids)
+    func fullCoins(coinUids: [String]) throws -> [FullCoin] {
+        try storage.fullCoins(coinUids: coinUids)
     }
 
-    func marketCoins(coinTypes: [CoinType]) throws -> [MarketCoin] {
-        try storage.marketCoins(coinTypes: coinTypes)
+    func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
+        try storage.fullCoins(coinTypes: coinTypes)
     }
 
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
@@ -46,19 +46,14 @@ extension CoinManager {
         try storage.platformCoins(coinTypeIds: coinTypeIds)
     }
 
-    func save(coin: Coin, platform: Platform) throws {
-        try storage.save(coin: coin, platform: platform)
-        marketCoinsUpdatedRelay.accept(())
-    }
-
     func coins(filter: String, limit: Int) throws -> [Coin] {
         try storage.coins(filter: filter, limit: limit)
     }
 
-    func handleFetched(marketCoins: [MarketCoin]) {
+    func handleFetched(fullCoins: [FullCoin]) {
         do {
-            try storage.save(marketCoins: marketCoins)
-            marketCoinsUpdatedRelay.accept(())
+            try storage.save(fullCoins: fullCoins)
+            fullCoinsUpdatedRelay.accept(())
         } catch {
             // todo
         }

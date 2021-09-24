@@ -16,9 +16,9 @@ class HsProvider {
 
 extension HsProvider {
 
-    func marketCoinsSingle() -> Single<[MarketCoin]> {
-        networkManager.single(url: "\(baseUrl)/v1/coins/all", method: .get).map { (coinResponses: [CoinResponse]) -> [MarketCoin] in
-            coinResponses.map { MarketCoin(coinResponse: $0) }
+    func fullCoinsSingle() -> Single<[FullCoin]> {
+        networkManager.single(url: "\(baseUrl)/v1/coins/all", method: .get).map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
+            fullCoinResponses.map { FullCoin(fullCoinResponse: $0) }
         }
     }
 

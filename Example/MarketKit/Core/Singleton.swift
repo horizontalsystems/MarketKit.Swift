@@ -6,7 +6,7 @@ class Singleton {
     let kit: Kit
 
     init() {
-        kit = try! Kit.instance(hsApiBaseUrl: "http://10.0.1.32:3000", minLogLevel: .debug)
+        kit = try! Kit.instance(hsApiBaseUrl: "https://markets-dev.horizontalsystems.xyz", minLogLevel: .debug)
 
         kit.sync()
     }

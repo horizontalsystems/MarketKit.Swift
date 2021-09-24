@@ -37,7 +37,7 @@ class CoinStorage {
 
 extension CoinStorage {
 
-    func marketCoins(filter: String, limit: Int) throws -> [MarketCoin] {
+    func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try dbPool.read { db in
             let request = Coin
                     .including(all: Coin.platforms)
@@ -45,21 +45,21 @@ extension CoinStorage {
                     .order(Coin.Columns.marketCapRank.asc)
                     .limit(limit)
 
-            return try MarketCoin.fetchAll(db, request)
+            return try FullCoin.fetchAll(db, request)
         }
     }
 
-    func marketCoins(coinUids: [String]) throws -> [MarketCoin] {
+    func fullCoins(coinUids: [String]) throws -> [FullCoin] {
         try dbPool.read { db in
             let request = Coin
                     .including(all: Coin.platforms)
                     .filter(coinUids.contains(Coin.Columns.uid))
 
-            return try MarketCoin.fetchAll(db, request)
+            return try FullCoin.fetchAll(db, request)
         }
     }
 
-    func marketCoins(coinTypes: [CoinType]) throws -> [MarketCoin] {
+    func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
         try dbPool.read { db in
             let coinTypeIds = coinTypes.map { $0.id }
 
@@ -74,7 +74,7 @@ extension CoinStorage {
                     .including(all: Coin.platforms)
                     .filter(coinUids.contains(Coin.Columns.uid))
 
-            return try MarketCoin.fetchAll(db, request)
+            return try FullCoin.fetchAll(db, request)
         }
     }
 
@@ -105,22 +105,15 @@ extension CoinStorage {
         }
     }
 
-    func save(marketCoins: [MarketCoin]) throws {
+    func save(fullCoins: [FullCoin]) throws {
         _ = try dbPool.write { db in
-            for marketCoin in marketCoins {
-                try marketCoin.coin.insert(db)
+            for fullCoin in fullCoins {
+                try fullCoin.coin.insert(db)
 
-                for platform in marketCoin.platforms {
+                for platform in fullCoin.platforms {
                     try platform.insert(db)
                 }
             }
-        }
-    }
-
-    func save(coin: Coin, platform: Platform) throws {
-        _ = try dbPool.write { db in
-            try coin.insert(db)
-            try platform.insert(db)
         }
     }
 

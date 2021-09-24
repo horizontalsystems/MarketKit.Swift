@@ -23,20 +23,20 @@ extension Kit {
 
     // Coins
 
-    public var marketCoinsUpdatedObservable: Observable<Void> {
-        coinManager.marketCoinsUpdatedObservable
+    public var fullCoinsUpdatedObservable: Observable<Void> {
+        coinManager.fullCoinsUpdatedObservable
     }
 
-    public func marketCoins(filter: String, limit: Int = 20) throws -> [MarketCoin] {
-        try coinManager.marketCoins(filter: filter, limit: limit)
+    public func fullCoins(filter: String, limit: Int = 20) throws -> [FullCoin] {
+        try coinManager.fullCoins(filter: filter, limit: limit)
     }
 
-    public func marketCoins(coinUids: [String]) throws -> [MarketCoin] {
-        try coinManager.marketCoins(coinUids: coinUids)
+    public func fullCoins(coinUids: [String]) throws -> [FullCoin] {
+        try coinManager.fullCoins(coinUids: coinUids)
     }
 
-    public func marketCoins(coinTypes: [CoinType]) throws -> [MarketCoin] {
-        try coinManager.marketCoins(coinTypes: coinTypes)
+    public func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
+        try coinManager.fullCoins(coinTypes: coinTypes)
     }
 
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

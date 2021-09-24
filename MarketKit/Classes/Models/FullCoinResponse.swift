@@ -1,6 +1,6 @@
 import ObjectMapper
 
-class CoinResponse: ImmutableMappable {
+class FullCoinResponse: ImmutableMappable {
     let uid: String
     let name: String
     let code: String

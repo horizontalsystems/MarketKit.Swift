@@ -9,7 +9,7 @@ class MarketSearchController: UIViewController {
 
     private var currentFilter: String = ""
 
-    private var marketCoins = [MarketCoin]()
+    private var fullCoins = [FullCoin]()
     private let disposeBag = DisposeBag()
 
     init() {
@@ -24,7 +24,6 @@ class MarketSearchController: UIViewController {
         super.viewDidLoad()
 
         title = "Search"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onTapAddToken))
 
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
@@ -44,7 +43,7 @@ class MarketSearchController: UIViewController {
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
 
-        Singleton.instance.kit.marketCoinsUpdatedObservable
+        Singleton.instance.kit.fullCoinsUpdatedObservable
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in
@@ -55,14 +54,9 @@ class MarketSearchController: UIViewController {
         syncCoins()
     }
 
-    @objc private func onTapAddToken() {
-        let controller = SearchReferenceController()
-        present(UINavigationController(rootViewController: controller), animated: true)
-    }
-
     private func syncCoins() {
         do {
-            marketCoins = try Singleton.instance.kit.marketCoins(filter: currentFilter)
+            fullCoins = try Singleton.instance.kit.fullCoins(filter: currentFilter)
             tableView.reloadData()
         } catch {
             print("Failed to sync coins: \(error)")
@@ -74,7 +68,7 @@ class MarketSearchController: UIViewController {
 extension MarketSearchController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        marketCoins.count
+        fullCoins.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -91,7 +85,7 @@ extension MarketSearchController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? MarketSearchCell {
-            cell.bind(marketCoin: marketCoins[indexPath.row])
+            cell.bind(fullCoin: fullCoins[indexPath.row])
         }
     }
 
