@@ -32,8 +32,8 @@ extension CoinManager {
         try storage.fullCoins(coinTypes: coinTypes)
     }
 
-    func marketCoinsSingle() -> Single<[MarketCoin]> {
-        hsProvider.marketCoinsSingle()
+    func marketInfosSingle() -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle()
     }
 
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

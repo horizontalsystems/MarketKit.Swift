@@ -3,10 +3,10 @@ import SnapKit
 import RxSwift
 import MarketKit
 
-class MarketCoinsController: UIViewController {
+class MarketInfosController: UIViewController {
     private let tableView = UITableView()
 
-    private var marketCoins = [MarketCoin]()
+    private var marketInfos = [MarketInfo]()
     private let disposeBag = DisposeBag()
 
     init() {
@@ -20,14 +20,14 @@ class MarketCoinsController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Market Coins"
+        title = "Market Infos"
 
         view.addSubview(tableView)
         tableView.snp.makeConstraints { maker in
             maker.edges.equalToSuperview()
         }
 
-        tableView.register(MarketCoinCell.self, forCellReuseIdentifier: String(describing: MarketCoinCell.self))
+        tableView.register(MarketInfoCell.self, forCellReuseIdentifier: String(describing: MarketInfoCell.self))
         tableView.dataSource = self
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
@@ -36,11 +36,11 @@ class MarketCoinsController: UIViewController {
     }
 
     private func syncCoins() {
-        Singleton.instance.kit.marketCoinsSingle()
+        Singleton.instance.kit.marketInfosSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { [weak self] marketCoins in
-                    self?.marketCoins = marketCoins
+                .subscribe(onSuccess: { [weak self] marketInfos in
+                    self?.marketInfos = marketInfos
                     self?.tableView.reloadData()
                 })
                 .disposed(by: disposeBag)
@@ -48,27 +48,27 @@ class MarketCoinsController: UIViewController {
 
 }
 
-extension MarketCoinsController: UITableViewDataSource {
+extension MarketInfosController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        marketCoins.count
+        marketInfos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        tableView.dequeueReusableCell(withIdentifier: String(describing: MarketCoinCell.self), for: indexPath)
+        tableView.dequeueReusableCell(withIdentifier: String(describing: MarketInfoCell.self), for: indexPath)
     }
 
 }
 
-extension MarketCoinsController: UITableViewDelegate {
+extension MarketInfosController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         60
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? MarketCoinCell {
-            cell.bind(marketCoin: marketCoins[indexPath.row])
+        if let cell = cell as? MarketInfoCell {
+            cell.bind(marketInfo: marketInfos[indexPath.row])
         }
     }
 

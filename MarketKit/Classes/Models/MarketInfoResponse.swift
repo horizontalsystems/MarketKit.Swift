@@ -1,6 +1,6 @@
 import ObjectMapper
 
-class MarketCoinResponse: CoinResponse {
+class MarketInfoResponse: CoinResponse {
     let price: Decimal
     let priceChange: Double?
     let marketCap: Int

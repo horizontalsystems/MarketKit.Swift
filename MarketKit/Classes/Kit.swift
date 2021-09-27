@@ -39,8 +39,8 @@ extension Kit {
         try coinManager.fullCoins(coinTypes: coinTypes)
     }
 
-    public func marketCoinsSingle() -> Single<[MarketCoin]> {
-        coinManager.marketCoinsSingle()
+    public func marketInfosSingle() -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle()
     }
 
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

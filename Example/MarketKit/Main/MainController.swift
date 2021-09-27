@@ -8,8 +8,8 @@ class MainController: UITabBarController {
         let fullCoinsController = FullCoinsController()
         fullCoinsController.tabBarItem = UITabBarItem(title: "Full Coins", image: UIImage(systemName: "bitcoinsign.circle"), tag: 0)
 
-        let marketCoinsController = MarketCoinsController()
-        marketCoinsController.tabBarItem = UITabBarItem(title: "Market Coins", image: UIImage(systemName: "bitcoinsign.circle.fill"), tag: 1)
+        let marketCoinsController = MarketInfosController()
+        marketCoinsController.tabBarItem = UITabBarItem(title: "Market Infos", image: UIImage(systemName: "bitcoinsign.circle.fill"), tag: 1)
 
         let categoryController = CoinCategoryController()
         categoryController.tabBarItem = UITabBarItem(title: "Categories", image: UIImage(systemName: "books.vertical"), tag: 2)

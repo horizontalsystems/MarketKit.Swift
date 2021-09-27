@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import MarketKit
 
-class MarketCoinCell: UITableViewCell {
+class MarketInfoCell: UITableViewCell {
     private let nameLabel = UILabel()
     private let codeLabel = UILabel()
     private let marketLabel = UILabel()
@@ -44,11 +44,11 @@ class MarketCoinCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    func bind(marketCoin: MarketCoin) {
-        let coin = marketCoin.coin
+    func bind(marketInfo: MarketInfo) {
+        let coin = marketInfo.coin
         nameLabel.text = coin.name
         codeLabel.text = "\(coin.code), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a")"
-        marketLabel.text = "\(marketCoin.price); \(marketCoin.priceChange.map { "\($0)" } ?? "n/a")\n\(marketCoin.marketCap); \(marketCoin.totalVolume)"
+        marketLabel.text = "\(marketInfo.price); \(marketInfo.priceChange.map { "\($0)" } ?? "n/a")\n\(marketInfo.marketCap); \(marketInfo.totalVolume)"
     }
 
 }
