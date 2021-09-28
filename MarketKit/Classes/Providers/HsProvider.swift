@@ -22,8 +22,21 @@ extension HsProvider {
         }
     }
 
-    func marketInfosSingle() -> Single<[MarketInfo]> {
-        networkManager.single(url: "\(baseUrl)/v1/coins", method: .get).map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
+    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
+        var parameters: Parameters = [
+            "top": top
+        ]
+
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+
+        if let order = order {
+            parameters["orderField"] = order.field.rawValue
+            parameters["orderDirection"] = order.direction.rawValue
+        }
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters).map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
             marketInfoResponses.map { MarketInfo(marketInfoResponse: $0) }
         }
     }

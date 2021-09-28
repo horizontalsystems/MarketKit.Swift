@@ -36,7 +36,7 @@ class MarketInfosController: UIViewController {
     }
 
     private func syncCoins() {
-        Singleton.instance.kit.marketInfosSingle()
+        Singleton.instance.kit.marketInfosSingle(top: 20)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] marketInfos in

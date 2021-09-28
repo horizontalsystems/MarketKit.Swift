@@ -8,7 +8,7 @@ struct CoinPriceResponse: ImmutableMappable {
 
     init(map: Map) throws {
         price = try map.value("price", using: Self.stringToDecimalTransform)
-        priceChange = try map.value("price_change")
+        priceChange = try map.value("price_change_24h")
         lastUpdated = try map.value("last_updated")
     }
 
