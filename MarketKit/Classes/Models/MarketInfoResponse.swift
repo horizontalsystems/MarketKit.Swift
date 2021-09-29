@@ -2,15 +2,15 @@ import ObjectMapper
 
 class MarketInfoResponse: CoinResponse {
     let price: Decimal
-    let priceChange: Double?
-    let marketCap: Int
-    let totalVolume: Int
+    let priceChange: Decimal?
+    let marketCap: Decimal
+    let totalVolume: Decimal
 
     required init(map: Map) throws {
         price = try map.value("price", using: Self.stringToDecimalTransform)
-        priceChange = try? map.value("price_change_24h")
-        marketCap = try map.value("market_cap")
-        totalVolume = try map.value("total_volume")
+        priceChange = try? map.value("price_change_24h", using: Self.stringToDecimalTransform)
+        marketCap = try map.value("market_cap", using: Self.stringToDecimalTransform)
+        totalVolume = try map.value("total_volume", using: Self.stringToDecimalTransform)
 
         try super.init(map: map)
     }

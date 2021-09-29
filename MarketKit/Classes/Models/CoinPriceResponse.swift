@@ -3,12 +3,12 @@ import ObjectMapper
 
 struct CoinPriceResponse: ImmutableMappable {
     let price: Decimal
-    let priceChange: Double
+    let priceChange: Decimal
     let lastUpdated: TimeInterval
 
     init(map: Map) throws {
         price = try map.value("price", using: Self.stringToDecimalTransform)
-        priceChange = try map.value("price_change_24h")
+        priceChange = try map.value("price_change_24h", using: Self.stringToDecimalTransform)
         lastUpdated = try map.value("last_updated")
     }
 

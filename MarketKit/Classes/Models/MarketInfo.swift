@@ -3,9 +3,9 @@ import GRDB
 public struct MarketInfo {
     public let coin: Coin
     public let price: Decimal
-    public let priceChange: Double?
-    public let marketCap: Int
-    public let totalVolume: Int
+    public let priceChange: Decimal?
+    public let marketCap: Decimal
+    public let totalVolume: Decimal
 
     init(marketInfoResponse: MarketInfoResponse) {
         coin = Coin(coinResponse: marketInfoResponse)

@@ -122,7 +122,6 @@ class Scheduler {
 
         if let lastSyncTimestamp = provider.lastSyncTimestamp {
             let currentTimestamp = Date().timeIntervalSince1970
-            print("LAST: \(lastSyncTimestamp), CURRENT: \(currentTimestamp)")
             let diff = currentTimestamp - lastSyncTimestamp
             delay = max(0, provider.expirationInterval - bufferInterval - diff)
         }

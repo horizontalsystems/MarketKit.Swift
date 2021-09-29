@@ -7,14 +7,14 @@ public class CoinPrice: Record {
     public let coinUid: String
     public let currencyCode: String
     public let value: Decimal
-    public let diff: Double
+    public let diff: Decimal
     public let timestamp: TimeInterval
 
     enum Columns: String, ColumnExpression, CaseIterable {
         case coinUid, currencyCode, value, diff, timestamp
     }
 
-    init(coinUid: String, currencyCode: String, value: Decimal, diff: Double, timestamp: TimeInterval) {
+    init(coinUid: String, currencyCode: String, value: Decimal, diff: Decimal, timestamp: TimeInterval) {
         self.coinUid = coinUid
         self.currencyCode = currencyCode
         self.value = value
