@@ -7,14 +7,16 @@ public class Kit {
     private let coinCategorySyncer: CoinCategorySyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
+    private let postManager: PostManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, postManager: PostManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
         self.coinCategorySyncer = coinCategorySyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
+        self.postManager = postManager
     }
 
 }
@@ -98,6 +100,12 @@ extension Kit {
 
     public func coinPriceMapObservable(coinUids: [String], currencyCode: String) -> Observable<[String: CoinPrice]> {
         coinPriceSyncManager.coinPriceMapObservable(coinUids: coinUids, currencyCode: currencyCode)
+    }
+
+    // Posts
+
+    public func postsSingle() -> Single<[Post]> {
+        postManager.postsSingle()
     }
 
 }

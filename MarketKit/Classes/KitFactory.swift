@@ -5,7 +5,7 @@ extension Kit {
     private static let dataDirectoryName = "market-kit"
     private static let databaseFileName = "market-kit"
 
-    public static func instance(hsApiBaseUrl: String, minLogLevel: Logger.Level = .error) throws -> Kit {
+    public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
 
@@ -17,6 +17,7 @@ extension Kit {
         let networkManager = NetworkManager(logger: logger)
 
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
+        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
 
         let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
         let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
@@ -30,13 +31,16 @@ extension Kit {
         let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
         coinPriceManager.delegate = coinPriceSyncManager
 
+        let postManager = PostManager(provider: cryptoCompareProvider)
+
         return Kit(
                 coinManager: coinManager,
                 coinCategoryManager: coinCategoryManager,
                 coinSyncer: coinSyncer,
                 coinCategorySyncer: coinCategorySyncer,
                 coinPriceManager: coinPriceManager,
-                coinPriceSyncManager: coinPriceSyncManager
+                coinPriceSyncManager: coinPriceSyncManager,
+                postManager: postManager
         )
     }
 

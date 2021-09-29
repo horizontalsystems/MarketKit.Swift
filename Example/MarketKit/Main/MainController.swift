@@ -14,10 +14,14 @@ class MainController: UITabBarController {
         let categoryController = CoinCategoryController()
         categoryController.tabBarItem = UITabBarItem(title: "Categories", image: UIImage(systemName: "books.vertical"), tag: 2)
 
+        let postsController = PostsController()
+        postsController.tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "newspaper"), tag: 3)
+
         viewControllers = [
             UINavigationController(rootViewController: fullCoinsController),
             UINavigationController(rootViewController: marketCoinsController),
             UINavigationController(rootViewController: categoryController),
+            UINavigationController(rootViewController: postsController),
         ]
     }
 
