@@ -31,4 +31,8 @@ extension CoinCategoryManager {
         }
     }
 
+    func categoryName(uid: String) -> String? {
+        storage.categoryByUid(uid: uid)?.name
+    }
+
 }

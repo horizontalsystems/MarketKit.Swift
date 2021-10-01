@@ -36,6 +36,10 @@ extension CoinManager {
         hsProvider.marketInfosSingle(top: top, limit: limit, order: order)
     }
 
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoOverview> {
+        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
         try storage.platformCoin(coinType: coinType)
     }

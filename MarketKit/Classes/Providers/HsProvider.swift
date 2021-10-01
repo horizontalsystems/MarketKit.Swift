@@ -1,3 +1,4 @@
+import Foundation
 import RxSwift
 import HsToolKit
 import Alamofire
@@ -6,10 +7,12 @@ import ObjectMapper
 class HsProvider {
     private let baseUrl: String
     private let networkManager: NetworkManager
+    private let categoryManager: CoinCategoryManager
 
-    init(baseUrl: String, networkManager: NetworkManager) {
+    init(baseUrl: String, networkManager: NetworkManager, categoryManager: CoinCategoryManager) {
         self.baseUrl = baseUrl
         self.networkManager = networkManager
+        self.categoryManager = categoryManager
     }
 
 }
@@ -38,6 +41,14 @@ extension HsProvider {
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters).map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
             marketInfoResponses.map { MarketInfo(marketInfoResponse: $0) }
+        }
+    }
+
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoOverview> {
+        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currencyCode=\(currencyCode)", method: .get).map { [weak self] (response: MarketInfoOverviewResponse) -> MarketInfoOverview in
+            let categories = response.categoryIds.compactMap { self?.categoryManager.categoryName(uid: $0) }
+
+            return MarketInfoOverview(response: response, categories: categories)
         }
     }
 

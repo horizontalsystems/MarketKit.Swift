@@ -13,14 +13,14 @@ extension Kit {
         let dbPool = try DatabasePool(path: databaseURL.path)
         let coinStorage = try CoinStorage(dbPool: dbPool)
         let coinCategoryStorage = try CoinCategoryStorage(dbPool: dbPool)
+        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
         let networkManager = NetworkManager(logger: logger)
 
-        let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
-
+        let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, categoryManager: coinCategoryManager)
+        
         let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
-        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
         let coinSyncer = CoinSyncer(hsProvider: hsProvider, coinManager: coinManager)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
