@@ -38,8 +38,8 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoOverviewResponse> {
-        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currencyCode=\(currencyCode)", method: .get)
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewResponse> {
+        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currency=\(currencyCode)&language=\(languageCode)", method: .get)
     }
 
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
