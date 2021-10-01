@@ -1,12 +1,10 @@
 import RxSwift
 
 class CoinSyncer {
-    private let hsProvider: HsProvider
     private let coinManager: CoinManager
     private let disposeBag = DisposeBag()
 
-    init(hsProvider: HsProvider, coinManager: CoinManager) {
-        self.hsProvider = hsProvider
+    init(coinManager: CoinManager) {
         self.coinManager = coinManager
     }
 
@@ -19,7 +17,7 @@ class CoinSyncer {
 extension CoinSyncer {
 
     func sync() {
-        hsProvider.fullCoinsSingle()
+        coinManager.fullCoinsSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] fullCoins in
                     self?.coinManager.handleFetched(fullCoins: fullCoins)

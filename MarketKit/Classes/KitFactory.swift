@@ -18,16 +18,16 @@ extension Kit {
         let networkManager = NetworkManager(logger: logger)
 
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
-        let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, categoryManager: coinCategoryManager)
+        let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
         
-        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
+        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, categoryManager: coinCategoryManager)
 
-        let coinSyncer = CoinSyncer(hsProvider: hsProvider, coinManager: coinManager)
+        let coinSyncer = CoinSyncer(coinManager: coinManager)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
         let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
-        let coinPriceSchedulerFactory = CoinPriceSchedulerFactory(manager: coinPriceManager, provider: hsProvider, reachabilityManager: reachabilityManager, logger: logger)
+        let coinPriceSchedulerFactory = CoinPriceSchedulerFactory(manager: coinPriceManager, coinManager: coinManager, provider: hsProvider, reachabilityManager: reachabilityManager, logger: logger)
         let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
         coinPriceManager.delegate = coinPriceSyncManager
 
