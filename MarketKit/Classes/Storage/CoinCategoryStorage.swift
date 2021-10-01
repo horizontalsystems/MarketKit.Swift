@@ -41,4 +41,10 @@ extension CoinCategoryStorage {
         }
     }
 
+    func categoryByUid(uid: String) -> CoinCategory? {
+        try? dbPool.read { db in
+            try CoinCategory.filter(CoinCategory.Columns.uid == uid).fetchOne(db)
+        }
+    }
+
 }

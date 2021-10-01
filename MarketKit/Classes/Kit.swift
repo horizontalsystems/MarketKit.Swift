@@ -45,6 +45,10 @@ extension Kit {
         coinManager.marketInfosSingle(top: top, limit: limit, order: order)
     }
 
+    public func marketInfoOverviewSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoOverview> {
+        coinManager.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
         try coinManager.platformCoin(coinType: coinType)
     }

@@ -1,4 +1,4 @@
-import GRDB
+import Foundation
 
 public struct MarketInfo {
     public let coin: Coin
