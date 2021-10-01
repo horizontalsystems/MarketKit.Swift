@@ -10,11 +10,11 @@ public struct MarketInfoOverview {
     public let tvl: Decimal?
     public let performance: [String: [TimePeriod: Decimal]]
     public let genesisDate: Date?
-    public let categories: [String]
+    public let categories: [CoinCategory]
     public let description: String
     public let links: [LinkType: String]
 
-    init(response: MarketInfoOverviewResponse, categories: [String]) {
+    init(response: MarketInfoOverviewResponse, categories: [CoinCategory]) {
         marketCap = response.marketCap
         marketCapRank = response.marketCapRank
         totalSupply = response.totalSupply
