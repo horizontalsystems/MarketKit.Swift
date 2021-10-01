@@ -27,13 +27,7 @@ extension CoinManager {
     func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
         hsProvider.coinPricesSingle(coinUids: coinUids, currencyCode: currencyCode).map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
             coinPriceResponsesMap.map { coinUid, coinPriceResponse in
-                CoinPrice(
-                        coinUid: coinUid,
-                        currencyCode: currencyCode,
-                        value: coinPriceResponse.price,
-                        diff: coinPriceResponse.priceChange,
-                        timestamp: coinPriceResponse.lastUpdated
-                )
+                CoinPrice(coinUid: coinUid, currencyCode: currencyCode, coinPriceResponse: coinPriceResponse)
             }
         }
     }
