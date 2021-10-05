@@ -18,7 +18,7 @@ class HsProvider {
 extension HsProvider {
 
     func fullCoinsSingle() -> Single<[FullCoinResponse]> {
-        networkManager.single(url: "\(baseUrl)/v1/coins/all", method: .get)
+        networkManager.single(url: "\(baseUrl)/v1/coins", method: .get)
     }
 
     func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfoResponse]> {
@@ -35,7 +35,20 @@ extension HsProvider {
             parameters["orderDirection"] = order.direction.rawValue
         }
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
+    }
+
+    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfoResponse]> {
+        var parameters: Parameters = [
+            "uids": coinUids.joined(separator: ",")
+        ]
+
+        if let order = order {
+            parameters["orderField"] = order.field.rawValue
+            parameters["orderDirection"] = order.direction.rawValue
+        }
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewResponse> {
