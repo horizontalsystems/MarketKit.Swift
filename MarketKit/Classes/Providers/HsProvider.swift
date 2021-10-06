@@ -25,7 +25,7 @@ extension HsProvider {
                 }
     }
 
-    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
+    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfoRaw]> {
         var parameters: Parameters = [
             "top": top
         ]
@@ -39,14 +39,10 @@ extension HsProvider {
             parameters["orderDirection"] = order.direction.rawValue
         }
 
-        return networkManager
-                .single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
-                .map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
-                    marketInfoResponses.map { $0.marketInfo() }
-                }
+        return networkManager.single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
     }
 
-    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
+    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfoRaw]> {
         var parameters: Parameters = [
             "uids": coinUids.joined(separator: ",")
         ]
@@ -56,11 +52,7 @@ extension HsProvider {
             parameters["orderDirection"] = order.direction.rawValue
         }
 
-        return networkManager
-                .single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
-                .map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
-                    marketInfoResponses.map { $0.marketInfo() }
-                }
+        return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {

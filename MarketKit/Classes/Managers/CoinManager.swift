@@ -14,6 +14,15 @@ class CoinManager {
         self.categoryManager = categoryManager
     }
 
+    func convertToMarketInfoArray(rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] {
+        let fullCoins = (try? storage.fullCoins(coinUids: rawMarketInfoArray.map { $0.uid })) ?? []
+
+        return fullCoins.compactMap { fullCoin in
+            rawMarketInfoArray
+                    .first { $0.uid == fullCoin.coin.uid }
+                    .flatMap { $0.marketInfo(fullCoin: fullCoin) }
+        }
+    }
 }
 
 extension CoinManager {
@@ -36,18 +45,25 @@ extension CoinManager {
 
     func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(top: top, limit: limit, order: order)
+                .map { [weak self] (rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] in
+                    self?.convertToMarketInfoArray(rawMarketInfoArray: rawMarketInfoArray) ?? []
+                }
     }
 
     func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(coinUids: coinUids, order: order)
+                .map { [weak self] (rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] in
+                    self?.convertToMarketInfoArray(rawMarketInfoArray: rawMarketInfoArray) ?? []
+                }
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode).map { [weak self] (response: MarketInfoOverviewRaw) -> MarketInfoOverview in
-            let categories = (try? self?.categoryManager.categories(uids: response.categoryIds)) ?? []
+        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+                .map { [weak self] (rawMarketInfoOverview: MarketInfoOverviewRaw) -> MarketInfoOverview in
+                    let categories = (try? self?.categoryManager.categories(uids: rawMarketInfoOverview.categoryIds)) ?? []
 
-            return response.marketInfoOverview(categories: categories)
-        }
+                    return rawMarketInfoOverview.marketInfoOverview(categories: categories)
+                }
     }
 
     func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

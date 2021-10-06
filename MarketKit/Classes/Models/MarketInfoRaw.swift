@@ -1,23 +1,23 @@
 import ObjectMapper
 
-class MarketInfoResponse: CoinResponse {
+class MarketInfoRaw: ImmutableMappable {
+    let uid: String
     let price: Decimal
     let priceChange: Decimal?
     let marketCap: Decimal
     let totalVolume: Decimal
 
     required init(map: Map) throws {
+        uid = try map.value("uid")
         price = try map.value("price", using: Transform.stringToDecimalTransform)
         priceChange = try? map.value("price_change_24h", using: Transform.stringToDecimalTransform)
         marketCap = try map.value("market_cap", using: Transform.stringToDecimalTransform)
         totalVolume = try map.value("total_volume", using: Transform.stringToDecimalTransform)
-
-        try super.init(map: map)
     }
 
-    func marketInfo() -> MarketInfo {
+    func marketInfo(fullCoin: FullCoin) -> MarketInfo {
         MarketInfo(
-            coin: coin(),
+            fullCoin: fullCoin,
             price: price,
             priceChange: priceChange,
             marketCap: marketCap,
