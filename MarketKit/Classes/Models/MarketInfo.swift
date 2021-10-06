@@ -6,15 +6,6 @@ public struct MarketInfo {
     public let priceChange: Decimal?
     public let marketCap: Decimal
     public let totalVolume: Decimal
-
-    init(marketInfoResponse: MarketInfoResponse) {
-        coin = Coin(coinResponse: marketInfoResponse)
-        price = marketInfoResponse.price
-        priceChange = marketInfoResponse.priceChange
-        marketCap = marketInfoResponse.marketCap
-        totalVolume = marketInfoResponse.totalVolume
-    }
-
 }
 
 extension MarketInfo {

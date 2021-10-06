@@ -23,16 +23,6 @@ public class Coin: Record, Decodable {
         super.init()
     }
 
-    init(coinResponse: CoinResponse) {
-        uid = coinResponse.uid
-        name = coinResponse.name
-        code = coinResponse.code.uppercased()
-        marketCapRank = coinResponse.marketCapRank
-        coinGeckoId = coinResponse.coinGeckoId
-
-        super.init()
-    }
-
     required public init(row: Row) {
         uid = row[Columns.uid]
         name = row[Columns.name]

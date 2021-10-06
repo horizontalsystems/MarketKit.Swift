@@ -15,4 +15,14 @@ class MarketInfoResponse: CoinResponse {
         try super.init(map: map)
     }
 
+    func marketInfo() -> MarketInfo {
+        MarketInfo(
+            coin: coin(),
+            price: price,
+            priceChange: priceChange,
+            marketCap: marketCap,
+            totalVolume: totalVolume
+        )
+    }
+
 }

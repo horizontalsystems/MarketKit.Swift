@@ -19,21 +19,6 @@ public class Platform: Record, Decodable {
         super.init()
     }
 
-    init?(platformResponse: PlatformResponse, coinUid: String) {
-        guard let decimals = platformResponse.decimals else {
-            return nil
-        }
-        guard let coinType = CoinType(type: platformResponse.type, address: platformResponse.address, symbol: platformResponse.symbol) else {
-            return nil
-        }
-
-        self.coinType = coinType
-        self.decimals = decimals
-        self.coinUid = coinUid
-
-        super.init()
-    }
-
     required init(row: Row) {
         coinType = CoinType(id: row[Columns.coinType])
         decimals = row[Columns.decimals]

@@ -17,11 +17,15 @@ class HsProvider {
 
 extension HsProvider {
 
-    func fullCoinsSingle() -> Single<[FullCoinResponse]> {
-        networkManager.single(url: "\(baseUrl)/v1/coins", method: .get)
+    func fullCoinsSingle() -> Single<[FullCoin]> {
+        networkManager
+                .single(url: "\(baseUrl)/v1/coins", method: .get)
+                .map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
+                    fullCoinResponses.map { $0.fullCoin() }
+                }
     }
 
-    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfoResponse]> {
+    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         var parameters: Parameters = [
             "top": top
         ]
@@ -35,10 +39,14 @@ extension HsProvider {
             parameters["orderDirection"] = order.direction.rawValue
         }
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
+        return networkManager
+                .single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
+                .map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
+                    marketInfoResponses.map { $0.marketInfo() }
+                }
     }
 
-    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfoResponse]> {
+    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         var parameters: Parameters = [
             "uids": coinUids.joined(separator: ",")
         ]
@@ -48,10 +56,14 @@ extension HsProvider {
             parameters["orderDirection"] = order.direction.rawValue
         }
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
+        return networkManager
+                .single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
+                .map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
+                    marketInfoResponses.map { $0.marketInfo() }
+                }
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewResponse> {
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
         networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currency=\(currencyCode)&language=\(languageCode)", method: .get)
     }
 
@@ -59,13 +71,19 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
     }
 
-    func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[String: CoinPriceResponse]> {
+    func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
         let parameters: Parameters = [
             "ids": coinUids.joined(separator: ","),
             "currency": currencyCode
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/prices", method: .get, parameters: parameters)
+        return networkManager
+                .single(url: "\(baseUrl)/v1/coins/prices", method: .get, parameters: parameters)
+                .map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
+                    coinPriceResponsesMap.map { coinUid, coinPriceResponse in
+                        coinPriceResponse.coinPrice(coinUid: coinUid, currencyCode: currencyCode)
+                    }
+                }
     }
 
 }

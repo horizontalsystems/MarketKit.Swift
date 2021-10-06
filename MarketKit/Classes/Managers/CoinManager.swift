@@ -18,20 +18,6 @@ class CoinManager {
 
 extension CoinManager {
 
-    func fullCoinsSingle() -> Single<[FullCoin]> {
-        hsProvider.fullCoinsSingle().map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
-            fullCoinResponses.map { FullCoin(fullCoinResponse: $0) }
-        }
-    }
-
-    func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
-        hsProvider.coinPricesSingle(coinUids: coinUids, currencyCode: currencyCode).map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
-            coinPriceResponsesMap.map { coinUid, coinPriceResponse in
-                CoinPrice(coinUid: coinUid, currencyCode: currencyCode, coinPriceResponse: coinPriceResponse)
-            }
-        }
-    }
-
     var fullCoinsUpdatedObservable: Observable<Void> {
         fullCoinsUpdatedRelay.asObservable()
     }
@@ -49,22 +35,18 @@ extension CoinManager {
     }
 
     func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(top: top, limit: limit, order: order).map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
-            marketInfoResponses.map { MarketInfo(marketInfoResponse: $0) }
-        }
+        hsProvider.marketInfosSingle(top: top, limit: limit, order: order)
     }
 
     func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(coinUids: coinUids, order: order).map { (marketInfoResponses: [MarketInfoResponse]) -> [MarketInfo] in
-            marketInfoResponses.map { MarketInfo(marketInfoResponse: $0) }
-        }
+        hsProvider.marketInfosSingle(coinUids: coinUids, order: order)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode).map { [weak self] (response: MarketInfoOverviewResponse) -> MarketInfoOverview in
+        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode).map { [weak self] (response: MarketInfoOverviewRaw) -> MarketInfoOverview in
             let categories = (try? self?.categoryManager.categories(uids: response.categoryIds)) ?? []
 
-            return MarketInfoOverview(response: response, categories: categories)
+            return response.marketInfoOverview(categories: categories)
         }
     }
 

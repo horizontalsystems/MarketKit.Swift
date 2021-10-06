@@ -14,12 +14,12 @@ public class CoinPrice: Record {
         case coinUid, currencyCode, value, diff, timestamp
     }
 
-    init(coinUid: String, currencyCode: String, coinPriceResponse: CoinPriceResponse) {
+    init(coinUid: String, currencyCode: String, value: Decimal, diff: Decimal, timestamp: TimeInterval) {
         self.coinUid = coinUid
         self.currencyCode = currencyCode
-        value = coinPriceResponse.price
-        diff = coinPriceResponse.priceChange
-        timestamp = coinPriceResponse.lastUpdated
+        self.value = value
+        self.diff = diff
+        self.timestamp = timestamp
 
         super.init()
     }

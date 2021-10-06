@@ -15,4 +15,14 @@ class CoinResponse: ImmutableMappable {
         coinGeckoId = try map.value("coingecko_id")
     }
 
+    func coin() -> Coin {
+        Coin(
+            uid: uid,
+            name: name,
+            code: code.uppercased(),
+            marketCapRank: marketCapRank,
+            coinGeckoId: coinGeckoId
+        )
+    }
+
 }

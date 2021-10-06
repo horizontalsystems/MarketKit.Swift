@@ -9,4 +9,7 @@ class FullCoinResponse: CoinResponse {
         try super.init(map: map)
     }
 
+    func fullCoin() -> FullCoin {
+        FullCoin(coin: coin(), platforms: platforms.flatMap { $0.platform(coinUid: uid) })
+    }
 }

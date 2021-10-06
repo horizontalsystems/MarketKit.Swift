@@ -17,4 +17,14 @@ struct CoinPriceResponse: ImmutableMappable {
         return Decimal(string: string)
     }, toJSON: { _ in nil })
 
+    func coinPrice(coinUid: String, currencyCode: String) -> CoinPrice {
+        CoinPrice(
+            coinUid: coinUid,
+            currencyCode: currencyCode,
+            value: price,
+            diff: priceChange,
+            timestamp: lastUpdated
+        )
+    }
+
 }
