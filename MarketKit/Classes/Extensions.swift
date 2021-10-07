@@ -14,4 +14,13 @@ extension Decimal: DatabaseValueConvertible {
         return Decimal(string: rawValue)
     }
 
+    init?(convertibleValue: Any?) {
+        guard let convertibleValue = convertibleValue as? CustomStringConvertible,
+              let value = Decimal.init(string: convertibleValue.description) else {
+            return nil
+        }
+
+        self = value
+    }
+
 }
