@@ -5,7 +5,7 @@ public struct MarketInfo {
     public let price: Decimal
     public let priceChange: Decimal?
     public let marketCap: Decimal
-    public let totalVolume: Decimal
+    public let totalVolume: Decimal?
 }
 
 extension MarketInfo {

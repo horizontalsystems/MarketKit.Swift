@@ -14,13 +14,20 @@ class CoinManager {
         self.categoryManager = categoryManager
     }
 
-    func convertToMarketInfoArray(rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] {
-        let fullCoins = (try? storage.fullCoins(coinUids: rawMarketInfoArray.map { $0.uid })) ?? []
+    func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
+        do {
+            let fullCoins = try storage.fullCoins(coinUids: rawMarketInfos.map { $0.uid })
+            let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
 
-        return fullCoins.compactMap { fullCoin in
-            rawMarketInfoArray
-                    .first { $0.uid == fullCoin.coin.uid }
-                    .flatMap { $0.marketInfo(fullCoin: fullCoin) }
+            return rawMarketInfos.compactMap { rawMarketInfo in
+                guard let fullCoin = dictionary[rawMarketInfo.uid] else {
+                    return nil
+                }
+
+                return rawMarketInfo.marketInfo(fullCoin: fullCoin)
+            }
+        } catch {
+            return []
         }
     }
 }
@@ -45,15 +52,15 @@ extension CoinManager {
 
     func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(top: top, limit: limit, order: order)
-                .map { [weak self] (rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] in
-                    self?.convertToMarketInfoArray(rawMarketInfoArray: rawMarketInfoArray) ?? []
+                .map { [weak self] rawMarketInfos -> [MarketInfo] in
+                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 
     func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(coinUids: coinUids, order: order)
-                .map { [weak self] (rawMarketInfoArray: [MarketInfoRaw]) -> [MarketInfo] in
-                    self?.convertToMarketInfoArray(rawMarketInfoArray: rawMarketInfoArray) ?? []
+                .map { [weak self] rawMarketInfos -> [MarketInfo] in
+                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 

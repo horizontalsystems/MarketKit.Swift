@@ -10,9 +10,9 @@ PODS:
   - CNIOLinux (2.32.3)
   - CNIOSHA1 (2.32.3)
   - CNIOWindows (2.32.3)
-  - GRDB.swift (5.11.0):
-    - GRDB.swift/standard (= 5.11.0)
-  - GRDB.swift/standard (5.11.0)
+  - GRDB.swift (5.12.0):
+    - GRDB.swift/standard (= 5.12.0)
+  - GRDB.swift/standard (5.12.0)
   - HsToolKit.swift (1.3.0):
     - Alamofire (~> 5.0)
     - ObjectMapper (~> 4.0)
@@ -115,7 +115,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   HsToolKit.swift:
-    :commit: 399cfe125a2acdd2983ba5e6ffa957dace1f53d1
+    :commit: 2c82325227715c3ffb8ea21de2bf28ef239cc168
     :git: https://github.com/horizontalsystems/hs-tool-kit-ios
 
 SPEC CHECKSUMS:
@@ -129,7 +129,7 @@ SPEC CHECKSUMS:
   CNIOLinux: 5921dfefbc4bbe017380b34c510855622147ea41
   CNIOSHA1: cdf6523d56bbb78be9b11ae4e6340fbc591b492d
   CNIOWindows: f5aa9dfb401b440a7b4c9cd911e53e981a787193
-  GRDB.swift: 9a33d9680cd3c870c82f48a6cbc73d3cfbb235eb
+  GRDB.swift: f94b00ac11ab22597771b6a47211d1c44284395a
   HsToolKit.swift: 88f5c25dcf2b6fde2370f0125a8864782fbb3d90
   MarketKit.swift: ac243d060c28dd65db49d667029e223e7f73679d
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81

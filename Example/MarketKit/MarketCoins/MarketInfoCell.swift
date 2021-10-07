@@ -48,7 +48,7 @@ class MarketInfoCell: UITableViewCell {
         let coin = marketInfo.fullCoin.coin
         nameLabel.text = coin.name
         codeLabel.text = "\(coin.code), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a")"
-        marketLabel.text = "\(marketInfo.price); \(marketInfo.priceChange.map { "\($0)" } ?? "n/a")\n\(marketInfo.marketCap); \(marketInfo.totalVolume)"
+        marketLabel.text = "\(marketInfo.price); \(marketInfo.priceChange.map { "\($0)" } ?? "n/a")\n\(marketInfo.marketCap); \(marketInfo.totalVolume.map { "\($0)" } ?? "n/a")"
     }
 
 }

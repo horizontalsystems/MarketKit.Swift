@@ -52,7 +52,7 @@ class CoinGeckoChartMapper: IApiMapper {
         guard let chartsMap = data as? [String: Any],
               let rates = chartsMap["prices"] as? [[Any]],
               let volumes = chartsMap["total_volumes"] as? [[Any]] else {
-            throw NetworkManager.RequestError.emptyResponse(statusCode: statusCode)
+            throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
 
         for (index, rateArray) in rates.enumerated() {
