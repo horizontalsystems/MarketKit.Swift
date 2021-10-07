@@ -22,6 +22,14 @@ extension CoinCategoryManager {
         try storage.coinCategories()
     }
 
+    func coinCategories(uids: [String]) throws -> [CoinCategory] {
+        try storage.coinCategories(uids: uids)
+    }
+
+    func coinCategory(uid: String) throws -> CoinCategory? {
+        try storage.coinCategory(uid: uid)
+    }
+
     func handleFetched(coinCategories: [CoinCategory]) {
         do {
             try storage.save(coinCategories: coinCategories)
@@ -29,10 +37,6 @@ extension CoinCategoryManager {
         } catch {
             // todo
         }
-    }
-
-    func categories(uids: [String]) throws -> [CoinCategory] {
-        try storage.categories(uids: uids)
     }
 
 }

@@ -23,6 +23,11 @@ public class Kit {
 
 extension Kit {
 
+    public func sync() {
+        coinSyncer.sync()
+        coinCategorySyncer.sync()
+    }
+
     // Coins
 
     public var fullCoinsUpdatedObservable: Observable<Void> {
@@ -83,9 +88,8 @@ extension Kit {
         try coinCategoryManager.coinCategories()
     }
 
-    public func sync() {
-        coinSyncer.sync()
-        coinCategorySyncer.sync()
+    public func coinCategory(uid: String) throws -> CoinCategory? {
+        try coinCategoryManager.coinCategory(uid: uid)
     }
 
     // Coin Prices

@@ -33,17 +33,23 @@ extension CoinCategoryStorage {
         }
     }
 
+    func coinCategories(uids: [String]) throws -> [CoinCategory] {
+        try dbPool.read { db in
+            try CoinCategory.filter(uids.contains(CoinCategory.Columns.uid)).fetchAll(db)
+        }
+    }
+
+    func coinCategory(uid: String) throws -> CoinCategory? {
+        try dbPool.read { db in
+            try CoinCategory.filter(CoinCategory.Columns.uid == uid).fetchOne(db)
+        }
+    }
+
     func save(coinCategories: [CoinCategory]) throws {
         _ = try dbPool.write { db in
             for coinCategory in coinCategories {
                 try coinCategory.insert(db)
             }
-        }
-    }
-
-    func categories(uids: [String]) throws -> [CoinCategory] {
-        try dbPool.read { db in
-            try CoinCategory.filter(uids.contains(CoinCategory.Columns.uid)).fetchAll(db)
         }
     }
 

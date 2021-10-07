@@ -15,7 +15,7 @@ class CryptoCompareProvider {
 
     private func request(path: String, parameters: Parameters = [:]) -> DataRequest {
         var parameters = parameters
-        parameters["apiKey"] = apiKey
+        parameters["api_key"] = apiKey
 
         return networkManager.session
                 .request(baseUrl + path, method: .get, parameters: parameters, interceptor: RateLimitRetrier())

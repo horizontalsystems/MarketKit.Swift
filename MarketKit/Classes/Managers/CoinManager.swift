@@ -60,7 +60,7 @@ extension CoinManager {
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
         hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
                 .map { [weak self] (rawMarketInfoOverview: MarketInfoOverviewRaw) -> MarketInfoOverview in
-                    let categories = (try? self?.categoryManager.categories(uids: rawMarketInfoOverview.categoryIds)) ?? []
+                    let categories = (try? self?.categoryManager.coinCategories(uids: rawMarketInfoOverview.categoryIds)) ?? []
 
                     return rawMarketInfoOverview.marketInfoOverview(categories: categories)
                 }
