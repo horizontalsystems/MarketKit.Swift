@@ -8,12 +8,14 @@ protocol IChartInfoManagerDelegate: AnyObject {
 class ChartManager {
     weak var delegate: IChartInfoManagerDelegate?
 
+    private let coinManager: CoinManager
     private let storage: ChartStorage
     private let latestRateManager: CoinPriceManager
 
-    init(storage: ChartStorage, latestRateManager: CoinPriceManager) {
+    init(coinManager: CoinManager, storage: ChartStorage, coinPriceManager: CoinPriceManager) {
+        self.coinManager = coinManager
         self.storage = storage
-        self.latestRateManager = latestRateManager
+        self.latestRateManager = coinPriceManager
     }
 
     private var utcStartOfToday: Date {
@@ -73,8 +75,13 @@ extension ChartManager {
         storedChartPoints(key: key).last?.timestamp
     }
 
-    func chartInfo(key: ChartInfoKey) -> ChartInfo? {
-        chartInfo(chartPoints: storedChartPoints(key: key), key: key)
+    func chartInfo(coinUid: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
+        guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
+            return nil
+        }
+
+        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
+        return chartInfo(chartPoints: storedChartPoints(key: key), key: key)
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {

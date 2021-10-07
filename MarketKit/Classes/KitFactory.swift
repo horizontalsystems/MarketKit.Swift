@@ -35,6 +35,12 @@ extension Kit {
         let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
         coinPriceManager.delegate = coinPriceSyncManager
 
+        let chartStorage = try ChartStorage(dbPool: dbPool)
+        let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, coinPriceManager: coinPriceManager)
+
+        let chartSchedulerFactory = ChartSchedulerFactory(manager: chartManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, retryInterval: 30, logger: logger)
+        let chartSyncManager = ChartSyncManager(coinManager: coinManager, schedulerFactory: chartSchedulerFactory, chartInfoManager: chartManager, coinPriceSyncManager: coinPriceSyncManager)
+
         let postManager = PostManager(provider: cryptoCompareProvider)
 
         return Kit(
@@ -45,6 +51,8 @@ extension Kit {
                 exchangeSyncer: exchangeSyncer,
                 coinPriceManager: coinPriceManager,
                 coinPriceSyncManager: coinPriceSyncManager,
+                chartManager: chartManager,
+                chartSyncManager: chartSyncManager,
                 postManager: postManager
         )
     }

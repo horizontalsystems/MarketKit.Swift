@@ -13,7 +13,7 @@ class ChartStorage {
         var migrator = DatabaseMigrator()
 
         migrator.registerMigration("Create Charts") { db in
-            try db.create(table: CoinPrice.databaseTableName) { t in
+            try db.create(table: ChartPoint.databaseTableName) { t in
                 t.column(ChartPoint.Columns.coinUid.name, .text).notNull()
                 t.column(ChartPoint.Columns.currencyCode.name, .text).notNull()
                 t.column(ChartPoint.Columns.chartType.name, .integer).notNull()

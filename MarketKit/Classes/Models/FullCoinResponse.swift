@@ -10,6 +10,6 @@ class FullCoinResponse: CoinResponse {
     }
 
     func fullCoin() -> FullCoin {
-        FullCoin(coin: coin(), platforms: platforms.flatMap { $0.platform(coinUid: uid) })
+        FullCoin(coin: coin(), platforms: platforms.compactMap { $0.platform(coinUid: uid) })
     }
 }

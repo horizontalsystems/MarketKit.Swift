@@ -8,10 +8,11 @@ public class Kit {
     private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
+    private let chartManager: ChartManager
+    private let chartSyncManager: ChartSyncManager
     private let postManager: PostManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer,
-         coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, postManager: PostManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
@@ -19,6 +20,8 @@ public class Kit {
         self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
+        self.chartManager = chartManager
+        self.chartSyncManager = chartSyncManager
         self.postManager = postManager
     }
 
@@ -122,10 +125,28 @@ extension Kit {
         coinPriceSyncManager.coinPriceMapObservable(coinUids: coinUids, currencyCode: currencyCode)
     }
 
+    // Chart Info
+
+    public func chartInfo(coinUid: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
+        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    }
+
+    public func chartInfoObservable(coinUid: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo> {
+        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    }
+
     // Posts
 
     public func postsSingle() -> Single<[Post]> {
         postManager.postsSingle()
+    }
+
+}
+
+extension Kit {
+
+    public enum KitError: Error {
+        case noChartData
     }
 
 }
