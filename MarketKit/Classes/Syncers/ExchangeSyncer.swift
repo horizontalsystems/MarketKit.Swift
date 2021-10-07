@@ -21,7 +21,7 @@ class ExchangeSyncer {
                         return Single.just([])
                     }
 
-                    guard exchanges.count >= limit else {
+                    guard exchanges.count == limit else {
                         return Single.just(exchanges)
                     }
 
@@ -34,7 +34,7 @@ class ExchangeSyncer {
 extension ExchangeSyncer {
 
     func sync() {
-        fetch(limit: 0, page: 0)
+        fetch(limit: 250, page: 0)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] exchanges in
                     self?.exchangeManager.handleFetched(exchanges: exchanges)

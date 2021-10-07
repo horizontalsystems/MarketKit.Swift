@@ -43,8 +43,8 @@ class CoinGeckoCoinResponse: ImmutableMappable {
 
             var base = raw.base
             var target = raw.target
-            var volume = raw.volume
-            var lastRate = raw.lastRate
+            var volume = Decimal(raw.volume)
+            var lastRate = Decimal(raw.lastRate)
 
             if !contractAddresses.isEmpty {
                 if contractAddresses.contains(raw.base.lowercased()) {
@@ -92,16 +92,16 @@ extension CoinGeckoCoinResponse {
         let target: String
         let marketId: String
         let marketName: String
-        let lastRate: Decimal
-        let volume: Decimal
+        let lastRate: Double
+        let volume: Double
 
         init(map: Map) throws {
             base = try map.value("base")
             target = try map.value("target")
             marketId = try map.value("market.identifier")
             marketName = try map.value("market.name")
-            lastRate = try map.value("rate", using: Transform.stringToDecimalTransform)
-            volume = try map.value("volume", using: Transform.stringToDecimalTransform)
+            lastRate = try map.value("last")
+            volume = try map.value("volume")
         }
     }
 

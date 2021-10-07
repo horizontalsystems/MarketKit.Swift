@@ -86,15 +86,15 @@ extension CoinGeckoProvider {
 
     func marketTickersSingle(coinId: String) -> Single<CoinGeckoCoinResponse> {
         let parameters: Parameters = [
-            "tickers": true,
-            "localization": false,
-            "market_data": false,
-            "community_data": false,
-            "developer_data": false,
-            "sparkline": false
+            "tickers": "true",
+            "localization": "false",
+            "market_data": "false",
+            "community_data": "false",
+            "developer_data": "false",
+            "sparkline": "false"
         ]
 
-        return networkManager.single(url: "/coins/\(coinId)", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/coins/\(coinId)", method: .get, parameters: parameters)
     }
 
 }
