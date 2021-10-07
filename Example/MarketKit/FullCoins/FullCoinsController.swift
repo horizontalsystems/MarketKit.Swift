@@ -94,7 +94,7 @@ extension FullCoinsController: UITableViewDelegate {
 extension FullCoinsController: UISearchResultsUpdating {
 
     public func updateSearchResults(for searchController: UISearchController) {
-        var filter = searchController.searchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
+        let filter = searchController.searchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
 
         if filter != currentFilter {
             currentFilter = filter

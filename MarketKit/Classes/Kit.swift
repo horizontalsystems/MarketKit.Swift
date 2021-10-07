@@ -5,15 +5,18 @@ public class Kit {
     private let coinCategoryManager: CoinCategoryManager
     private let coinSyncer: CoinSyncer
     private let coinCategorySyncer: CoinCategorySyncer
+    private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
     private let postManager: PostManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, postManager: PostManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer,
+         coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, postManager: PostManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
         self.coinCategorySyncer = coinCategorySyncer
+        self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
         self.postManager = postManager
@@ -26,6 +29,7 @@ extension Kit {
     public func sync() {
         coinSyncer.sync()
         coinCategorySyncer.sync()
+        exchangeSyncer.sync()
     }
 
     // Coins
@@ -56,6 +60,10 @@ extension Kit {
 
     public func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
         coinManager.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+    }
+
+    public func marketTickersSingle(coinUid: String) -> Single<[MarketTicker]> {
+        coinManager.marketTickerSingle(coinUid: coinUid)
     }
 
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {

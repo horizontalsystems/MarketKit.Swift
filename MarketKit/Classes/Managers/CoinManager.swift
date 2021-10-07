@@ -4,14 +4,18 @@ import RxRelay
 class CoinManager {
     private let storage: CoinStorage
     private let hsProvider: HsProvider
+    private let coinGeckoProvider: CoinGeckoProvider
     private let categoryManager: CoinCategoryManager
+    private let exchangeManager: ExchangeManager
 
     private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
-    init(storage: CoinStorage, hsProvider: HsProvider, categoryManager: CoinCategoryManager) {
+    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, categoryManager: CoinCategoryManager, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
+        self.coinGeckoProvider = coinGeckoProvider
         self.categoryManager = categoryManager
+        self.exchangeManager = exchangeManager
     }
 
     func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
@@ -67,9 +71,19 @@ extension CoinManager {
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
         hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
                 .map { [weak self] (rawMarketInfoOverview: MarketInfoOverviewRaw) -> MarketInfoOverview in
-                    let categories = (try? self?.categoryManager.coinCategories(uids: rawMarketInfoOverview.categoryIds)) ?? []
+                    rawMarketInfoOverview.marketInfoOverview(categories: self?.categoryManager.coinCategories(uids: rawMarketInfoOverview.categoryIds) ?? [])
+                }
+    }
 
-                    return rawMarketInfoOverview.marketInfoOverview(categories: categories)
+    func marketTickerSingle(coinUid: String) -> Single<[MarketTicker]> {
+        guard let coin = try? storage.coin(uid: coinUid),
+              let coinGeckoId = coin.coinGeckoId else {
+            return Single.just([])
+        }
+
+        return coinGeckoProvider.marketTickersSingle(coinId: coinGeckoId)
+                .map { [weak self] response in
+                    response.marketTickers(imageUrls: self?.exchangeManager.imageUrlsMap(ids: response.exchangeIds) ?? [:])
                 }
     }
 

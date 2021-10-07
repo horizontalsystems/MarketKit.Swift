@@ -127,4 +127,11 @@ extension CoinStorage {
         }
     }
 
+    func coin(uid: String) throws -> Coin? {
+        try dbPool.read { db in
+            try Coin
+                    .filter(Coin.Columns.uid == uid)
+                    .fetchOne(db)
+        }
+    }
 }

@@ -8,6 +8,7 @@ extension Kit {
     public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
+        let networkManager = NetworkManager(logger: logger)
 
         let databaseURL = try dataDirectoryUrl().appendingPathComponent("\(databaseFileName).sqlite")
         let dbPool = try DatabasePool(path: databaseURL.path)
@@ -15,12 +16,15 @@ extension Kit {
         let coinCategoryStorage = try CoinCategoryStorage(dbPool: dbPool)
         let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
-        let networkManager = NetworkManager(logger: logger)
+        let coinGeckoProvider = CoinGeckoProvider(baseUrl: "https://api.coingecko.com/api/v3", networkManager: networkManager)
+        let exchangeStorage = try ExchangeStorage(dbPool: dbPool)
+        let exchangeManager = ExchangeManager(storage: exchangeStorage)
+        let exchangeSyncer = ExchangeSyncer(exchangeManager: exchangeManager, coinGeckoProvider: coinGeckoProvider)
 
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)
         
-        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, categoryManager: coinCategoryManager)
+        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, coinGeckoProvider: coinGeckoProvider, categoryManager: coinCategoryManager, exchangeManager: exchangeManager)
 
         let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
@@ -38,6 +42,7 @@ extension Kit {
                 coinCategoryManager: coinCategoryManager,
                 coinSyncer: coinSyncer,
                 coinCategorySyncer: coinCategorySyncer,
+                exchangeSyncer: exchangeSyncer,
                 coinPriceManager: coinPriceManager,
                 coinPriceSyncManager: coinPriceSyncManager,
                 postManager: postManager
