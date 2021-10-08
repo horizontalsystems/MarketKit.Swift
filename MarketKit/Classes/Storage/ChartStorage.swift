@@ -21,7 +21,11 @@ class ChartStorage {
                 t.column(ChartPoint.Columns.value.name, .text).notNull()
                 t.column(ChartPoint.Columns.volume.name)
 
-                t.primaryKey([CoinPrice.Columns.coinUid.name, CoinPrice.Columns.currencyCode.name], onConflict: .replace)
+                t.primaryKey([ChartPoint.Columns.coinUid.name,
+                              ChartPoint.Columns.currencyCode.name,
+                              ChartPoint.Columns.chartType.name,
+                              ChartPoint.Columns.timestamp.name,
+                ], onConflict: .replace)
             }
         }
 
