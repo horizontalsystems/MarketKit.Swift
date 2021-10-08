@@ -41,6 +41,8 @@ extension Kit {
         let chartSchedulerFactory = ChartSchedulerFactory(manager: chartManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, retryInterval: 30, logger: logger)
         let chartSyncManager = ChartSyncManager(coinManager: coinManager, schedulerFactory: chartSchedulerFactory, chartInfoManager: chartManager, coinPriceSyncManager: coinPriceSyncManager)
 
+        chartManager.delegate = chartSyncManager
+
         let postManager = PostManager(provider: cryptoCompareProvider)
 
         return Kit(
