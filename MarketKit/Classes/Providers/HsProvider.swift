@@ -70,7 +70,7 @@ extension HsProvider {
         ]
 
         return networkManager
-                .single(url: "\(baseUrl)/v1/coins/prices", method: .get, parameters: parameters)
+                .single(url: "\(baseUrl)/v1/coins/markets_prices", method: .get, parameters: parameters)
                 .map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
                     coinPriceResponsesMap.map { coinUid, coinPriceResponse in
                         coinPriceResponse.coinPrice(coinUid: coinUid, currencyCode: currencyCode)

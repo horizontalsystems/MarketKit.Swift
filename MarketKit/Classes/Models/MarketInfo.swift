@@ -17,8 +17,8 @@ extension MarketInfo {
     }
 
     public enum OrderDirection: String {
-        case ascending = "ASC"
-        case descending = "DESC"
+        case ascending = "asc"
+        case descending = "desc"
     }
 
     public struct Order {

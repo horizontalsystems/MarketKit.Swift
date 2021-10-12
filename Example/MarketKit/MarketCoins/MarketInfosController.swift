@@ -36,7 +36,7 @@ class MarketInfosController: UIViewController {
     }
 
     private func syncCoins() {
-        Singleton.instance.kit.marketInfosSingle(top: 250)
+        Singleton.instance.kit.marketInfosSingle(top: 250, limit: 10, order: .init(field: .priceChange, direction: .ascending))
 //        Singleton.instance.kit.marketInfosSingle(coinUids: ["bitcoin", "tether"])
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .observeOn(MainScheduler.instance)
