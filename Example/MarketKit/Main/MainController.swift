@@ -17,11 +17,15 @@ class MainController: UITabBarController {
         let postsController = PostsController()
         postsController.tabBarItem = UITabBarItem(title: "Posts", image: UIImage(systemName: "newspaper"), tag: 3)
 
+        let miscController = MiscController()
+        miscController.tabBarItem = UITabBarItem(title: "Misc", image: UIImage(systemName: "menucard"), tag: 4)
+
         viewControllers = [
             UINavigationController(rootViewController: fullCoinsController),
             UINavigationController(rootViewController: marketCoinsController),
             UINavigationController(rootViewController: categoryController),
             UINavigationController(rootViewController: postsController),
+            UINavigationController(rootViewController: miscController),
         ]
     }
 

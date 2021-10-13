@@ -17,6 +17,7 @@
 		11B357994356A5C4B7D1CFF8 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B357AB42175580542E04D8 /* PostCell.swift */; };
 		11B35B09FECE5F3552F25197 /* FullCoinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35782DAC50E5CC3DCF4F1 /* FullCoinCell.swift */; };
 		11B35B48A1487611D6FD6D89 /* MarketInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35C89179564C14EE72D76 /* MarketInfoCell.swift */; };
+		11B35E55E915966936140508 /* MiscController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35D87E576923104A51AED /* MiscController.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		D3FD056E26CA351C0089C747 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D3FD056D26CA351C0089C747 /* LaunchScreen.storyboard */; };
@@ -33,6 +34,7 @@
 		11B35AC8DC1C5C9ECDA50D67 /* PostsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsController.swift; sourceTree = "<group>"; };
 		11B35C89179564C14EE72D76 /* MarketInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketInfoCell.swift; sourceTree = "<group>"; };
 		11B35CE2DE81B500E6A31E03 /* CoinCategoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinCategoryController.swift; sourceTree = "<group>"; };
+		11B35D87E576923104A51AED /* MiscController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscController.swift; sourceTree = "<group>"; };
 		11B35EB4FAD907A5FA8782A1 /* MarketInfosController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketInfosController.swift; sourceTree = "<group>"; };
 		34114E8ED3C9B4166D276DFC /* Pods-MarketKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarketKit_Example.debug.xcconfig"; path = "Target Support Files/Pods-MarketKit_Example/Pods-MarketKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* MarketKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarketKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,14 @@
 			path = MarketCoins;
 			sourceTree = "<group>";
 		};
+		11B35629C4AAE6B6E0AECDDC /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				11B35D87E576923104A51AED /* MiscController.swift */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
 		11B357B0484E2E9294348D5A /* CoinCategories */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +176,7 @@
 				11B35203B9D9279B0116AF75 /* MarketCoins */,
 				11B357B0484E2E9294348D5A /* CoinCategories */,
 				11B3518199C3EFA0D808637A /* Posts */,
+				11B35629C4AAE6B6E0AECDDC /* Misc */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -302,6 +313,7 @@
 				11B352F91E0281066F6D55CB /* MarketInfosController.swift in Sources */,
 				11B357994356A5C4B7D1CFF8 /* PostCell.swift in Sources */,
 				11B351565B94872E43743215 /* PostsController.swift in Sources */,
+				11B35E55E915966936140508 /* MiscController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

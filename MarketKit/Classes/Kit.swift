@@ -11,8 +11,9 @@ public class Kit {
     private let chartManager: ChartManager
     private let chartSyncManager: ChartSyncManager
     private let postManager: PostManager
+    private let globalMarketInfoManager: GlobalMarketInfoManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
@@ -23,6 +24,7 @@ public class Kit {
         self.chartManager = chartManager
         self.chartSyncManager = chartSyncManager
         self.postManager = postManager
+        self.globalMarketInfoManager = globalMarketInfoManager
     }
 
 }
@@ -139,6 +141,12 @@ extension Kit {
 
     public func postsSingle() -> Single<[Post]> {
         postManager.postsSingle()
+    }
+
+    // Global Market Info
+
+    public func globalMarketInfoSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<GlobalMarketInfo> {
+        globalMarketInfoManager.globalMarketInfoSingle(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
 }

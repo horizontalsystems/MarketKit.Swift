@@ -44,8 +44,8 @@ class MarketInfoOverviewRaw: ImmutableMappable {
             convertedPerformance[currency] = [TimePeriod: Decimal]()
             for (timePeriodStr, change) in changes {
                 if let changeStr = change,
-                   let changeDecimal = Decimal(string: changeStr) {
-                    convertedPerformance[currency]?[TimePeriod(rawValue: timePeriodStr)] = changeDecimal
+                   let changeDecimal = Decimal(string: changeStr), let timePeriod = TimePeriod(rawValue: timePeriodStr) {
+                    convertedPerformance[currency]?[timePeriod] = changeDecimal
                 }
             }
         }
