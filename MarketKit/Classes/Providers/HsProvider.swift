@@ -66,7 +66,7 @@ extension HsProvider {
     func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "currency": currencyCode
+            "currency": currencyCode.lowercased()
         ]
 
         return networkManager

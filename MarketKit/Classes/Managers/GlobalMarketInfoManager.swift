@@ -15,18 +15,16 @@ class GlobalMarketInfoManager {
 
 extension GlobalMarketInfoManager {
 
-    func globalMarketInfoSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<GlobalMarketInfo> {
+    func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
         let currentTimestamp = Date().timeIntervalSince1970
 
         if let storedInfo = try? storage.globalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod), currentTimestamp - storedInfo.timestamp < expirationInterval {
-            return Single.just(storedInfo)
+            return Single.just(storedInfo.points)
         }
 
         return provider.globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
-                .map { points in
-                    GlobalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod, points: points)
-                }
-                .do(onNext: { [weak self] info in
+                .do(onNext: { [weak self] points in
+                    let info = GlobalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod, points: points)
                     try? self?.storage.save(globalMarketInfo: info)
                 })
     }

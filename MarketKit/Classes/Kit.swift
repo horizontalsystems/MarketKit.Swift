@@ -145,8 +145,8 @@ extension Kit {
 
     // Global Market Info
 
-    public func globalMarketInfoSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<GlobalMarketInfo> {
-        globalMarketInfoManager.globalMarketInfoSingle(currencyCode: currencyCode, timePeriod: timePeriod)
+    public func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
+        globalMarketInfoManager.globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
 }
