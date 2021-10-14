@@ -54,15 +54,22 @@ extension CoinManager {
         try storage.fullCoins(coinTypes: coinTypes)
     }
 
-    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(top: top, limit: limit, order: order)
+    func marketInfosSingle(top: Int) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(top: top)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 
-    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(coinUids: coinUids, order: order)
+    func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(coinUids: coinUids)
+                .map { [weak self] rawMarketInfos -> [MarketInfo] in
+                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
+                }
+    }
+
+    func marketInfosSingle(categoryUid: String) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(categoryUid: categoryUid)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }

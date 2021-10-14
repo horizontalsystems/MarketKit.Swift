@@ -7,28 +7,3 @@ public struct MarketInfo {
     public let marketCap: Decimal?
     public let totalVolume: Decimal?
 }
-
-extension MarketInfo {
-
-    public enum OrderField: String {
-        case priceChange = "price_change"
-        case marketCap = "market_cap"
-        case totalVolume = "total_volume"
-    }
-
-    public enum OrderDirection: String {
-        case ascending = "asc"
-        case descending = "desc"
-    }
-
-    public struct Order {
-        let field: OrderField
-        let direction: OrderDirection
-
-        public init(field: OrderField, direction: OrderDirection) {
-            self.field = field
-            self.direction = direction
-        }
-    }
-
-}

@@ -55,12 +55,16 @@ extension Kit {
         try coinManager.fullCoins(coinTypes: coinTypes)
     }
 
-    public func marketInfosSingle(top: Int = 250, limit: Int? = nil, order: MarketInfo.Order? = nil) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(top: top, limit: limit, order: order)
+    public func marketInfosSingle(top: Int = 250) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(top: top)
     }
 
-    public func marketInfosSingle(coinUids: [String], order: MarketInfo.Order? = nil) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(coinUids: coinUids, order: order)
+    public func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(coinUids: coinUids)
+    }
+
+    public func marketInfosSingle(categoryUid: String) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(categoryUid: categoryUid)
     }
 
     public func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {

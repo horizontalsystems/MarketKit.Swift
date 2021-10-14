@@ -25,34 +25,24 @@ extension HsProvider {
                 }
     }
 
-    func marketInfosSingle(top: Int, limit: Int?, order: MarketInfo.Order?) -> Single<[MarketInfoRaw]> {
-        var parameters: Parameters = [
+    func marketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
+        let parameters: Parameters = [
             "top": top
         ]
-
-        if let limit = limit {
-            parameters["limit"] = limit
-        }
-
-        if let order = order {
-            parameters["orderField"] = order.field.rawValue
-            parameters["orderDirection"] = order.direction.rawValue
-        }
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
     }
 
-    func marketInfosSingle(coinUids: [String], order: MarketInfo.Order?) -> Single<[MarketInfoRaw]> {
-        var parameters: Parameters = [
+    func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfoRaw]> {
+        let parameters: Parameters = [
             "uids": coinUids.joined(separator: ",")
         ]
 
-        if let order = order {
-            parameters["orderField"] = order.field.rawValue
-            parameters["orderDirection"] = order.direction.rawValue
-        }
-
         return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
+    }
+
+    func marketInfosSingle(categoryUid: String) -> Single<[MarketInfoRaw]> {
+        networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/markets", method: .get)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
