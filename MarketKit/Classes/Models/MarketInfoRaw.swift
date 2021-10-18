@@ -6,6 +6,7 @@ class MarketInfoRaw: ImmutableMappable {
     let priceChange24h: Decimal?
     let priceChange7d: Decimal?
     let priceChange14d: Decimal?
+    let priceChange30d: Decimal?
     let priceChange200d: Decimal?
     let priceChange1y: Decimal?
     let marketCap: Decimal?
@@ -19,6 +20,7 @@ class MarketInfoRaw: ImmutableMappable {
         priceChange24h = try? map.value("price_change_24h", using: Transform.stringToDecimalTransform)
         priceChange7d = try? map.value("price_change_7d", using: Transform.stringToDecimalTransform)
         priceChange14d = try? map.value("price_change_14d", using: Transform.stringToDecimalTransform)
+        priceChange30d = try? map.value("price_change_30d", using: Transform.stringToDecimalTransform)
         priceChange200d = try? map.value("price_change_200d", using: Transform.stringToDecimalTransform)
         priceChange1y = try? map.value("price_change_1y", using: Transform.stringToDecimalTransform)
         marketCap = try? map.value("market_cap", using: Transform.stringToDecimalTransform)
@@ -34,6 +36,7 @@ class MarketInfoRaw: ImmutableMappable {
                 priceChange24h: priceChange24h,
                 priceChange7d: priceChange7d,
                 priceChange14d: priceChange14d,
+                priceChange30d: priceChange30d,
                 priceChange200d: priceChange200d,
                 priceChange1y: priceChange1y,
                 marketCap: marketCap,
