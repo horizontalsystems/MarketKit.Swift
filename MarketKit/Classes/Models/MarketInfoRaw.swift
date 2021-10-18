@@ -11,8 +11,8 @@ class MarketInfoRaw: ImmutableMappable {
     let priceChange1y: Decimal?
     let marketCap: Decimal?
     let totalVolume: Decimal?
-    let ath: Decimal?
-    let atl: Decimal?
+    let athPercentage: Decimal?
+    let atlPercentage: Decimal?
 
     required init(map: Map) throws {
         uid = try map.value("uid")
@@ -25,8 +25,8 @@ class MarketInfoRaw: ImmutableMappable {
         priceChange1y = try? map.value("price_change_1y", using: Transform.stringToDecimalTransform)
         marketCap = try? map.value("market_cap", using: Transform.stringToDecimalTransform)
         totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
-        ath = try? map.value("ath", using: Transform.stringToDecimalTransform)
-        atl = try? map.value("atl", using: Transform.stringToDecimalTransform)
+        athPercentage = try? map.value("ath_percentage", using: Transform.stringToDecimalTransform)
+        atlPercentage = try? map.value("atl_percentage", using: Transform.stringToDecimalTransform)
     }
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
@@ -41,8 +41,8 @@ class MarketInfoRaw: ImmutableMappable {
                 priceChange1y: priceChange1y,
                 marketCap: marketCap,
                 totalVolume: totalVolume,
-                ath: ath,
-                atl: atl
+                athPercentage: athPercentage,
+                atlPercentage: atlPercentage
         )
     }
 

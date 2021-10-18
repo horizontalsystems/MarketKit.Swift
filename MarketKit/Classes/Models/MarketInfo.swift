@@ -11,6 +11,6 @@ public struct MarketInfo {
     public let priceChange1y: Decimal?
     public let marketCap: Decimal?
     public let totalVolume: Decimal?
-    public let ath: Decimal?
-    public let atl: Decimal?
+    public let athPercentage: Decimal?
+    public let atlPercentage: Decimal?
 }
