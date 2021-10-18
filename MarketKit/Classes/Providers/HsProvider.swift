@@ -44,7 +44,7 @@ extension HsProvider {
             "fields": "price,price_change_24h,market_cap,total_volume"
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
     func marketInfosSingle(categoryUid: String) -> Single<[MarketInfoRaw]> {
