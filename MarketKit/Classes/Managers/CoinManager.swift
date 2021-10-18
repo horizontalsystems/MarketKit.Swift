@@ -4,16 +4,21 @@ import RxRelay
 class CoinManager {
     private let storage: CoinStorage
     private let hsProvider: HsProvider
+    private let hsOldProvider: HsOldProvider
     private let coinGeckoProvider: CoinGeckoProvider
+    private let defiYieldProvider: DefiYieldProvider
     private let categoryManager: CoinCategoryManager
     private let exchangeManager: ExchangeManager
 
     private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
-    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, categoryManager: CoinCategoryManager, exchangeManager: ExchangeManager) {
+    init(storage: CoinStorage, hsProvider: HsProvider, hsOldProvider: HsOldProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider,
+         categoryManager: CoinCategoryManager, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
+        self.hsOldProvider = hsOldProvider
         self.coinGeckoProvider = coinGeckoProvider
+        self.defiYieldProvider = defiYieldProvider
         self.categoryManager = categoryManager
         self.exchangeManager = exchangeManager
     }
@@ -34,9 +39,12 @@ class CoinManager {
             return []
         }
     }
+
 }
 
 extension CoinManager {
+
+    // Coins
 
     var fullCoinsUpdatedObservable: Observable<Void> {
         fullCoinsUpdatedRelay.asObservable()
@@ -53,6 +61,37 @@ extension CoinManager {
     func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
         try storage.fullCoins(coinTypes: coinTypes)
     }
+
+    func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
+        try storage.platformCoin(coinType: coinType)
+    }
+
+    func platformCoins() throws -> [PlatformCoin] {
+        try storage.platformCoins()
+    }
+
+    func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
+        try storage.platformCoins(coinTypeIds: coinTypes.map { $0.id} )
+    }
+
+    func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
+        try storage.platformCoins(coinTypeIds: coinTypeIds)
+    }
+
+    func coins(filter: String, limit: Int) throws -> [Coin] {
+        try storage.coins(filter: filter, limit: limit)
+    }
+
+    func handleFetched(fullCoins: [FullCoin]) {
+        do {
+            try storage.save(fullCoins: fullCoins)
+            fullCoinsUpdatedRelay.accept(())
+        } catch {
+            // todo
+        }
+    }
+
+    // Market Info
 
     func marketInfosSingle(top: Int) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(top: top)
@@ -101,33 +140,24 @@ extension CoinManager {
                 }
     }
 
-    func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
-        try storage.platformCoin(coinType: coinType)
+    func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
+        hsProvider.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func platformCoins() throws -> [PlatformCoin] {
-        try storage.platformCoins()
-    }
-
-    func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
-        try storage.platformCoins(coinTypeIds: coinTypes.map { $0.id} )
-    }
-
-    func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
-        try storage.platformCoins(coinTypeIds: coinTypeIds)
-    }
-
-    func coins(filter: String, limit: Int) throws -> [Coin] {
-        try storage.coins(filter: filter, limit: limit)
-    }
-
-    func handleFetched(fullCoins: [FullCoin]) {
-        do {
-            try storage.save(fullCoins: fullCoins)
-            fullCoinsUpdatedRelay.accept(())
-        } catch {
-            // todo
+    func topTokenHoldersSingle(coinUid: String, itemsCount: Int) -> Single<[TokenHolder]> {
+        guard let fullCoin = try? storage.fullCoins(coinUids: [coinUid]).first else {
+            return Single.just([])
         }
+
+        return hsOldProvider.topTokenHoldersSingle(fullCoin: fullCoin, itemsCount: itemsCount)
+    }
+
+    func auditReportsSingle(coinUid: String) -> Single<[Auditor]> {
+        guard let fullCoin = try? storage.fullCoins(coinUids: [coinUid]).first else {
+            return Single.just([])
+        }
+
+        return defiYieldProvider.auditReportsSingle(fullCoin: fullCoin)
     }
 
 }

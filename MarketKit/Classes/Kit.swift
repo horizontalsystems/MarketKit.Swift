@@ -55,6 +55,28 @@ extension Kit {
         try coinManager.fullCoins(coinTypes: coinTypes)
     }
 
+    public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
+        try coinManager.platformCoin(coinType: coinType)
+    }
+
+    public func platformCoins() throws -> [PlatformCoin] {
+        try coinManager.platformCoins()
+    }
+
+    public func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
+        try coinManager.platformCoins(coinTypes: coinTypes)
+    }
+
+    public func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
+        try coinManager.platformCoins(coinTypeIds: coinTypeIds)
+    }
+
+    public func coins(filter: String, limit: Int = 20) throws -> [Coin] {
+        try coinManager.coins(filter: filter, limit: limit)
+    }
+
+    // Market Info
+
     public func marketInfosSingle(top: Int = 250) -> Single<[MarketInfo]> {
         coinManager.marketInfosSingle(top: top)
     }
@@ -79,24 +101,12 @@ extension Kit {
         coinManager.marketTickerSingle(coinUid: coinUid)
     }
 
-    public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
-        try coinManager.platformCoin(coinType: coinType)
+    public func topTokenHoldersSingle(coinUid: String, itemsCount: Int = 20) -> Single<[TokenHolder]> {
+        coinManager.topTokenHoldersSingle(coinUid: coinUid, itemsCount: itemsCount)
     }
 
-    public func platformCoins() throws -> [PlatformCoin] {
-        try coinManager.platformCoins()
-    }
-
-    public func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
-        try coinManager.platformCoins(coinTypes: coinTypes)
-    }
-
-    public func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
-        try coinManager.platformCoins(coinTypeIds: coinTypeIds)
-    }
-
-    public func coins(filter: String, limit: Int = 20) throws -> [Coin] {
-        try coinManager.coins(filter: filter, limit: limit)
+    public func auditReportsSingle(coinUid: String) -> Single<[Auditor]> {
+        coinManager.auditReportsSingle(coinUid: coinUid)
     }
 
     // Categories

@@ -64,6 +64,13 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currency=\(currencyCode)&language=\(languageCode)", method: .get)
     }
 
+    func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
+        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/details?currency=\(currencyCode)", method: .get)
+                .map { (response: MarketInfoDetailsResponse) -> MarketInfoDetails in
+                    response.marketInfoDetails()
+                }
+    }
+
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
         networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
     }

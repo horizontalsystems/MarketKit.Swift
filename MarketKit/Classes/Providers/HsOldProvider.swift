@@ -25,4 +25,30 @@ extension HsOldProvider {
         return networkManager.single(url: "\(baseUrl)/api/v1/markets/global/\(timePeriod.rawValue)", method: .get, parameters: parameters)
     }
 
+    func topTokenHoldersSingle(fullCoin: FullCoin, itemsCount: Int) -> Single<[TokenHolder]> {
+        var resolvedAddress: String? = nil
+
+        for platform in fullCoin.platforms {
+            if case .erc20(let address) = platform.coinType {
+                resolvedAddress = address
+            }
+        }
+
+        guard let address = resolvedAddress else {
+            return Single.error(TopTokenHoldersError.unsupportedCoinType)
+        }
+
+        let parameters: Parameters = ["limit": itemsCount]
+
+        return networkManager.single(url: "\(baseUrl)tokens/holders/\(address)", method: .get, parameters: parameters)
+    }
+
+}
+
+extension HsOldProvider {
+
+    enum TopTokenHoldersError: Error {
+        case unsupportedCoinType
+    }
+
 }
