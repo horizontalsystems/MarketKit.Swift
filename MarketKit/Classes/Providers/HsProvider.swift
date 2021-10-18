@@ -18,8 +18,12 @@ class HsProvider {
 extension HsProvider {
 
     func fullCoinsSingle() -> Single<[FullCoin]> {
-        networkManager
-                .single(url: "\(baseUrl)/v1/coins", method: .get)
+        let parameters: Parameters = [
+            "fields": "name,code,market_cap_rank,coingecko_id,platforms"
+        ]
+
+        return networkManager
+                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
                 .map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
                     fullCoinResponses.map { $0.fullCoin() }
                 }
@@ -27,22 +31,24 @@ extension HsProvider {
 
     func marketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
-            "top": top
+            "limit": top,
+            "fields": "price,price_change_24h,market_cap,total_volume"
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/top_markets", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
     func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
-            "uids": coinUids.joined(separator: ",")
+            "uids": coinUids.joined(separator: ","),
+            "fields": "price,price_change_24h,market_cap,total_volume"
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/markets", method: .get, parameters: parameters)
     }
 
     func marketInfosSingle(categoryUid: String) -> Single<[MarketInfoRaw]> {
-        networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/markets", method: .get)
+        networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
@@ -56,14 +62,15 @@ extension HsProvider {
     func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "currency": currencyCode.lowercased()
+            "currency": currencyCode.lowercased(),
+            "fields": "price,price_change_24h,last_updated"
         ]
 
         return networkManager
-                .single(url: "\(baseUrl)/v1/coins/markets_prices", method: .get, parameters: parameters)
-                .map { (coinPriceResponsesMap: [String: CoinPriceResponse]) -> [CoinPrice] in
-                    coinPriceResponsesMap.map { coinUid, coinPriceResponse in
-                        coinPriceResponse.coinPrice(coinUid: coinUid, currencyCode: currencyCode)
+                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+                .map { (coinPriceResponses: [CoinPriceResponse]) -> [CoinPrice] in
+                    coinPriceResponses.map { coinPriceResponse in
+                        coinPriceResponse.coinPrice(currencyCode: currencyCode)
                     }
                 }
     }
