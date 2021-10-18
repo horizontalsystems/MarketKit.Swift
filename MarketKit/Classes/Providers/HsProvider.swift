@@ -38,6 +38,15 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
+    func advancedMarketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
+        let parameters: Parameters = [
+            "limit": top,
+            "fields": "price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_200d,price_change_1y,ath,atl"
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+    }
+
     func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),

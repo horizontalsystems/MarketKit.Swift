@@ -61,6 +61,13 @@ extension CoinManager {
                 }
     }
 
+    func advancedMarketInfosSingle(top: Int) -> Single<[MarketInfo]> {
+        hsProvider.advancedMarketInfosSingle(top: top)
+                .map { [weak self] rawMarketInfos -> [MarketInfo] in
+                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
+                }
+    }
+
     func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
         hsProvider.marketInfosSingle(coinUids: coinUids)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in

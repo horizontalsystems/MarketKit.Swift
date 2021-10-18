@@ -59,6 +59,10 @@ extension Kit {
         coinManager.marketInfosSingle(top: top)
     }
 
+    public func advancedMarketInfosSingle(top: Int = 250) -> Single<[MarketInfo]> {
+        coinManager.advancedMarketInfosSingle(top: top)
+    }
+
     public func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
         coinManager.marketInfosSingle(coinUids: coinUids)
     }
