@@ -11,7 +11,7 @@ class MarketInfoOverviewRaw: ImmutableMappable {
     let tvl: Decimal?
     let performance: [String: [String: String?]]
     let genesisDate: Date?
-    let categoryIds: [String]
+    let categoryUids: [String]
     let description: String
     let links: [String: String?]
 
@@ -22,10 +22,10 @@ class MarketInfoOverviewRaw: ImmutableMappable {
         circulatingSupply = try? map.value("market_data.circulating_supply", using: Transform.stringToDecimalTransform)
         volume24h = try? map.value("market_data.total_volume", using: Transform.stringToDecimalTransform)
         dilutedMarketCap = try? map.value("market_data.fully_diluted_valuation", using: Transform.stringToDecimalTransform)
-        tvl = nil
+        tvl = try? map.value("market_data.total_value_locked", using: Transform.stringToDecimalTransform)
         performance = try map.value("performance")
         genesisDate = try? map.value("genesis_date", using: DateTransform())
-        categoryIds = try map.value("category_ids")
+        categoryUids = try map.value("category_uids")
         description = (try? map.value("description")) ?? ""
         links = try map.value("links")
     }
