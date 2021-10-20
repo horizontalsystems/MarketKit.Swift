@@ -97,6 +97,44 @@ extension CoinGeckoProvider {
         return networkManager.single(url: "\(baseUrl)/coins/\(coinId)", method: .get, parameters: parameters)
     }
 
+    func historicalPriceValueSingle(id: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        let currentTime = Date().timeIntervalSince1970
+        let startTime, endTime: TimeInterval
+
+        if currentTime - timestamp <= 24 - 10 * 60 {
+            startTime = timestamp - 10 * 60
+            endTime = timestamp + 10 * 60
+        } else {
+            startTime = timestamp - 2 * 60 * 60
+            endTime = timestamp + 2 * 60 * 60
+        }
+
+        let url = "\(baseUrl)/coins/\(id)/market_chart/range?vs_currency=\(currencyCode)&from=\(startTime)&to=\(endTime)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+
+        return networkManager.single(request: request, mapper: CoinGeckoChartMapper())
+                .map { rates in
+                    var nearestTime: TimeInterval?
+                    var nearestRate: Decimal = 0
+
+                    for rate in rates {
+                        let timeDiff = abs(rate.timestamp - timestamp)
+
+                        if let time = nearestTime {
+                            if timeDiff < time {
+                                nearestTime = timeDiff
+                                nearestRate = rate.value
+                            }
+                        } else {
+                            nearestTime = timeDiff
+                            nearestRate = rate.value
+                        }
+                    }
+
+                    return nearestRate
+                }
+    }
+
 }
 
 extension CoinGeckoProvider {

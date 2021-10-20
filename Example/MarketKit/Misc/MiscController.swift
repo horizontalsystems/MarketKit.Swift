@@ -32,11 +32,23 @@ class MiscController: UIViewController {
         coinPricesButton.setTitleColor(.systemBlue, for: .normal)
         coinPricesButton.addTarget(self, action: #selector(onTapCoinPrices), for: .touchUpInside)
 
+        let coinHistoricalPriceButton = UIButton()
+
+        view.addSubview(coinHistoricalPriceButton)
+        coinHistoricalPriceButton.snp.makeConstraints { maker in
+            maker.top.equalTo(coinPricesButton.snp.bottom).offset(8)
+            maker.centerX.equalToSuperview()
+        }
+
+        coinHistoricalPriceButton.setTitle("Historical Price", for: .normal)
+        coinHistoricalPriceButton.setTitleColor(.systemBlue, for: .normal)
+        coinHistoricalPriceButton.addTarget(self, action: #selector(onTapCoinHistoricalPrice), for: .touchUpInside)
+
         let globalMarketInfoButton = UIButton()
 
         view.addSubview(globalMarketInfoButton)
         globalMarketInfoButton.snp.makeConstraints { maker in
-            maker.top.equalTo(coinPricesButton.snp.bottom).offset(8)
+            maker.top.equalTo(coinHistoricalPriceButton.snp.bottom).offset(8)
             maker.centerX.equalToSuperview()
         }
 
@@ -51,6 +63,22 @@ class MiscController: UIViewController {
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] coinPriceMap in
                     print("ON NEXT: \(coinPriceMap)")
+                })
+                .disposed(by: disposeBag)
+    }
+
+    @objc private func onTapCoinHistoricalPrice() {
+        let calendar = Calendar(identifier: .gregorian)
+        let components = DateComponents(year: 2020, month: 3, day: 15)
+        guard let date = calendar.date(from: components) else {
+            return
+        }
+
+        Singleton.instance.kit.coinHistoricalPriceValueSingle(coinUid: "bitcoin", currencyCode: "USD", timestamp: date.timeIntervalSince1970)
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
+                .observeOn(MainScheduler.instance)
+                .subscribe(onSuccess: { [weak self] value in
+                    print("Historical Price: \(value)")
                 })
                 .disposed(by: disposeBag)
     }

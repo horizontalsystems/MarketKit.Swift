@@ -8,12 +8,13 @@ public class Kit {
     private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
+    private let coinHistoricalPriceManager: CoinHistoricalPriceManager
     private let chartManager: ChartManager
     private let chartSyncManager: ChartSyncManager
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, coinSyncer: CoinSyncer, coinCategorySyncer: CoinCategorySyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.coinSyncer = coinSyncer
@@ -21,6 +22,7 @@ public class Kit {
         self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
+        self.coinHistoricalPriceManager = coinHistoricalPriceManager
         self.chartManager = chartManager
         self.chartSyncManager = chartSyncManager
         self.postManager = postManager
@@ -143,6 +145,12 @@ extension Kit {
 
     public func coinPriceMapObservable(coinUids: [String], currencyCode: String) -> Observable<[String: CoinPrice]> {
         coinPriceSyncManager.coinPriceMapObservable(coinUids: coinUids, currencyCode: currencyCode)
+    }
+
+    // Coin Historical Prices
+
+    public func coinHistoricalPriceValueSingle(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        coinHistoricalPriceManager.coinHistoricalPriceValueSingle(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)
     }
 
     // Chart Info

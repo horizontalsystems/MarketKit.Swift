@@ -134,4 +134,5 @@ extension CoinStorage {
                     .fetchOne(db)
         }
     }
+
 }

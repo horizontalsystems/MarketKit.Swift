@@ -37,6 +37,9 @@ extension Kit {
         let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
         coinPriceManager.delegate = coinPriceSyncManager
 
+        let coinHistoricalPriceStorage = try CoinHistoricalPriceStorage(dbPool: dbPool)
+        let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, coinManager: coinManager, coinGeckoProvider: coinGeckoProvider)
+
         let chartStorage = try ChartStorage(dbPool: dbPool)
         let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, coinPriceManager: coinPriceManager)
 
@@ -58,6 +61,7 @@ extension Kit {
                 exchangeSyncer: exchangeSyncer,
                 coinPriceManager: coinPriceManager,
                 coinPriceSyncManager: coinPriceSyncManager,
+                coinHistoricalPriceManager: coinHistoricalPriceManager,
                 chartManager: chartManager,
                 chartSyncManager: chartSyncManager,
                 postManager: postManager,

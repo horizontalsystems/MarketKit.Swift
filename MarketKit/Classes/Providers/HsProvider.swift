@@ -17,6 +17,8 @@ class HsProvider {
 
 extension HsProvider {
 
+    // Full Coins
+
     func fullCoinsSingle() -> Single<[FullCoin]> {
         let parameters: Parameters = [
             "fields": "name,code,market_cap_rank,coingecko_id,platforms"
@@ -28,6 +30,8 @@ extension HsProvider {
                     fullCoinResponses.map { $0.fullCoin() }
                 }
     }
+
+    // Market Infos
 
     func marketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
@@ -71,9 +75,13 @@ extension HsProvider {
                 }
     }
 
+    // Coin Categories
+
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
         networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
     }
+
+    // Coin Prices
 
     func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
         let parameters: Parameters = [
