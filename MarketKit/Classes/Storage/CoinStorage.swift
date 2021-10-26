@@ -88,9 +88,14 @@ extension CoinStorage {
         }
     }
 
-    func platformCoins() throws -> [PlatformCoin] {
+    func platformCoins(platformType: PlatformType, filter: String, limit: Int) throws -> [PlatformCoin] {
         try dbPool.read { db in
-            let request = Platform.including(required: Platform.coin)
+            let request = Platform
+                    .including(required: Platform.coin.filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%")))
+                    .filter(platformType.coinTypeIdPrefixes.map { Platform.Columns.coinType.like("\($0)%") }.joined(operator: .or))
+                    .order(sql: "CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END, \(Coin.Columns.marketCapRank) ASC, \(Coin.Columns.name) ASC")
+                    .limit(limit)
+
             return try PlatformCoin.fetchAll(db, request)
         }
     }

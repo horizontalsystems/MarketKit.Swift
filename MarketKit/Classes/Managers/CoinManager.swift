@@ -66,8 +66,8 @@ extension CoinManager {
         try storage.platformCoin(coinType: coinType)
     }
 
-    func platformCoins() throws -> [PlatformCoin] {
-        try storage.platformCoins()
+    func platformCoins(platformType: PlatformType, filter: String, limit: Int) throws -> [PlatformCoin] {
+        try storage.platformCoins(platformType: platformType, filter: filter, limit: limit)
     }
 
     func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {

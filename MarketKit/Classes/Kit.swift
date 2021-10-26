@@ -61,8 +61,8 @@ extension Kit {
         try coinManager.platformCoin(coinType: coinType)
     }
 
-    public func platformCoins() throws -> [PlatformCoin] {
-        try coinManager.platformCoins()
+    public func platformCoins(platformType: PlatformType, filter: String, limit: Int = 20) throws -> [PlatformCoin] {
+        try coinManager.platformCoins(platformType: platformType, filter: filter, limit: limit)
     }
 
     public func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
