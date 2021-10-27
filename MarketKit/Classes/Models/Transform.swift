@@ -11,6 +11,14 @@ struct Transform {
        return value.description
    })
 
+   static let stringToIntTransform: TransformOf<Int, String> = TransformOf(fromJSON: { string -> Int? in
+       guard let string = string else { return nil }
+       return Int(string)
+   }, toJSON: { (value: Int?) in
+       guard let value = value else { return nil }
+       return value.description
+   })
+
    static let doubleToDecimalTransform: TransformOf<Decimal, Double> = TransformOf(fromJSON: { double -> Decimal? in
        guard let double = double else { return nil }
        return Decimal(double)

@@ -99,6 +99,10 @@ extension Kit {
         coinManager.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
     }
 
+    public func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
+        coinManager.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
     public func marketTickersSingle(coinUid: String) -> Single<[MarketTicker]> {
         coinManager.marketTickerSingle(coinUid: coinUid)
     }

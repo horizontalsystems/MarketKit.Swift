@@ -65,11 +65,20 @@ extension HsProvider {
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
-        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)?currency=\(currencyCode)&language=\(languageCode)", method: .get)
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+            "language": languageCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters)
     }
 
     func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
-        networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/details?currency=\(currencyCode)", method: .get)
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/details", method: .get, parameters: parameters)
                 .map { (response: MarketInfoDetailsResponse) -> MarketInfoDetails in
                     response.marketInfoDetails()
                 }
