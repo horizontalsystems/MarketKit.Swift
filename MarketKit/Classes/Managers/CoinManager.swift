@@ -148,20 +148,12 @@ extension CoinManager {
         hsProvider.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func topTokenHoldersSingle(coinUid: String, itemsCount: Int) -> Single<[TokenHolder]> {
-        guard let fullCoin = try? storage.fullCoins(coinUids: [coinUid]).first else {
-            return Single.just([])
-        }
-
-        return hsOldProvider.topTokenHoldersSingle(fullCoin: fullCoin, itemsCount: itemsCount)
+    func topErc20HoldersSingle(address: String, limit: Int) -> Single<[TokenHolder]> {
+        hsOldProvider.topErc20HoldersSingle(address: address, limit: limit)
     }
 
-    func auditReportsSingle(coinUid: String) -> Single<[Auditor]> {
-        guard let fullCoin = try? storage.fullCoins(coinUids: [coinUid]).first else {
-            return Single.just([])
-        }
-
-        return defiYieldProvider.auditReportsSingle(fullCoin: fullCoin)
+    func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
+        defiYieldProvider.auditReportsSingle(addresses: addresses)
     }
 
 }

@@ -18,23 +18,9 @@ class DefiYieldProvider {
 
 extension DefiYieldProvider {
 
-    func auditReportsSingle(fullCoin: FullCoin) -> Single<[Auditor]> {
-        var resolvedAddress: String? = nil
-
-        for platform in fullCoin.platforms {
-            switch platform.coinType {
-            case .erc20(let address): resolvedAddress = address
-            case .bep20(let address): resolvedAddress = address
-            default: ()
-            }
-        }
-
-        guard let address = resolvedAddress else {
-            return Single.error(AuditsError.unsupportedCoinType)
-        }
-
+    func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
         let parameters: Parameters = [
-            "addresses": [address]
+            "addresses": addresses
         ]
 
         let headers = apiKey.map { HTTPHeaders([HTTPHeader.authorization(bearerToken: $0)]) }
@@ -83,10 +69,6 @@ extension DefiYieldProvider {
 }
 
 extension DefiYieldProvider {
-
-    enum AuditsError: Error {
-        case unsupportedCoinType
-    }
 
     struct AuditInfo: ImmutableMappable {
         let partnerAudits: [PartnerAudit]
