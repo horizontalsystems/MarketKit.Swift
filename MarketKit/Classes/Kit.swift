@@ -115,6 +115,10 @@ extension Kit {
         coinManager.auditReportsSingle(addresses: addresses)
     }
 
+    public func investmentsSingle(coinUid: String, currencyCode: String) -> Single<[CoinInvestment]> {
+        coinManager.investmentsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
     // Categories
 
     public var coinCategoriesObservable: Observable<[CoinCategory]> {

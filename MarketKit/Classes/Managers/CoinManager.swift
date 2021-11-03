@@ -156,4 +156,8 @@ extension CoinManager {
         defiYieldProvider.auditReportsSingle(addresses: addresses)
     }
 
+    func investmentsSingle(coinUid: String, currencyCode: String) -> Single<[CoinInvestment]> {
+        hsProvider.coinInvestmentsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
 }
