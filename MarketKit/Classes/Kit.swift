@@ -79,20 +79,20 @@ extension Kit {
 
     // Market Info
 
-    public func marketInfosSingle(top: Int = 250) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(top: top)
+    public func marketInfosSingle(top: Int = 250, currencyCode: String) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(top: top, currencyCode: currencyCode)
     }
 
-    public func advancedMarketInfosSingle(top: Int = 250) -> Single<[MarketInfo]> {
-        coinManager.advancedMarketInfosSingle(top: top)
+    public func advancedMarketInfosSingle(top: Int = 250, currencyCode: String) -> Single<[MarketInfo]> {
+        coinManager.advancedMarketInfosSingle(top: top, currencyCode: currencyCode)
     }
 
-    public func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(coinUids: coinUids)
+    public func marketInfosSingle(coinUids: [String], currencyCode: String) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(coinUids: coinUids, currencyCode: currencyCode)
     }
 
-    public func marketInfosSingle(categoryUid: String) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(categoryUid: categoryUid)
+    public func marketInfosSingle(categoryUid: String, currencyCode: String) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(categoryUid: categoryUid, currencyCode: currencyCode)
     }
 
     public func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {

@@ -33,35 +33,42 @@ extension HsProvider {
 
     // Market Infos
 
-    func marketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
+    func marketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "limit": top,
-            "fields": "price,price_change_24h,market_cap,total_volume"
+            "fields": "price,price_change_24h,market_cap,total_volume",
+            "currency": currencyCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
-    func advancedMarketInfosSingle(top: Int) -> Single<[MarketInfoRaw]> {
+    func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "limit": top,
-            "fields": "price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage"
+            "fields": "price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
+            "currency": currencyCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
-    func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfoRaw]> {
+    func marketInfosSingle(coinUids: [String], currencyCode: String) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "fields": "price,price_change_24h,market_cap,total_volume"
+            "fields": "price,price_change_24h,market_cap,total_volume",
+            "currency": currencyCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }
 
-    func marketInfosSingle(categoryUid: String) -> Single<[MarketInfoRaw]> {
-        networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get)
+    func marketInfosSingle(categoryUid: String, currencyCode: String) -> Single<[MarketInfoRaw]> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {

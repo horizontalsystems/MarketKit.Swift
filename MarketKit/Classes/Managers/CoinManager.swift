@@ -97,29 +97,29 @@ extension CoinManager {
 
     // Market Info
 
-    func marketInfosSingle(top: Int) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(top: top)
+    func marketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(top: top, currencyCode: currencyCode)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 
-    func advancedMarketInfosSingle(top: Int) -> Single<[MarketInfo]> {
-        hsProvider.advancedMarketInfosSingle(top: top)
+    func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfo]> {
+        hsProvider.advancedMarketInfosSingle(top: top, currencyCode: currencyCode)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 
-    func marketInfosSingle(coinUids: [String]) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(coinUids: coinUids)
+    func marketInfosSingle(coinUids: [String], currencyCode: String) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(coinUids: coinUids, currencyCode: currencyCode)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
     }
 
-    func marketInfosSingle(categoryUid: String) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(categoryUid: categoryUid)
+    func marketInfosSingle(categoryUid: String, currencyCode: String) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(categoryUid: categoryUid, currencyCode: currencyCode)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
