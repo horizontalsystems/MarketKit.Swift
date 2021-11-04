@@ -12,7 +12,7 @@ public class CoinTreasury: ImmutableMappable {
         type = try map.value("type")
         fund = try map.value("fund")
         amount = try map.value("amount", using: Transform.stringToDecimalTransform)
-        amountInCurrency = try map.value("amountInCurrency", using: Transform.stringToDecimalTransform)
+        amountInCurrency = try map.value("amount_in_currency", using: Transform.stringToDecimalTransform)
         country = try map.value("country")
     }
 

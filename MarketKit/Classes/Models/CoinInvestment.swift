@@ -12,7 +12,7 @@ public class CoinInvestment: ImmutableMappable {
         date = try map.value("date", using: Transform.stringToDateTransform)
         round = try map.value("round")
         amount = try map.value("amount", using: Transform.stringToDecimalTransform)
-        amountInCurrency = try map.value("amountInCurrency", using: Transform.stringToDecimalTransform)
+        amountInCurrency = try map.value("amount_in_currency", using: Transform.stringToDecimalTransform)
         funds = try map.value("funds")
     }
 
