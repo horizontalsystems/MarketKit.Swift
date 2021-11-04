@@ -146,4 +146,13 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/funds/investments", method: .get, parameters: parameters)
     }
 
+    func coinTreasuriesSingle(coinUid: String, currencyCode: String) -> Single<[CoinTreasury]> {
+        let parameters: Parameters = [
+            "coin_uid": coinUid,
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/funds/treasuries", method: .get, parameters: parameters)
+    }
+
 }

@@ -5,12 +5,14 @@ public class CoinInvestment: ImmutableMappable {
     public let date: Date
     public let round: String
     public let amount: Decimal
+    public let amountInCurrency: Decimal
     public let funds: [Fund]
 
     required public init(map: Map) throws {
         date = try map.value("date", using: Transform.stringToDateTransform)
         round = try map.value("round")
         amount = try map.value("amount", using: Transform.stringToDecimalTransform)
+        amountInCurrency = try map.value("amountInCurrency", using: Transform.stringToDecimalTransform)
         funds = try map.value("funds")
     }
 
