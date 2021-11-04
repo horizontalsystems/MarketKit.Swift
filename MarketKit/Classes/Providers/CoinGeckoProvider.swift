@@ -26,9 +26,12 @@ extension CoinGeckoProvider {
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
         return networkManager.single(request: request, mapper: CoinGeckoChartMapper(intervalInSeconds: key.chartType.intervalInSeconds))
-                .map { pointResponses -> [ChartPointResponse] in
+                .map { pointResponses -> [ChartPoint] in
                     guard key.chartType.coinGeckoPointCount <= pointResponses.count, let last = pointResponses.last else {
-                        return pointResponses
+                        return pointResponses.map {
+                            ChartPoint(timestamp: $0.timestamp, value: $0.value)
+                                .added(field: ChartPoint.volume, value: $0.volume)
+                        }
                     }
 
                     var nextTs = TimeInterval.infinity
@@ -45,12 +48,15 @@ extension CoinGeckoProvider {
                     let isAggregate = key.chartType.resource == "histoday"
                     var aggregatedVolume: Decimal = 0
 
-                    var result = [ChartPointResponse]()
+                    var result = [ChartPoint]()
 
                     for point in pointResponses.reversed() {
                         if point.timestamp <= nextTs {                              // we found point with needed timestamp
                             if let lastPoint = lastPoint {                          // if we found new point, we must add last one with aggregated volumes
-                                result.append(ChartPointResponse(timestamp: lastPoint.timestamp, value: lastPoint.value, volume: isAggregate ? aggregatedVolume : nil))
+                                result.append(
+                                        ChartPoint(timestamp: lastPoint.timestamp, value: lastPoint.value)
+                                                .added(field: ChartPoint.volume, value: isAggregate ? aggregatedVolume : nil)
+                                )
                                 aggregatedVolume = 0
                             }
 
@@ -63,15 +69,6 @@ extension CoinGeckoProvider {
                     }
 
                     return result.reversed()
-                }.map {
-                    $0.map {
-                        ChartPoint(coinUid: key.coin.uid,
-                            currencyCode: key.currencyCode,
-                            chartType: key.chartType,
-                            timestamp: $0.timestamp,
-                            value: $0.value,
-                            volume: $0.volume)
-                    }
                 }
     }
 

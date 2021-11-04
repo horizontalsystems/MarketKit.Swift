@@ -91,6 +91,26 @@ extension HsProvider {
                 }
     }
 
+    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+        let interval: String
+
+        switch timePeriod {
+        case .day7: interval = "7d"
+        case .day30: interval = "30d"
+        default: interval = "1d"
+        }
+
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+            "interval": interval
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/defi-coins/\(coinUid)/tvls", method: .get, parameters: parameters)
+                .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
+                    response.map { $0.marketInfoTvl }
+                }
+    }
+
     // Coin Categories
 
     func coinCategoriesSingle() -> Single<[CoinCategory]> {

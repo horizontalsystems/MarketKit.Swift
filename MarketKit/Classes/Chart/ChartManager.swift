@@ -86,12 +86,12 @@ extension ChartManager {
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
         let records = chartPoints.map {
-            ChartPoint(coinUid: $0.coinUid,
-                    currencyCode: $0.currencyCode,
-                    chartType: $0.chartType,
+            ChartPointRecord(coinUid: key.coin.uid,
+                    currencyCode: key.currencyCode,
+                    chartType: key.chartType,
                     timestamp: $0.timestamp,
                     value: $0.value,
-                    volume: $0.volume)
+                    volume: $0.extra[ChartPoint.volume])
         }
 
         storage.deleteChartPoints(key: key)

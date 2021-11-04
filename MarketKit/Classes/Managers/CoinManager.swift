@@ -160,4 +160,8 @@ extension CoinManager {
         hsProvider.coinInvestmentsSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
+    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+        hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
 }
