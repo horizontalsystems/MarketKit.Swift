@@ -135,6 +135,16 @@ extension HsProvider {
                 }
     }
 
+    // Holders
+
+    func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
+        let parameters: Parameters = [
+            "coin_uid": coinUid
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/addresses/holders", method: .get, parameters: parameters)
+    }
+
     // Funds
 
     func coinInvestmentsSingle(coinUid: String, currencyCode: String) -> Single<[CoinInvestment]> {

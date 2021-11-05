@@ -148,8 +148,8 @@ extension CoinManager {
         hsProvider.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func topErc20HoldersSingle(address: String, limit: Int) -> Single<[TokenHolder]> {
-        hsOldProvider.topErc20HoldersSingle(address: address, limit: limit)
+    func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
+        hsProvider.topHoldersSingle(coinUid: coinUid)
     }
 
     func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {

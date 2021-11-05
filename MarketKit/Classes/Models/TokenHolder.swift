@@ -7,12 +7,7 @@ public struct TokenHolder: ImmutableMappable {
 
     public init(map: Map) throws {
         address = try map.value("address")
-        share = try map.value("share", using: Self.decimalTransform)
+        share = try map.value("share", using: Transform.stringToDecimalTransform)
     }
-
-    private static let decimalTransform: TransformOf<Decimal, Double> = TransformOf(
-            fromJSON: { double -> Decimal? in double.flatMap { Decimal(string: "\($0)") }},
-            toJSON: { _ in nil }
-    )
 
 }

@@ -25,12 +25,4 @@ extension HsOldProvider {
         return networkManager.single(url: "\(baseUrl)/api/v1/markets/global/\(timePeriod.rawValue)", method: .get, parameters: parameters)
     }
 
-    func topErc20HoldersSingle(address: String, limit: Int) -> Single<[TokenHolder]> {
-        let parameters: Parameters = [
-            "limit": limit
-        ]
-
-        return networkManager.single(url: "\(baseUrl)/api/v1/tokens/holders/\(address)", method: .get, parameters: parameters)
-    }
-
 }

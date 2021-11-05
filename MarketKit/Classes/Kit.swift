@@ -107,8 +107,8 @@ extension Kit {
         coinManager.marketTickerSingle(coinUid: coinUid)
     }
 
-    public func topErc20HoldersSingle(address: String, limit: Int = 10) -> Single<[TokenHolder]> {
-        coinManager.topErc20HoldersSingle(address: address, limit: limit)
+    public func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
+        coinManager.topHoldersSingle(coinUid: coinUid)
     }
 
     public func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
