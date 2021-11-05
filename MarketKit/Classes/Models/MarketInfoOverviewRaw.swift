@@ -24,7 +24,7 @@ class MarketInfoOverviewRaw: ImmutableMappable {
         dilutedMarketCap = try? map.value("market_data.fully_diluted_valuation", using: Transform.stringToDecimalTransform)
         tvl = try? map.value("market_data.total_value_locked", using: Transform.stringToDecimalTransform)
         performance = try map.value("performance")
-        genesisDate = try? map.value("genesis_date", using: DateTransform())
+        genesisDate = try? map.value("genesis_date", using: Transform.stringToDateTransform)
         categoryUids = try map.value("category_uids")
         description = (try? map.value("description")) ?? ""
         links = try map.value("links")
