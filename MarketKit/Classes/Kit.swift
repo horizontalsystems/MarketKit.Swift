@@ -123,6 +123,10 @@ extension Kit {
         coinManager.treasuriesSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
+    public func coinReportsSingle(coinUid: String) -> Single<[CoinReport]> {
+        coinManager.coinReportsSingle(coinUid: coinUid)
+    }
+
     public func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
         coinManager.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }

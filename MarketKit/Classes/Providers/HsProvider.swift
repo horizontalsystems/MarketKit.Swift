@@ -165,4 +165,22 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/funds/treasuries", method: .get, parameters: parameters)
     }
 
+    func coinReportsSingle(coinUid: String) -> Single<[CoinReport]> {
+        let parameters: Parameters = [
+            "coin_uid": coinUid
+        ]
+
+//        return networkManager.single(url: "\(baseUrl)/v1/reports", method: .get, parameters: parameters)
+        let json = """
+                   {
+                   "author": "Citi GPS",
+                   "title": "Rising Bitcoin Adoption Tide",
+                   "body": "Canadian investment fund manager 3iQ isthe news nvestment fund manager, investment fund manager 3iQ isthe news nvestment fund manager, investment fund manager 3iQ isthe news nvestment fund manager",
+                   "date": "2021-03-01",
+                   "url": "https://google.com"
+                   }
+                   """
+        return Single.just([try! CoinReport(JSONString: json)])
+    }
+
 }

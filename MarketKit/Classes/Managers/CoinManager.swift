@@ -164,6 +164,10 @@ extension CoinManager {
         hsProvider.coinTreasuriesSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
+    func coinReportsSingle(coinUid: String) -> Single<[CoinReport]> {
+        hsProvider.coinReportsSingle(coinUid: coinUid)
+    }
+
     func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
         hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
