@@ -41,10 +41,10 @@ extension Kit {
         let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, coinManager: coinManager, coinGeckoProvider: coinGeckoProvider)
 
         let chartStorage = try ChartStorage(dbPool: dbPool)
-        let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, coinPriceManager: coinPriceManager)
+        let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, provider: coinGeckoProvider)
 
         let chartSchedulerFactory = ChartSchedulerFactory(manager: chartManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, retryInterval: 30, logger: logger)
-        let chartSyncManager = ChartSyncManager(coinManager: coinManager, schedulerFactory: chartSchedulerFactory, chartInfoManager: chartManager, coinPriceSyncManager: coinPriceSyncManager)
+        let chartSyncManager = ChartSyncManager(coinManager: coinManager, schedulerFactory: chartSchedulerFactory, coinPriceSyncManager: coinPriceSyncManager)
 
         chartManager.delegate = chartSyncManager
 

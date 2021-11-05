@@ -180,6 +180,10 @@ extension Kit {
         chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
     }
 
+    public func chartInfoSingle(coinUid: String, currencyCode: String, chartType: ChartType) -> Single<ChartInfo> {
+        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    }
+
     public func chartInfoObservable(coinUid: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo> {
         chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
     }

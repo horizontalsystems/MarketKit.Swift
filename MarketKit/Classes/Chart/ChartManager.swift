@@ -10,21 +10,21 @@ class ChartManager {
 
     private let coinManager: CoinManager
     private let storage: ChartStorage
-    private let latestRateManager: CoinPriceManager
+    private let provider: CoinGeckoProvider
 
-    init(coinManager: CoinManager, storage: ChartStorage, coinPriceManager: CoinPriceManager) {
+    init(coinManager: CoinManager, storage: ChartStorage, provider: CoinGeckoProvider) {
         self.coinManager = coinManager
         self.storage = storage
-        self.latestRateManager = coinPriceManager
+        self.provider = provider
     }
 
-    private var utcStartOfToday: Date {
+    private static var utcStartOfToday: Date {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? calendar.timeZone
         return calendar.startOfDay(for: Date())
     }
 
-    private func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
+    private static func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
         guard let lastPoint = chartPoints.last else {
             return nil
         }
@@ -81,7 +81,23 @@ extension ChartManager {
         }
 
         let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
-        return chartInfo(chartPoints: storedChartPoints(key: key), key: key)
+        return Self.chartInfo(chartPoints: storedChartPoints(key: key), key: key)
+    }
+
+    func chartInfoSingle(coinUid: String, currencyCode: String, chartType: ChartType) -> Single<ChartInfo> {
+        guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
+            return Single.error(Kit.KitError.noChartData)
+        }
+
+        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
+        return provider
+                .chartPointsSingle(key: key)
+                .flatMap { points in
+                    if let chartInfo = Self.chartInfo(chartPoints: points, key: key) {
+                        return Single.just(chartInfo)
+                    }
+                    return Single.error(Kit.KitError.noChartData)
+                }
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
@@ -97,7 +113,7 @@ extension ChartManager {
         storage.deleteChartPoints(key: key)
         storage.save(chartPoints: records)
 
-        if let chartInfo = chartInfo(chartPoints: chartPoints, key: key) {
+        if let chartInfo = Self.chartInfo(chartPoints: chartPoints, key: key) {
             delegate?.didUpdate(chartInfo: chartInfo, key: key)
         } else {
             delegate?.didFoundNoChartInfo(key: key)

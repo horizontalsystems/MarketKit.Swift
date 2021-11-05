@@ -3,7 +3,6 @@ import RxSwift
 class ChartSyncManager {
     private let coinManager: CoinManager
     private let schedulerFactory: ChartSchedulerFactory
-    private let chartInfoManager: ChartManager
     private let coinPriceSyncManager: CoinPriceSyncManager
 
     private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
@@ -13,10 +12,9 @@ class ChartSyncManager {
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.chart_info_sync_manager", qos: .userInitiated)
 
-    init(coinManager: CoinManager, schedulerFactory: ChartSchedulerFactory, chartInfoManager: ChartManager, coinPriceSyncManager: CoinPriceSyncManager) {
+    init(coinManager: CoinManager, schedulerFactory: ChartSchedulerFactory, coinPriceSyncManager: CoinPriceSyncManager) {
         self.coinManager = coinManager
         self.schedulerFactory = schedulerFactory
-        self.chartInfoManager = chartInfoManager
         self.coinPriceSyncManager = coinPriceSyncManager
     }
 
