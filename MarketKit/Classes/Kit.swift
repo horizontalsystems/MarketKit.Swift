@@ -79,8 +79,8 @@ extension Kit {
 
     // Market Info
 
-    public func marketInfosSingle(top: Int = 250, currencyCode: String) -> Single<[MarketInfo]> {
-        coinManager.marketInfosSingle(top: top, currencyCode: currencyCode)
+    public func marketInfosSingle(top: Int = 250, currencyCode: String, defi: Bool = false) -> Single<[MarketInfo]> {
+        coinManager.marketInfosSingle(top: top, currencyCode: currencyCode, defi: defi)
     }
 
     public func advancedMarketInfosSingle(top: Int = 250, currencyCode: String) -> Single<[MarketInfo]> {

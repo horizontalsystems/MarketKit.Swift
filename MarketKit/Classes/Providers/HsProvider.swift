@@ -33,12 +33,16 @@ extension HsProvider {
 
     // Market Infos
 
-    func marketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
-        let parameters: Parameters = [
+    func marketInfosSingle(top: Int, currencyCode: String, defi: Bool) -> Single<[MarketInfoRaw]> {
+        var parameters: Parameters = [
             "limit": top,
             "fields": "price,price_change_24h,market_cap,total_volume",
             "currency": currencyCode.lowercased()
         ]
+
+        if defi {
+            parameters["defi"] = "true"
+        }
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
     }

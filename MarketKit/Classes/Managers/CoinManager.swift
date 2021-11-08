@@ -97,8 +97,8 @@ extension CoinManager {
 
     // Market Info
 
-    func marketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(top: top, currencyCode: currencyCode)
+    func marketInfosSingle(top: Int, currencyCode: String, defi: Bool) -> Single<[MarketInfo]> {
+        hsProvider.marketInfosSingle(top: top, currencyCode: currencyCode, defi: defi)
                 .map { [weak self] rawMarketInfos -> [MarketInfo] in
                     self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
                 }
