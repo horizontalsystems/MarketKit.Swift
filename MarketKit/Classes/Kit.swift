@@ -131,6 +131,10 @@ extension Kit {
         coinManager.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    public func twitterUsername(coinUid: String) -> Single<String?> {
+        coinManager.twitterUsername(coinUid: coinUid)
+    }
+
 
     // Categories
 
