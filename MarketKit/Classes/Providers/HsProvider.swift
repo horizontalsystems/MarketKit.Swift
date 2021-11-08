@@ -115,7 +115,7 @@ extension HsProvider {
                 }
     }
 
-    func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
+    func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoinRaw]> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased()
         ]

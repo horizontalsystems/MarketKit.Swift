@@ -23,7 +23,7 @@ class CoinManager {
         self.exchangeManager = exchangeManager
     }
 
-    func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
+    private func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
         do {
             let fullCoins = try storage.fullCoins(coinUids: rawMarketInfos.map { $0.uid })
             let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
@@ -34,6 +34,19 @@ class CoinManager {
                 }
 
                 return rawMarketInfo.marketInfo(fullCoin: fullCoin)
+            }
+        } catch {
+            return []
+        }
+    }
+
+    private func defiCoins(rawDefiCoins: [DefiCoinRaw]) -> [DefiCoin] {
+        do {
+            let fullCoins = try storage.fullCoins(coinUids: rawDefiCoins.compactMap { $0.uid })
+            let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
+
+            return rawDefiCoins.map { rawDefiCoin in
+                rawDefiCoin.defiCoin(fullCoin: rawDefiCoin.uid.flatMap { dictionary[$0] })
             }
         } catch {
             return []
@@ -173,7 +186,9 @@ extension CoinManager {
     }
 
     func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
-        hsProvider.defiCoinsSingle(currencyCode: currencyCode)
+        hsProvider.defiCoinsSingle(currencyCode: currencyCode).map { [weak self] rawDefiCoins in
+            self?.defiCoins(rawDefiCoins: rawDefiCoins) ?? []
+        }
     }
 
     func twitterUsername(coinUid: String) -> Single<String?> {
