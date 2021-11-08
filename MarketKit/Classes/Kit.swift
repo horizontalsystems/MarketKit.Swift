@@ -131,8 +131,8 @@ extension Kit {
         coinManager.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    public func defiCoinsSingle() -> Single<[DefiCoin]> {
-        coinManager.defiCoinsSingle()
+    public func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
+        coinManager.defiCoinsSingle(currencyCode: currencyCode)
     }
 
     public func twitterUsername(coinUid: String) -> Single<String?> {

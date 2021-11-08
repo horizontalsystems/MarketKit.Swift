@@ -172,8 +172,8 @@ extension CoinManager {
         hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    func defiCoinsSingle() -> Single<[DefiCoin]> {
-        hsProvider.defiCoinsSingle()
+    func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
+        hsProvider.defiCoinsSingle(currencyCode: currencyCode)
     }
 
     func twitterUsername(coinUid: String) -> Single<String?> {
