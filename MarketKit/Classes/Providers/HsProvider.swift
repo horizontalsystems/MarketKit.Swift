@@ -115,6 +115,10 @@ extension HsProvider {
                 }
     }
 
+    func defiCoinsSingle() -> Single<[DefiCoin]> {
+        networkManager.single(url: "\(baseUrl)/v1/defi-coins", method: .get)
+    }
+
     // Coin Categories
 
     func coinCategoriesSingle() -> Single<[CoinCategory]> {

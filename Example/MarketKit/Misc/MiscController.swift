@@ -84,11 +84,11 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapGlobalMarketInfo() {
-        Singleton.instance.kit.globalMarketPointsSingle(currencyCode: "USD", timePeriod: .hour24)
+        Singleton.instance.kit.defiCoinsSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] points in
-                    print("SUCCESS: count: \(points.count)\n\(points.map { "\($0)" }.joined(separator: "\n"))")
+                    print(points)
                 })
                 .disposed(by: disposeBag)
     }
