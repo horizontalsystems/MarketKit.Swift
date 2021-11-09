@@ -11,6 +11,7 @@ class MarketInfoDetailsResponse: ImmutableMappable {
     // Investor Data
     let totalTreasuries: Decimal?
     let totalFundsInvested: Decimal?
+    let reportsCount: Int
 
     // Security Parameters
     let privacy: String?
@@ -25,6 +26,7 @@ class MarketInfoDetailsResponse: ImmutableMappable {
 
         totalTreasuries = try? map.value("investor_data.treasuries", using: Transform.stringToDecimalTransform)
         totalFundsInvested = try? map.value("investor_data.funds_invested", using: Transform.stringToDecimalTransform)
+        reportsCount = try map.value("reports_count")
 
         privacy = try? map.value("security.privacy")
         decentralizedIssuance = try? map.value("security.decentralized")
@@ -39,6 +41,7 @@ class MarketInfoDetailsResponse: ImmutableMappable {
                 tvlRatio: tvlRatio,
                 totalTreasuries: totalTreasuries,
                 totalFundsInvested: totalFundsInvested,
+                reportsCount: reportsCount,
                 privacy: privacy.flatMap { MarketInfoDetails.SecurityLevel(rawValue: $0) },
                 decentralizedIssuance: decentralizedIssuance,
                 confiscationResistant: confiscationResistant,

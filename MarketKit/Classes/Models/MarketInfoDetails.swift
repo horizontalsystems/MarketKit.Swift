@@ -6,6 +6,7 @@ public struct MarketInfoDetails {
     public let tvlRatio: Decimal?
     public let totalTreasuries: Decimal?
     public let totalFundsInvested: Decimal?
+    public let reportsCount: Int
     public let privacy: SecurityLevel?
     public let decentralizedIssuance: Bool?
     public let confiscationResistant: Bool?
