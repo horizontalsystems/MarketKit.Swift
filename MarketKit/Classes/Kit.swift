@@ -208,6 +208,14 @@ extension Kit {
         globalMarketInfoManager.globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    public func globalMarketTotalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+        globalMarketInfoManager
+                .globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
+                .map { points in
+                    points.map { ChartPoint(timestamp: $0.timestamp, value: platform.isEmpty ? $0.tvl : $0.marketCap) }
+                }
+    }
+
 }
 
 extension Kit {
