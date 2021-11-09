@@ -63,6 +63,10 @@ extension CoinManager {
         fullCoinsUpdatedRelay.asObservable()
     }
 
+    func coinsCount() throws -> Int {
+        try storage.coinsCount()
+    }
+
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try storage.fullCoins(filter: filter, limit: limit)
     }

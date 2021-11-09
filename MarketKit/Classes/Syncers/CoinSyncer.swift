@@ -18,6 +18,27 @@ class CoinSyncer {
 
 extension CoinSyncer {
 
+    func initialSync() {
+        do {
+            guard try coinManager.coinsCount() == 0 else {
+                return
+            }
+
+            guard let path = Kit.bundle?.path(forResource: "full_coins", ofType: "json") else {
+                return
+            }
+
+            let jsonString = try String(contentsOfFile: path, encoding: .utf8)
+            guard let responses = try [FullCoinResponse](JSONString: jsonString) else {
+                return
+            }
+
+            coinManager.handleFetched(fullCoins: responses.map { $0.fullCoin() })
+        } catch {
+            print("CoinSyncer: initial sync error: \(error)")
+        }
+    }
+
     func sync() {
         hsProvider.fullCoinsSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))

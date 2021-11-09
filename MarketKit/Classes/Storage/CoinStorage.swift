@@ -37,6 +37,12 @@ class CoinStorage {
 
 extension CoinStorage {
 
+    func coinsCount() throws -> Int {
+        try dbPool.read { db in
+            try Coin.fetchCount(db)
+        }
+    }
+
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try dbPool.read { db in
             let request = Coin

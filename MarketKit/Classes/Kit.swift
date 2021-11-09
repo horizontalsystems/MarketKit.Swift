@@ -27,6 +27,16 @@ public class Kit {
         self.chartSyncManager = chartSyncManager
         self.postManager = postManager
         self.globalMarketInfoManager = globalMarketInfoManager
+
+        coinSyncer.initialSync()
+    }
+
+}
+
+extension Kit {
+
+    static var bundle: Bundle? {
+        Bundle(for: Kit.self).url(forResource: "MarketKit", withExtension: "bundle").flatMap { Bundle(url: $0) }
     }
 
 }

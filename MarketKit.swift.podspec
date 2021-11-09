@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.swift_version = '5'
 
   s.source_files = 'MarketKit/Classes/**/*'
+  s.resource_bundle = { 'MarketKit' => 'MarketKit/Resources/*.json' }
 
   s.requires_arc = true
 
