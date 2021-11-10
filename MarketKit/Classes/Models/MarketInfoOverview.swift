@@ -12,6 +12,7 @@ public struct MarketInfoOverview {
     public let genesisDate: Date?
     public let categories: [CoinCategory]
     public let description: String
+    public let coinTypes: [CoinType]
     public let links: [LinkType: String]
 }
 

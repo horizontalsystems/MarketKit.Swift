@@ -13,8 +13,16 @@ class PlatformResponse: ImmutableMappable {
         symbol = try? map.value("symbol")
     }
 
+    var coinType: CoinType? {
+        CoinType(type: type, address: address, symbol: symbol)
+    }
+
     func platform(coinUid: String) -> Platform? {
-        guard let coinType = CoinType(type: type, address: address, symbol: symbol) else {
+        guard let decimals = decimals else {
+            return nil
+        }
+
+        guard let coinType = coinType else {
             return nil
         }
 

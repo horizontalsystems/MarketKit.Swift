@@ -13,6 +13,7 @@ class MarketInfoOverviewRaw: ImmutableMappable {
     let genesisDate: Date?
     let categoryUids: [String]
     let description: String
+    let platforms: [PlatformResponse]
     let links: [String: String?]
 
     required init(map: Map) throws {
@@ -27,6 +28,7 @@ class MarketInfoOverviewRaw: ImmutableMappable {
         genesisDate = try? map.value("genesis_date", using: Transform.stringToDateTransform)
         categoryUids = try map.value("category_uids")
         description = (try? map.value("description")) ?? ""
+        platforms = try map.value("platforms")
         links = try map.value("links")
     }
 
@@ -51,18 +53,19 @@ class MarketInfoOverviewRaw: ImmutableMappable {
         }
 
         return MarketInfoOverview(
-            marketCap: marketCap,
-            marketCapRank: marketCapRank,
-            totalSupply: totalSupply,
-            circulatingSupply: circulatingSupply,
-            volume24h: volume24h,
-            dilutedMarketCap: dilutedMarketCap,
-            tvl: tvl,
-            performance: convertedPerformance,
-            genesisDate: genesisDate,
-            categories: categories,
-            description: description,
-            links: convertedLinks
+                marketCap: marketCap,
+                marketCapRank: marketCapRank,
+                totalSupply: totalSupply,
+                circulatingSupply: circulatingSupply,
+                volume24h: volume24h,
+                dilutedMarketCap: dilutedMarketCap,
+                tvl: tvl,
+                performance: convertedPerformance,
+                genesisDate: genesisDate,
+                categories: categories,
+                description: description,
+                coinTypes: platforms.compactMap { $0.coinType },
+                links: convertedLinks
         )
     }
 

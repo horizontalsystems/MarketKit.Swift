@@ -4,14 +4,14 @@ public class Platform: Record, Decodable {
     static let coin = belongsTo(Coin.self)
 
     public let coinType: CoinType
-    public let decimals: Int?
+    public let decimals: Int
     let coinUid: String
 
     enum Columns: String, ColumnExpression {
         case coinType, decimals, coinUid
     }
 
-    public init(coinType: CoinType, decimals: Int?, coinUid: String) {
+    public init(coinType: CoinType, decimals: Int, coinUid: String) {
         self.coinType = coinType
         self.decimals = decimals
         self.coinUid = coinUid

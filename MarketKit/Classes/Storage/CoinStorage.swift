@@ -23,7 +23,7 @@ class CoinStorage {
 
             try db.create(table: Platform.databaseTableName) { t in
                 t.column(Platform.Columns.coinType.name, .text).notNull()
-                t.column(Platform.Columns.decimals.name, .integer)
+                t.column(Platform.Columns.decimals.name, .integer).notNull()
                 t.column(Platform.Columns.coinUid.name, .text).notNull().indexed().references(Coin.databaseTableName, onDelete: .cascade)
 
                 t.primaryKey([Platform.Columns.coinType.name, Platform.Columns.coinUid.name], onConflict: .replace)
