@@ -22,4 +22,30 @@ public enum TimePeriod: String {
         }
     }
 
+    private var index: Int {
+        switch self {
+        case .all: return 0
+        case .hour1: return 1
+        case .dayStart: return 2
+        case .hour24: return 3
+        case .day7: return 4
+        case .day14: return 5
+        case .day30: return 6
+        case .day200: return 7
+        case .year1: return 8
+        }
+    }
+
+}
+
+extension TimePeriod: Comparable {
+
+    public static func <(lhs: TimePeriod, rhs: TimePeriod) -> Bool {
+        lhs.index < rhs.index
+    }
+
+    public static func ==(lhs: TimePeriod, rhs: TimePeriod) -> Bool {
+        lhs.index == rhs.index
+    }
+
 }

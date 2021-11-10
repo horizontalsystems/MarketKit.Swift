@@ -34,7 +34,6 @@ class MarketInfoOverviewRaw: ImmutableMappable {
 
     func marketInfoOverview(categories: [CoinCategory]) -> MarketInfoOverview {
         var convertedLinks = [LinkType: String]()
-        var convertedPerformance = [String: [TimePeriod: Decimal]]()
 
         for (type, link) in links {
             if let linkType = LinkType(rawValue: type), let link = link {
@@ -42,15 +41,26 @@ class MarketInfoOverviewRaw: ImmutableMappable {
             }
         }
 
-        for (currency, changes) in performance {
-            convertedPerformance[currency] = [TimePeriod: Decimal]()
+        let convertedPerformance: [PerformanceRow] = performance.compactMap { (base, changes) -> PerformanceRow? in
+            guard let performanceBase = PerformanceBase(rawValue: base) else {
+                return nil
+            }
+
+            var performanceChanges = [TimePeriod: Decimal]()
             for (timePeriodStr, change) in changes {
                 if let changeStr = change,
-                   let changeDecimal = Decimal(string: changeStr), let timePeriod = TimePeriod(rawValue: timePeriodStr) {
-                    convertedPerformance[currency]?[timePeriod] = changeDecimal
+                   let changeDecimal = Decimal(string: changeStr),
+                   let timePeriod = TimePeriod(rawValue: timePeriodStr) {
+                    performanceChanges[timePeriod] = changeDecimal
                 }
             }
-        }
+
+            guard !performanceChanges.isEmpty else {
+                return nil
+            }
+
+            return PerformanceRow(base: performanceBase, changes: performanceChanges)
+        }.sorted { $0.base < $1.base }
 
         return MarketInfoOverview(
                 marketCap: marketCap,
