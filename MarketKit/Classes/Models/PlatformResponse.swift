@@ -14,9 +14,6 @@ class PlatformResponse: ImmutableMappable {
     }
 
     func platform(coinUid: String) -> Platform? {
-        guard let decimals = decimals else {
-            return nil
-        }
         guard let coinType = CoinType(type: type, address: address, symbol: symbol) else {
             return nil
         }
