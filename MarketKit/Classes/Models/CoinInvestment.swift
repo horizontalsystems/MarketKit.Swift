@@ -17,11 +17,13 @@ public class CoinInvestment: ImmutableMappable {
     }
 
     public class Fund: ImmutableMappable {
+        public let uid: String
         public let name: String
         public let website: String
         public let isLead: Bool
 
         required public init(map: Map) throws {
+            uid = try map.value("uid")
             name = try map.value("name")
             website = try map.value("website")
             isLead = try map.value("is_lead")
