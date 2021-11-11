@@ -189,6 +189,10 @@ extension CoinManager {
         hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+        hsProvider.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
     func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
         hsProvider.defiCoinsSingle(currencyCode: currencyCode).map { [weak self] rawDefiCoins in
             self?.defiCoins(rawDefiCoins: rawDefiCoins) ?? []

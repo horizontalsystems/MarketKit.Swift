@@ -111,7 +111,31 @@ extension HsProvider {
 
         return networkManager.single(url: "\(baseUrl)/v1/defi-coins/\(coinUid)/tvls", method: .get, parameters: parameters)
                 .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
-                    response.map { $0.marketInfoTvl }
+                    response.compactMap { $0.marketInfoTvl }
+                }
+    }
+
+    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+        let interval: String
+
+        switch timePeriod {
+        case .day7: interval = "7d"
+        case .day30: interval = "30d"
+        default: interval = "1d"
+        }
+
+
+        var parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+            "interval": interval
+        ]
+        if !platform.isEmpty {
+            parameters["chain"] = platform
+        }
+
+        return networkManager.single(url: "\(baseUrl)/v1/global-markets/tvls", method: .get, parameters: parameters)
+                .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
+                    response.compactMap { $0.marketInfoTvl }
                 }
     }
 
