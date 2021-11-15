@@ -16,10 +16,12 @@ extension Kit {
         let coinCategoryStorage = try CoinCategoryStorage(dbPool: dbPool)
         let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
+        let syncerStateStorage = try SyncerStateStorage(dbPool: dbPool)
+
         let coinGeckoProvider = CoinGeckoProvider(baseUrl: "https://api.coingecko.com/api/v3", networkManager: networkManager)
         let exchangeStorage = try ExchangeStorage(dbPool: dbPool)
         let exchangeManager = ExchangeManager(storage: exchangeStorage)
-        let exchangeSyncer = ExchangeSyncer(exchangeManager: exchangeManager, coinGeckoProvider: coinGeckoProvider)
+        let exchangeSyncer = ExchangeSyncer(exchangeManager: exchangeManager, coinGeckoProvider: coinGeckoProvider, syncerStateStorage: syncerStateStorage)
 
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager)

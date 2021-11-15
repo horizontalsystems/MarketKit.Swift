@@ -33,8 +33,8 @@ extension ExchangeStorage {
         }
     }
 
-    func update(exchanges: [Exchange]) {
-        _ = try! dbPool.write { db in
+    func update(exchanges: [Exchange]) throws {
+        _ = try dbPool.write { db in
             try Exchange.deleteAll(db)
 
             for exchange in exchanges {
