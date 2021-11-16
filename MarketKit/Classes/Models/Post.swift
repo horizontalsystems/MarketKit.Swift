@@ -8,7 +8,7 @@ public struct Post: ImmutableMappable {
     public let url: String
 
     public init(map: Map) throws {
-        source = try map.value("source")
+        source = try map.value("source_info.name")
         title = try map.value("title")
         body = try map.value("body")
         timestamp = try map.value("published_on")
