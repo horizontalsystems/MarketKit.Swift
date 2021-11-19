@@ -109,7 +109,7 @@ extension HsProvider {
             "interval": interval
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/defi-coins/\(coinUid)/tvls", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols/\(coinUid)/tvls", method: .get, parameters: parameters)
                 .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
                     response.compactMap { $0.marketInfoTvl }
                 }
@@ -144,7 +144,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/defi-coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols", method: .get, parameters: parameters)
     }
 
     // Coin Categories
