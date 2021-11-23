@@ -48,7 +48,15 @@ extension CoinStorage {
             let request = Coin
                     .including(all: Coin.platforms)
                     .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
-                    .order(sql: "CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END, \(Coin.Columns.marketCapRank) ASC, \(Coin.Columns.name) ASC")
+                    .order(sql: """
+                                CASE WHEN \(Coin.Columns.code) LIKE ? THEN 1 
+                                WHEN \(Coin.Columns.code) LIKE ? THEN 2 
+                                WHEN \(Coin.Columns.name) LIKE ? THEN 3
+                                ELSE 4 END,
+                                CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
+                                \(Coin.Columns.marketCapRank) ASC, 
+                                \(Coin.Columns.name) ASC
+                                """, arguments: [filter, "\(filter)%", "\(filter)%"])
                     .limit(limit)
 
             return try FullCoin.fetchAll(db, request)

@@ -19,9 +19,11 @@ extension HsProvider {
 
     // Full Coins
 
-    func fullCoinsSingle() -> Single<[FullCoin]> {
+    func fullCoinsSingle(page: Int, limit: Int) -> Single<[FullCoin]> {
         let parameters: Parameters = [
-            "fields": "name,code,market_cap_rank,coingecko_id,platforms"
+            "fields": "name,code,market_cap_rank,coingecko_id,platforms",
+            "page": page,
+            "limit": limit
         ]
 
         return networkManager

@@ -30,7 +30,7 @@ extension Kit {
 
         let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, hsOldProvider: hsOldProvider, coinGeckoProvider: coinGeckoProvider, defiYieldProvider: defiYieldProvider, categoryManager: coinCategoryManager, exchangeManager: exchangeManager)
 
-        let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider)
+        let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
         let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
