@@ -83,10 +83,6 @@ extension Kit {
         try coinManager.platformCoins(coinTypeIds: coinTypeIds)
     }
 
-    public func coins(filter: String, limit: Int = 20) throws -> [Coin] {
-        try coinManager.coins(filter: filter, limit: limit)
-    }
-
     // Market Info
 
     public func marketInfosSingle(top: Int = 250, currencyCode: String, defi: Bool = false) -> Single<[MarketInfo]> {

@@ -99,10 +99,6 @@ extension CoinManager {
         try storage.coin(uid: uid)
     }
 
-    func coins(filter: String, limit: Int) throws -> [Coin] {
-        try storage.coins(filter: filter, limit: limit)
-    }
-
     func handleFetched(fullCoins: [FullCoin]) {
         do {
             try storage.save(fullCoins: fullCoins)

@@ -33,6 +33,20 @@ class CoinStorage {
         return migrator
     }
 
+    private func searchOrder(filter: String) -> SQL {
+        SQL(sql: """
+                 CASE WHEN \(Coin.Columns.code) LIKE ? THEN 1 
+                 WHEN \(Coin.Columns.code) LIKE ? THEN 2 
+                 WHEN \(Coin.Columns.name) LIKE ? THEN 3
+                 ELSE 4 END,
+                 CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
+                 \(Coin.Columns.marketCapRank) ASC, 
+                 \(Coin.Columns.name) ASC
+                 """,
+                arguments: [filter, "\(filter)%", "\(filter)%"]
+        )
+    }
+
 }
 
 extension CoinStorage {
@@ -48,15 +62,7 @@ extension CoinStorage {
             let request = Coin
                     .including(all: Coin.platforms)
                     .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
-                    .order(sql: """
-                                CASE WHEN \(Coin.Columns.code) LIKE ? THEN 1 
-                                WHEN \(Coin.Columns.code) LIKE ? THEN 2 
-                                WHEN \(Coin.Columns.name) LIKE ? THEN 3
-                                ELSE 4 END,
-                                CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
-                                \(Coin.Columns.marketCapRank) ASC, 
-                                \(Coin.Columns.name) ASC
-                                """, arguments: [filter, "\(filter)%", "\(filter)%"])
+                    .order(literal: searchOrder(filter: filter))
                     .limit(limit)
 
             return try FullCoin.fetchAll(db, request)
@@ -107,7 +113,7 @@ extension CoinStorage {
             let request = Platform
                     .including(required: Platform.coin.filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%")))
                     .filter(platformType.coinTypeIdPrefixes.map { Platform.Columns.coinType.like("\($0)%") }.joined(operator: .or))
-                    .order(sql: "CASE WHEN \(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END, \(Coin.Columns.marketCapRank) ASC, \(Coin.Columns.name) ASC")
+                    .order(literal: searchOrder(filter: filter))
                     .limit(limit)
 
             return try PlatformCoin.fetchAll(db, request)
@@ -133,16 +139,6 @@ extension CoinStorage {
                     try platform.insert(db)
                 }
             }
-        }
-    }
-
-    func coins(filter: String, limit: Int) throws -> [Coin] {
-        try dbPool.read { db in
-            try Coin
-                    .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
-                    .order(Coin.Columns.marketCapRank.asc)
-                    .limit(limit)
-                    .fetchAll(db)
         }
     }
 
