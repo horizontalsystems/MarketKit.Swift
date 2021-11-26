@@ -52,10 +52,14 @@ extension DefiYieldProvider {
                     return nil
                 }
 
-                let reports = partnerAudits.map { audit in
-                    AuditReport(
+                let reports = partnerAudits.compactMap { audit -> AuditReport? in
+                    guard let date = dateFormatter.date(from: audit.date) else {
+                        return nil
+                    }
+
+                    return AuditReport(
                             name: audit.name,
-                            date: dateFormatter.date(from: audit.date),
+                            date: date,
                             issues: audit.techIssues ?? 0,
                             link: "https://files.safe.defiyield.app/\(audit.auditLink)"
                     )
