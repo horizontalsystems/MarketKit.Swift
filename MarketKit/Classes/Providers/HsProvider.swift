@@ -214,7 +214,7 @@ extension HsProvider {
     func twitterUsername(coinUid: String) -> Single<String?> {
         networkManager
                 .single(url: "\(baseUrl)/v1/coins/\(coinUid)/twitter", method: .get)
-                .map { (response: TwitterUsernameResponse) -> String in
+                .map { (response: TwitterUsernameResponse) -> String? in
                     response.username
                 }
     }
