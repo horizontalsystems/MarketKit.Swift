@@ -20,6 +20,12 @@ class CoinCategoryStorage {
             }
         }
 
+        migrator.registerMigration("Add 'order' field") { db in
+            try db.alter(table: CoinCategory.databaseTableName) { t in
+                t.add(column: CoinCategory.Columns.order.name, .integer).notNull().defaults(to: 0)
+            }
+        }
+
         return migrator
     }
 
@@ -29,7 +35,7 @@ extension CoinCategoryStorage {
 
     func coinCategories() throws -> [CoinCategory] {
         try dbPool.read { db in
-            try CoinCategory.fetchAll(db)
+            try CoinCategory.order(CoinCategory.Columns.order.asc).fetchAll(db)
         }
     }
 
