@@ -19,11 +19,13 @@ class CoinSyncer {
     private func recursiveSyncSingle(page: Int = 1, loadedFullCoins: [FullCoin] = []) -> Single<[FullCoin]> {
         hsProvider.fullCoinsSingle(page: page, limit: limit)
                 .flatMap { [unowned self] fullCoins in
+                    let loadedFullCoins = loadedFullCoins + fullCoins
+
                     if fullCoins.count < limit {
                         return Single.just(loadedFullCoins)
                     }
 
-                    return recursiveSyncSingle(page: page + 1, loadedFullCoins: loadedFullCoins + fullCoins)
+                    return recursiveSyncSingle(page: page + 1, loadedFullCoins: loadedFullCoins)
                 }
     }
 
