@@ -51,8 +51,10 @@ extension CoinCategoryStorage {
         }
     }
 
-    func save(coinCategories: [CoinCategory]) throws {
+    func update(coinCategories: [CoinCategory]) throws {
         _ = try dbPool.write { db in
+            try CoinCategory.deleteAll(db)
+
             for coinCategory in coinCategories {
                 try coinCategory.insert(db)
             }

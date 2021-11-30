@@ -36,7 +36,7 @@ extension CoinCategoryManager {
 
     func handleFetched(coinCategories: [CoinCategory]) {
         do {
-            try storage.save(coinCategories: coinCategories)
+            try storage.update(coinCategories: coinCategories)
             coinCategoriesRelay.accept(coinCategories)
         } catch {
             // todo

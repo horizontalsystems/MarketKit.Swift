@@ -130,8 +130,11 @@ extension CoinStorage {
         }
     }
 
-    func save(fullCoins: [FullCoin]) throws {
+    func update(fullCoins: [FullCoin]) throws {
         _ = try dbPool.write { db in
+            try Coin.deleteAll(db)
+            try Platform.deleteAll(db)
+
             for fullCoin in fullCoins {
                 try fullCoin.coin.insert(db)
 

@@ -101,7 +101,7 @@ extension CoinManager {
 
     func handleFetched(fullCoins: [FullCoin]) {
         do {
-            try storage.save(fullCoins: fullCoins)
+            try storage.update(fullCoins: fullCoins)
             fullCoinsUpdatedRelay.accept(())
         } catch {
             // todo
