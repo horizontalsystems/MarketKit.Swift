@@ -13,6 +13,13 @@ class PlatformResponse: ImmutableMappable {
         symbol = try? map.value("symbol")
     }
 
+    init(type: String, decimals: Int?, address: String?, symbol: String?) {
+        self.type = type
+        self.decimals = decimals
+        self.address = address
+        self.symbol = symbol
+    }
+
     var coinType: CoinType? {
         CoinType(type: type, address: address, symbol: symbol)
     }
@@ -31,6 +38,13 @@ class PlatformResponse: ImmutableMappable {
                 decimals: decimals,
                 coinUid: coinUid
         )
+    }
+
+    func mapping(map: Map) {
+        type     >>> map["type"]
+        decimals >>> map["decimals"]
+        address  >>> map["address"]
+        symbol   >>> map["symbol"]
     }
 
 }

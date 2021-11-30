@@ -39,7 +39,8 @@ extension HsProvider {
         var parameters: Parameters = [
             "limit": top,
             "fields": "price,price_change_24h,market_cap,total_volume",
-            "currency": currencyCode.lowercased()
+            "currency": currencyCode.lowercased(),
+            "orderedByRank": true,
         ]
 
         if defi {
@@ -53,7 +54,8 @@ extension HsProvider {
         let parameters: Parameters = [
             "limit": top,
             "fields": "price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
-            "currency": currencyCode.lowercased()
+            "currency": currencyCode.lowercased(),
+            "orderedByRank": true,
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)

@@ -55,6 +55,18 @@ class MiscController: UIViewController {
         globalMarketInfoButton.setTitle("Global Market Info", for: .normal)
         globalMarketInfoButton.setTitleColor(.systemBlue, for: .normal)
         globalMarketInfoButton.addTarget(self, action: #selector(onTapGlobalMarketInfo), for: .touchUpInside)
+
+        let dumpCoinsButton = UIButton()
+
+        view.addSubview(dumpCoinsButton)
+        dumpCoinsButton.snp.makeConstraints { maker in
+            maker.top.equalTo(globalMarketInfoButton.snp.bottom).offset(8)
+            maker.centerX.equalToSuperview()
+        }
+
+        dumpCoinsButton.setTitle("Dump Coins", for: .normal)
+        dumpCoinsButton.setTitleColor(.systemBlue, for: .normal)
+        dumpCoinsButton.addTarget(self, action: #selector(onTapDumpCoins), for: .touchUpInside)
     }
 
     @objc private func onTapCoinPrices() {
@@ -91,6 +103,26 @@ class MiscController: UIViewController {
                     print("SUCCESS: count: \(points.count)\n\(points.map { "\($0)" }.joined(separator: "\n"))")
                 })
                 .disposed(by: disposeBag)
+    }
+
+    @objc private func onTapDumpCoins() {
+        let message: String
+
+        do {
+            if let coinsDump = try Singleton.instance.kit.coinsDump() {
+                UIPasteboard.general.string = coinsDump
+                message = "The JSON dump is copied to the clipboard.\nPaste it in full_coins.json file and commit"
+            } else {
+                message = "Unexpected Error"
+            }
+        } catch {
+            message = error.localizedDescription
+        }
+
+        let alert = UIAlertController(title: "Whoa", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        present(alert, animated: true)
     }
 
 }

@@ -17,6 +17,15 @@ class FullCoinResponse: ImmutableMappable {
         platforms = try map.value("platforms")
     }
 
+    init(uid: String, name: String, code: String, marketCapRank: Int?, coinGeckoId: String?, platforms: [PlatformResponse]) {
+        self.uid = uid
+        self.name = name
+        self.code = code
+        self.marketCapRank = marketCapRank
+        self.coinGeckoId = coinGeckoId
+        self.platforms = platforms
+    }
+
     func fullCoin() -> FullCoin {
         let coin = Coin(
                 uid: uid,
@@ -27,6 +36,15 @@ class FullCoinResponse: ImmutableMappable {
         )
 
         return FullCoin(coin: coin, platforms: platforms.compactMap { $0.platform(coinUid: uid) })
+    }
+
+    func mapping(map: Map) {
+        uid           >>> map["uid"]
+        name          >>> map["name"]
+        code          >>> map["code"]
+        marketCapRank >>> map["marketCapRank"]
+        coinGeckoId   >>> map["coinGeckoId"]
+        platforms     >>> map["platforms"]
     }
 
 }

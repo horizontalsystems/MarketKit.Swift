@@ -60,6 +60,35 @@ public enum CoinType: Decodable {
         }
     }
 
+    var coinTypeAttributes: (type: String, address: String?, symbol: String?) {
+        switch self {
+        case .bitcoin: return (type: "bitcoin", address: nil, symbol: nil)
+        case .bitcoinCash: return (type: "bitcoin-cash", address: nil, symbol: nil)
+        case .litecoin: return (type: "litecoin", address: nil, symbol: nil)
+        case .dash: return (type: "dash", address: nil, symbol: nil)
+        case .zcash: return (type: "zcash", address: nil, symbol: nil)
+        case .ethereum: return (type: "ethereum", address: nil, symbol: nil)
+        case .binanceSmartChain: return (type: "binance-smart-chain", address: nil, symbol: nil)
+        case .erc20(let address): return (type: "erc20", address: address, symbol: nil)
+        case .bep20(let address): return (type: "bep20", address: address, symbol: nil)
+        case .bep2(let symbol): return (type: "bep2", address: nil, symbol: symbol)
+        case .arbitrumOne(let address): return (type: "arbitrum-one", address: address, symbol: nil)
+        case .avalanche(let address): return (type: "avalanche", address: address, symbol: nil)
+        case .fantom(let address): return (type: "fantom", address: address, symbol: nil)
+        case .harmonyShard0(let address): return (type: "harmony-shard-0", address: address, symbol: nil)
+        case .huobiToken(let address): return (type: "huobi-token", address: address, symbol: nil)
+        case .iotex(let address): return (type: "iotex", address: address, symbol: nil)
+        case .moonriver(let address): return (type: "moonriver", address: address, symbol: nil)
+        case .okexChain(let address): return (type: "okex-chain", address: address, symbol: nil)
+        case .polygonPos(let address): return (type: "polygon-pos", address: address, symbol: nil)
+        case .solana(let address): return (type: "solana", address: address, symbol: nil)
+        case .sora(let address): return (type: "sora", address: address, symbol: nil)
+        case .tomochain(let address): return (type: "tomochain", address: address, symbol: nil)
+        case .xdai(let address): return (type: "xdai", address: address, symbol: nil)
+        case .unsupported(let type): return (type: type, address: nil, symbol: nil)
+        }
+    }
+
 }
 
 extension CoinType: Equatable {

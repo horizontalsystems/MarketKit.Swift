@@ -62,6 +62,31 @@ extension CoinSyncer {
         }
     }
 
+    func coinsDump() throws -> String? {
+        let fullCoins =  try coinManager.fullCoins(filter: "", limit: 1_000_000)
+
+        let fullCoinResponses: [FullCoinResponse] = fullCoins.map { fullCoin in
+            FullCoinResponse(
+                    uid: fullCoin.coin.uid,
+                    name: fullCoin.coin.name,
+                    code: fullCoin.coin.code,
+                    marketCapRank: fullCoin.coin.marketCapRank,
+                    coinGeckoId: fullCoin.coin.coinGeckoId,
+                    platforms: fullCoin.platforms.map { platform in
+                        let coinTypeAttributes = platform.coinType.coinTypeAttributes
+                        return PlatformResponse(
+                                type: coinTypeAttributes.type,
+                                decimals: platform.decimals,
+                                address: coinTypeAttributes.address,
+                                symbol: coinTypeAttributes.symbol
+                        )
+                    }
+            )
+        }
+
+        return fullCoinResponses.toJSONString()
+    }
+
     func sync() {
         let currentTimestamp = Date().timeIntervalSince1970
 

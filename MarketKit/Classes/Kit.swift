@@ -67,6 +67,10 @@ extension Kit {
         try coinManager.fullCoins(coinTypes: coinTypes)
     }
 
+    public func coinsDump() throws -> String? {
+        try coinSyncer.coinsDump()
+    }
+
     public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
         try coinManager.platformCoin(coinType: coinType)
     }
