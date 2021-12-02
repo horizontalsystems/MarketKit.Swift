@@ -125,8 +125,8 @@ extension Kit {
         coinManager.auditReportsSingle(addresses: addresses)
     }
 
-    public func investmentsSingle(coinUid: String, currencyCode: String) -> Single<[CoinInvestment]> {
-        coinManager.investmentsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    public func investmentsSingle(coinUid: String) -> Single<[CoinInvestment]> {
+        coinManager.investmentsSingle(coinUid: coinUid)
     }
 
     public func treasuriesSingle(coinUid: String, currencyCode: String) -> Single<[CoinTreasury]> {
