@@ -5,26 +5,26 @@ public class GlobalMarketPoint: ImmutableMappable {
     public let timestamp: TimeInterval
     public let marketCap: Decimal
     public let volume24h: Decimal
-    public let marketCapDefi: Decimal
+    public let defiMarketCap: Decimal
     public let tvl: Decimal
-    public let dominanceBtc: Decimal
+    public let btcDominance: Decimal
 
     required public init(map: Map) throws {
-        timestamp = try map.value("timestamp")
-        marketCap = try map.value("market_cap", using: Transform.doubleToDecimalTransform)
-        volume24h = try map.value("volume24h", using: Transform.doubleToDecimalTransform)
-        marketCapDefi = try map.value("market_cap_defi", using: Transform.doubleToDecimalTransform)
-        tvl = try map.value("tvl", using: Transform.doubleToDecimalTransform)
-        dominanceBtc = try map.value("dominance_btc", using: Transform.doubleToDecimalTransform)
+        timestamp = try map.value("date")
+        marketCap = try map.value("market_cap", using: Transform.stringToDecimalTransform)
+        volume24h = try map.value("volume", using: Transform.stringToDecimalTransform)
+        defiMarketCap = try map.value("defi_market_cap", using: Transform.stringToDecimalTransform)
+        tvl = try map.value("tvl", using: Transform.stringToDecimalTransform)
+        btcDominance = try map.value("btc_dominance", using: Transform.stringToDecimalTransform)
     }
 
     public func mapping(map: Map) {
-        timestamp >>> map["timestamp"]
-        marketCap >>> (map["market_cap"], Transform.doubleToDecimalTransform)
-        volume24h >>> (map["volume24h"], Transform.doubleToDecimalTransform)
-        marketCapDefi >>> (map["market_cap_defi"], Transform.doubleToDecimalTransform)
-        tvl >>> (map["tvl"], Transform.doubleToDecimalTransform)
-        dominanceBtc >>> (map["dominance_btc"], Transform.doubleToDecimalTransform)
+        timestamp >>> map["date"]
+        marketCap >>> (map["market_cap"], Transform.stringToDecimalTransform)
+        volume24h >>> (map["volume"], Transform.stringToDecimalTransform)
+        defiMarketCap >>> (map["defi_market_cap"], Transform.stringToDecimalTransform)
+        tvl >>> (map["tvl"], Transform.stringToDecimalTransform)
+        btcDominance >>> (map["btc_dominance"], Transform.stringToDecimalTransform)
     }
 
 }
@@ -32,7 +32,7 @@ public class GlobalMarketPoint: ImmutableMappable {
 extension GlobalMarketPoint: CustomStringConvertible {
 
     public var description: String {
-        "GlobalMarketInfo [timestamp: \(timestamp); marketCap: \(marketCap); volume24h: \(volume24h); marketCapDefi: \(marketCapDefi); tvl: \(tvl); dominanceBtc: \(dominanceBtc)]"
+        "GlobalMarketInfo [timestamp: \(timestamp); marketCap: \(marketCap); volume24h: \(volume24h); defiMarketCap: \(defiMarketCap); tvl: \(tvl); btcDominance: \(btcDominance)]"
     }
 
 }

@@ -220,4 +220,21 @@ extension HsProvider {
                 }
     }
 
+    func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
+        let interval: String
+
+        switch timePeriod {
+        case .day7: interval = "7d"
+        case .day30: interval = "30d"
+        default: interval = "1d"
+        }
+
+        let parameters: Parameters = [
+            "interval": interval,
+            "currency": currencyCode
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters)
+    }
+
 }

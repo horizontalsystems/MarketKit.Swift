@@ -3,10 +3,10 @@ import RxSwift
 class GlobalMarketInfoManager {
     private let expirationInterval: TimeInterval = 600 // 6 mins
 
-    private let provider: HsOldProvider
+    private let provider: HsProvider
     private let storage: GlobalMarketInfoStorage
 
-    init(provider: HsOldProvider, storage: GlobalMarketInfoStorage) {
+    init(provider: HsProvider, storage: GlobalMarketInfoStorage) {
         self.provider = provider
         self.storage = storage
     }

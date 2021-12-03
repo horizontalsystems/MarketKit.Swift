@@ -4,7 +4,6 @@ import RxRelay
 class CoinManager {
     private let storage: CoinStorage
     private let hsProvider: HsProvider
-    private let hsOldProvider: HsOldProvider
     private let coinGeckoProvider: CoinGeckoProvider
     private let defiYieldProvider: DefiYieldProvider
     private let categoryManager: CoinCategoryManager
@@ -12,11 +11,10 @@ class CoinManager {
 
     private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
-    init(storage: CoinStorage, hsProvider: HsProvider, hsOldProvider: HsOldProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider,
+    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider,
          categoryManager: CoinCategoryManager, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
-        self.hsOldProvider = hsOldProvider
         self.coinGeckoProvider = coinGeckoProvider
         self.defiYieldProvider = defiYieldProvider
         self.categoryManager = categoryManager

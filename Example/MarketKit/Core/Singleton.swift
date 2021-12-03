@@ -7,8 +7,7 @@ class Singleton {
 
     init() {
         kit = try! Kit.instance(
-                hsApiBaseUrl: "https://markets-dev.horizontalsystems.xyz",
-                hsOldApiBaseUrl: "https://markets.horizontalsystems.xyz",
+                hsApiBaseUrl: "https://api-dev.blocksdecoded.com",
                 minLogLevel: .debug
         )
 
