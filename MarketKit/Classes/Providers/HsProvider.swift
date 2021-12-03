@@ -7,12 +7,14 @@ import ObjectMapper
 class HsProvider {
     private let baseUrl: String
     private let networkManager: NetworkManager
+    private let headers: HTTPHeaders?
 
-    init(baseUrl: String, networkManager: NetworkManager) {
+    init(baseUrl: String, networkManager: NetworkManager, apiKey: String?) {
         self.baseUrl = baseUrl
         self.networkManager = networkManager
-    }
 
+        headers = apiKey.flatMap { HTTPHeaders([HTTPHeader(name: "apikey", value: $0)]) }
+    }
 }
 
 extension HsProvider {
@@ -27,7 +29,7 @@ extension HsProvider {
         ]
 
         return networkManager
-                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
                 .map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
                     fullCoinResponses.map { $0.fullCoin() }
                 }
@@ -47,7 +49,7 @@ extension HsProvider {
             parameters["defi"] = "true"
         }
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
     }
 
     func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
@@ -58,7 +60,7 @@ extension HsProvider {
             "order_by_rank": "true",
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
     }
 
     func marketInfosSingle(coinUids: [String], currencyCode: String) -> Single<[MarketInfoRaw]> {
@@ -68,7 +70,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
     }
 
     func marketInfosSingle(categoryUid: String, currencyCode: String) -> Single<[MarketInfoRaw]> {
@@ -76,7 +78,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters, headers: headers)
     }
 
     func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
@@ -85,7 +87,7 @@ extension HsProvider {
             "language": languageCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters, headers: headers)
     }
 
     func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
@@ -93,7 +95,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/details", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/details", method: .get, parameters: parameters, headers: headers)
                 .map { (response: MarketInfoDetailsResponse) -> MarketInfoDetails in
                     response.marketInfoDetails()
                 }
@@ -113,7 +115,7 @@ extension HsProvider {
             "interval": interval
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols/\(coinUid)/tvls", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols/\(coinUid)/tvls", method: .get, parameters: parameters, headers: headers)
                 .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
                     response.compactMap { $0.marketInfoTvl }
                 }
@@ -137,7 +139,7 @@ extension HsProvider {
             parameters["chain"] = platform
         }
 
-        return networkManager.single(url: "\(baseUrl)/v1/global-markets/tvls", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/global-markets/tvls", method: .get, parameters: parameters, headers: headers)
                 .map { (response: [MarketInfoTvlRaw]) -> [ChartPoint] in
                     response.compactMap { $0.marketInfoTvl }
                 }
@@ -148,13 +150,13 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/defi-protocols", method: .get, parameters: parameters, headers: headers)
     }
 
     // Coin Categories
 
     func coinCategoriesSingle() -> Single<[CoinCategory]> {
-        networkManager.single(url: "\(baseUrl)/v1/categories", method: .get)
+        networkManager.single(url: "\(baseUrl)/v1/categories", method: .get, headers: headers)
     }
 
     // Coin Prices
@@ -167,7 +169,7 @@ extension HsProvider {
         ]
 
         return networkManager
-                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters)
+                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
                 .map { (coinPriceResponses: [CoinPriceResponse]) -> [CoinPrice] in
                     coinPriceResponses.map { coinPriceResponse in
                         coinPriceResponse.coinPrice(currencyCode: currencyCode)
@@ -182,7 +184,7 @@ extension HsProvider {
             "coin_uid": coinUid
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/addresses/holders", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/addresses/holders", method: .get, parameters: parameters, headers: headers)
     }
 
     // Funds
@@ -192,7 +194,7 @@ extension HsProvider {
             "coin_uid": coinUid
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/funds/investments", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/funds/investments", method: .get, parameters: parameters, headers: headers)
     }
 
     func coinTreasuriesSingle(coinUid: String, currencyCode: String) -> Single<[CoinTreasury]> {
@@ -201,7 +203,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased()
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/funds/treasuries", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/funds/treasuries", method: .get, parameters: parameters, headers: headers)
     }
 
     func coinReportsSingle(coinUid: String) -> Single<[CoinReport]> {
@@ -209,12 +211,12 @@ extension HsProvider {
             "coin_uid": coinUid
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/reports", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/reports", method: .get, parameters: parameters, headers: headers)
     }
 
     func twitterUsername(coinUid: String) -> Single<String?> {
         networkManager
-                .single(url: "\(baseUrl)/v1/coins/\(coinUid)/twitter", method: .get)
+                .single(url: "\(baseUrl)/v1/coins/\(coinUid)/twitter", method: .get, headers: headers)
                 .map { (response: TwitterUsernameResponse) -> String? in
                     response.username
                 }
@@ -234,7 +236,7 @@ extension HsProvider {
             "currency": currencyCode
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters)
+        return networkManager.single(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters, headers: headers)
     }
 
 }
