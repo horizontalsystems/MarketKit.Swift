@@ -168,8 +168,10 @@ extension HsProvider {
             "fields": "price,price_change_24h,last_updated"
         ]
 
+        let request = networkManager.session.request("\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
+
         return networkManager
-                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
+                .single(request: request, mapper: CoinPriceMapper())
                 .map { (coinPriceResponses: [CoinPriceResponse]) -> [CoinPrice] in
                     coinPriceResponses.map { coinPriceResponse in
                         coinPriceResponse.coinPrice(currencyCode: currencyCode)
