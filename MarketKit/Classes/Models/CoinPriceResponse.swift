@@ -49,7 +49,6 @@ class CoinPriceMapper: IApiMapper {
                   let timestampInt = coin["last_updated"] as? Int,
                   let priceChangeString = coin["price_change_24h"] as? String,
                   let priceChange = Decimal(string: priceChangeString) else {
-                print("FOUND FAILED: \(coin)")
                 return nil
             }
 
