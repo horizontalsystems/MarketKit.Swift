@@ -37,8 +37,12 @@ extension DefiYieldProvider {
             var audits = [Int: [PartnerAudit]]()
 
             for audit in info.partnerAudits {
-                let partnerId = audit.partner.id
-                partners[partnerId] = audit.partner
+                guard let partner = audit.partner else {
+                    continue
+                }
+
+                let partnerId = partner.id
+                partners[partnerId] = partner
                 var partnerAudits = audits[partnerId] ?? [PartnerAudit]()
                 partnerAudits.append(audit)
                 audits[partnerId] = partnerAudits
@@ -61,7 +65,7 @@ extension DefiYieldProvider {
                             name: audit.name,
                             date: date,
                             issues: audit.techIssues ?? 0,
-                            link: "https://files.safe.defiyield.app/\(audit.auditLink)"
+                            link: audit.auditLink.map { "https://files.safe.defiyield.app/\($0)" }
                     )
                 }
 
@@ -86,15 +90,15 @@ extension DefiYieldProvider {
         let name: String
         let date: String
         let techIssues: Int?
-        let auditLink: String
-        let partner: Partner
+        let auditLink: String?
+        let partner: Partner?
 
         init(map: Map) throws {
             name = try map.value("name")
             date = try map.value("date")
             techIssues = try? map.value("tech_issues")
-            auditLink = try map.value("audit_link")
-            partner = try map.value("partner")
+            auditLink = try? map.value("audit_link")
+            partner = try? map.value("partner")
         }
     }
 
