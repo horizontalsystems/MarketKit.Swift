@@ -55,7 +55,7 @@ extension HsProvider {
     func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "limit": top,
-            "fields": "price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
+            "fields": "platforms,price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
             "currency": currencyCode.lowercased(),
             "order_by_rank": "true",
         ]

@@ -13,6 +13,7 @@ class MarketInfoRaw: ImmutableMappable {
     let totalVolume: Decimal?
     let athPercentage: Decimal?
     let atlPercentage: Decimal?
+    let platforms: [PlatformResponse]?
 
     required init(map: Map) throws {
         uid = try map.value("uid")
@@ -27,6 +28,7 @@ class MarketInfoRaw: ImmutableMappable {
         totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
         athPercentage = try? map.value("ath_percentage", using: Transform.stringToDecimalTransform)
         atlPercentage = try? map.value("atl_percentage", using: Transform.stringToDecimalTransform)
+        platforms = try? map.value("platforms")
     }
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
@@ -42,7 +44,8 @@ class MarketInfoRaw: ImmutableMappable {
                 marketCap: marketCap,
                 totalVolume: totalVolume,
                 athPercentage: athPercentage,
-                atlPercentage: atlPercentage
+                atlPercentage: atlPercentage,
+                coinTypes: platforms?.compactMap { $0.coinType }
         )
     }
 
