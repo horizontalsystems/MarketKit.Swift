@@ -11,6 +11,7 @@ class DefiCoinRaw: ImmutableMappable {
     let tvlChange7d: Decimal?
     let tvlChange30d: Decimal?
     let chains: [String]
+    let chainTvls: [String: Decimal]
 
     required init(map: Map) throws {
         uid = try? map.value("uid")
@@ -22,6 +23,7 @@ class DefiCoinRaw: ImmutableMappable {
         tvlChange7d = try? map.value("tvl_change_7d", using: Transform.stringToDecimalTransform)
         tvlChange30d = try? map.value("tvl_change_30d", using: Transform.stringToDecimalTransform)
         chains = try map.value("chains")
+        chainTvls = try map.value("chain_tvls", using: Transform.stringToDecimalTransform)
     }
 
     func defiCoin(fullCoin: FullCoin?) -> DefiCoin {
@@ -40,7 +42,8 @@ class DefiCoinRaw: ImmutableMappable {
                 tvlChange1d: tvlChange1d,
                 tvlChange7d: tvlChange7d,
                 tvlChange30d: tvlChange30d,
-                chains: chains
+                chains: chains,
+                chainTvls: chainTvls
         )
     }
 

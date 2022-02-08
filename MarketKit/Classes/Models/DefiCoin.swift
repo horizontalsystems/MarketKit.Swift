@@ -8,6 +8,7 @@ public struct DefiCoin {
     public let tvlChange7d: Decimal?
     public let tvlChange30d: Decimal?
     public let chains: [String]
+    public let chainTvls: [String: Decimal]
 
     public enum DefiCoinType {
         case fullCoin(fullCoin: FullCoin)
