@@ -179,11 +179,11 @@ extension CoinManager {
         hsProvider.coinReportsSingle(coinUid: coinUid)
     }
 
-    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         hsProvider.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 

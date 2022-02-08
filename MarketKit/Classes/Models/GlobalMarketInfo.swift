@@ -4,7 +4,7 @@ import ObjectMapper
 
 public class GlobalMarketInfo: Record {
     let currencyCode: String
-    let timePeriod: TimePeriod
+    let timePeriod: HsTimePeriod
     public let points: [GlobalMarketPoint]
     let timestamp: TimeInterval
 
@@ -16,7 +16,7 @@ public class GlobalMarketInfo: Record {
         "globalMarketInfo"
     }
 
-    init(currencyCode: String, timePeriod: TimePeriod, points: [GlobalMarketPoint]) {
+    init(currencyCode: String, timePeriod: HsTimePeriod, points: [GlobalMarketPoint]) {
         self.currencyCode = currencyCode
         self.timePeriod = timePeriod
         self.points = points
@@ -27,7 +27,7 @@ public class GlobalMarketInfo: Record {
 
     required init(row: Row) {
         currencyCode = row[Columns.currencyCode]
-        timePeriod = TimePeriod(rawValue: row[Columns.timePeriod]) ?? .hour24
+        timePeriod = HsTimePeriod(rawValue: row[Columns.timePeriod]) ?? .day1
         points = [GlobalMarketPoint](JSONString: row[Columns.points]) ?? []
         timestamp = row[Columns.timestamp]
 

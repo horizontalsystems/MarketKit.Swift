@@ -96,7 +96,7 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapGlobalMarketInfo() {
-        Singleton.instance.kit.globalMarketPointsSingle(currencyCode: "USD", timePeriod: .hour24)
+        Singleton.instance.kit.globalMarketPointsSingle(currencyCode: "USD", timePeriod: .day1)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] points in

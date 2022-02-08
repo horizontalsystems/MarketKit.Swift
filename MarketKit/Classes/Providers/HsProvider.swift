@@ -101,18 +101,10 @@ extension HsProvider {
                 }
     }
 
-    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
-        let interval: String
-
-        switch timePeriod {
-        case .day7: interval = "7d"
-        case .day30: interval = "30d"
-        default: interval = "1d"
-        }
-
+    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
-            "interval": interval
+            "interval": timePeriod.rawValue
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/defi-protocols/\(coinUid)/tvls", method: .get, parameters: parameters, headers: headers)
@@ -121,20 +113,12 @@ extension HsProvider {
                 }
     }
 
-    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
-        let interval: String
-
-        switch timePeriod {
-        case .day7: interval = "7d"
-        case .day30: interval = "30d"
-        default: interval = "1d"
-        }
-
-
+    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         var parameters: Parameters = [
             "currency": currencyCode.lowercased(),
-            "interval": interval
+            "interval": timePeriod.rawValue
         ]
+
         if !platform.isEmpty {
             parameters["chain"] = platform
         }
@@ -224,17 +208,9 @@ extension HsProvider {
                 }
     }
 
-    func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
-        let interval: String
-
-        switch timePeriod {
-        case .day7: interval = "7d"
-        case .day30: interval = "30d"
-        default: interval = "1d"
-        }
-
+    func globalMarketPointsSingle(currencyCode: String, timePeriod: HsTimePeriod) -> Single<[GlobalMarketPoint]> {
         let parameters: Parameters = [
-            "interval": interval,
+            "interval": timePeriod.rawValue,
             "currency": currencyCode
         ]
 

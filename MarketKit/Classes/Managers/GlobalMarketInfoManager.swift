@@ -15,7 +15,7 @@ class GlobalMarketInfoManager {
 
 extension GlobalMarketInfoManager {
 
-    func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
+    func globalMarketPointsSingle(currencyCode: String, timePeriod: HsTimePeriod) -> Single<[GlobalMarketPoint]> {
         let currentTimestamp = Date().timeIntervalSince1970
 
         if let storedInfo = try? storage.globalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod), currentTimestamp - storedInfo.timestamp < expirationInterval {

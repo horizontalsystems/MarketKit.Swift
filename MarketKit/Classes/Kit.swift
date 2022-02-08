@@ -137,11 +137,11 @@ extension Kit {
         coinManager.coinReportsSingle(coinUid: coinUid)
     }
 
-    public func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+    public func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         coinManager.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    public func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: TimePeriod) -> Single<[ChartPoint]> {
+    public func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         coinManager.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
@@ -218,7 +218,7 @@ extension Kit {
 
     // Global Market Info
 
-    public func globalMarketPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalMarketPoint]> {
+    public func globalMarketPointsSingle(currencyCode: String, timePeriod: HsTimePeriod) -> Single<[GlobalMarketPoint]> {
         globalMarketInfoManager.globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
