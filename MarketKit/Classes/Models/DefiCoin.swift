@@ -5,8 +5,12 @@ public struct DefiCoin {
     public let tvl: Decimal
     public let tvlRank: Int
     public let tvlChange1d: Decimal?
-    public let tvlChange7d: Decimal?
-    public let tvlChange30d: Decimal?
+    public let tvlChange1w: Decimal?
+    public let tvlChange2w: Decimal?
+    public let tvlChange1m: Decimal?
+    public let tvlChange3m: Decimal?
+    public let tvlChange6m: Decimal?
+    public let tvlChange1y: Decimal?
     public let chains: [String]
     public let chainTvls: [String: Decimal]
 
