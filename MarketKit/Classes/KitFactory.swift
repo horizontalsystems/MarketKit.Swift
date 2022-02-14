@@ -39,7 +39,7 @@ extension Kit {
         coinPriceManager.delegate = coinPriceSyncManager
 
         let coinHistoricalPriceStorage = try CoinHistoricalPriceStorage(dbPool: dbPool)
-        let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, coinManager: coinManager, coinGeckoProvider: coinGeckoProvider)
+        let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, hsProvider: hsProvider)
 
         let chartStorage = try ChartStorage(dbPool: dbPool)
         let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, provider: coinGeckoProvider)

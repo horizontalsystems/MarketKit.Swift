@@ -163,6 +163,15 @@ extension HsProvider {
                 }
     }
 
+    func historicalCoinPriceSingle(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Single<HistoricalCoinPriceResponse> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+            "timestamp": Int(timestamp)
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_history", method: .get, parameters: parameters, headers: headers)
+    }
+
     // Holders
 
     func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
@@ -215,6 +224,20 @@ extension HsProvider {
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters, headers: headers)
+    }
+
+}
+
+extension HsProvider {
+
+    struct HistoricalCoinPriceResponse: ImmutableMappable {
+        let timestamp: Int
+        let price: Decimal
+
+        init(map: Map) throws {
+            timestamp = try map.value("timestamp")
+            price = try map.value("price", using: Transform.stringToDecimalTransform)
+        }
     }
 
 }

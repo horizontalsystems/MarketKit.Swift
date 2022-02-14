@@ -3,13 +3,11 @@ import RxSwift
 
 class CoinHistoricalPriceManager {
     private let storage: CoinHistoricalPriceStorage
-    private let coinManager: CoinManager
-    private let coinGeckoProvider: CoinGeckoProvider
+    private let hsProvider: HsProvider
 
-    init(storage: CoinHistoricalPriceStorage, coinManager: CoinManager, coinGeckoProvider: CoinGeckoProvider) {
+    init(storage: CoinHistoricalPriceStorage, hsProvider: HsProvider) {
         self.storage = storage
-        self.coinManager = coinManager
-        self.coinGeckoProvider = coinGeckoProvider
+        self.hsProvider = hsProvider
     }
 
 }
@@ -21,23 +19,24 @@ extension CoinHistoricalPriceManager {
             return Single.just(storedPrice.value)
         }
 
-        guard let coinGeckoId = try? coinManager.coin(uid: coinUid)?.coinGeckoId else {
-            return Single.error(CoinError.coinNotFound)
-        }
+        return hsProvider.historicalCoinPriceSingle(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)
+                .flatMap { [weak self] response in
+                    if abs(Int(timestamp) - response.timestamp) < 24 * 60 * 60 { // 1 day
+                        try? self?.storage.save(coinHistoricalPrice: CoinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, value: response.price, timestamp: timestamp))
 
-        return coinGeckoProvider.historicalPriceValueSingle(id: coinGeckoId, currencyCode: currencyCode, timestamp: timestamp)
-                .do(onSuccess: { [weak self] value in
-                    let coinHistoricalPrice = CoinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, value: value, timestamp: timestamp)
-                    try? self?.storage.save(coinHistoricalPrice: coinHistoricalPrice)
-                })
+                        return Single.just(response.price)
+                    } else {
+                        return Single.error(ResponseError.returnedTimestampIsTooInaccurate)
+                    }
+                }
     }
 
 }
 
 extension CoinHistoricalPriceManager {
 
-    enum CoinError: Error {
-        case coinNotFound
+    enum ResponseError: Error {
+        case returnedTimestampIsTooInaccurate
     }
 
 }
