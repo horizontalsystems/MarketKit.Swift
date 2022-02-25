@@ -6,8 +6,10 @@ public enum CoinType: Decodable {
     case zcash
     case ethereum
     case binanceSmartChain
+    case polygon
     case erc20(address: String)
     case bep20(address: String)
+    case mrc20(address: String)
     case bep2(symbol: String)
     case arbitrumOne(address: String)
     case avalanche(address: String)
@@ -17,7 +19,6 @@ public enum CoinType: Decodable {
     case iotex(address: String)
     case moonriver(address: String)
     case okexChain(address: String)
-    case polygonPos(address: String)
     case solana(address: String)
     case sora(address: String)
     case tomochain(address: String)
@@ -51,7 +52,7 @@ public enum CoinType: Decodable {
         case "iotex": if let address = address { self = .iotex(address: address) } else { return nil }
         case "moonriver": if let address = address { self = .moonriver(address: address) } else { return nil }
         case "okex-chain": if let address = address { self = .okexChain(address: address) } else { return nil }
-        case "polygon-pos": if let address = address { self = .polygonPos(address: address) } else { return nil }
+        case "polygon-pos": if let address = address { self = address == "0x0000000000000000000000000000000000001010" ? .polygon : .mrc20(address: address) } else { return nil }
         case "solana": if let address = address { self = .solana(address: address) } else { return nil }
         case "sora": if let address = address { self = .sora(address: address) } else { return nil }
         case "tomochain": if let address = address { self = .tomochain(address: address) } else { return nil }
@@ -69,8 +70,10 @@ public enum CoinType: Decodable {
         case .zcash: return (type: "zcash", address: nil, symbol: nil)
         case .ethereum: return (type: "ethereum", address: nil, symbol: nil)
         case .binanceSmartChain: return (type: "binance-smart-chain", address: nil, symbol: nil)
+        case .polygon: return (type: "polygon-pos", address: "0x0000000000000000000000000000000000001010", symbol: nil)
         case .erc20(let address): return (type: "erc20", address: address, symbol: nil)
         case .bep20(let address): return (type: "bep20", address: address, symbol: nil)
+        case .mrc20(let address): return (type: "polygon-pos", address: address, symbol: nil)
         case .bep2(let symbol): return (type: "bep2", address: nil, symbol: symbol)
         case .arbitrumOne(let address): return (type: "arbitrum-one", address: address, symbol: nil)
         case .avalanche(let address): return (type: "avalanche", address: address, symbol: nil)
@@ -80,7 +83,6 @@ public enum CoinType: Decodable {
         case .iotex(let address): return (type: "iotex", address: address, symbol: nil)
         case .moonriver(let address): return (type: "moonriver", address: address, symbol: nil)
         case .okexChain(let address): return (type: "okex-chain", address: address, symbol: nil)
-        case .polygonPos(let address): return (type: "polygon-pos", address: address, symbol: nil)
         case .solana(let address): return (type: "solana", address: address, symbol: nil)
         case .sora(let address): return (type: "sora", address: address, symbol: nil)
         case .tomochain(let address): return (type: "tomochain", address: address, symbol: nil)
@@ -102,8 +104,10 @@ extension CoinType: Equatable {
         case (.zcash, .zcash): return true
         case (.ethereum, .ethereum): return true
         case (.binanceSmartChain, .binanceSmartChain): return true
+        case (.polygon, .polygon): return true
         case (.erc20(let lhsAddress), .erc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.bep20(let lhsAddress), .bep20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
+        case (.mrc20(let lhsAddress), .mrc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.bep2(let lhsSymbol), .bep2(let rhsSymbol)): return lhsSymbol == rhsSymbol
         case (.arbitrumOne(let lhsAddress), .arbitrumOne(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.avalanche(let lhsAddress), .avalanche(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
@@ -113,7 +117,6 @@ extension CoinType: Equatable {
         case (.iotex(let lhsAddress), .iotex(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.moonriver(let lhsAddress), .moonriver(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.okexChain(let lhsAddress), .okexChain(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
-        case (.polygonPos(let lhsAddress), .polygonPos(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.solana(let lhsAddress), .solana(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.sora(let lhsAddress), .sora(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.tomochain(let lhsAddress), .tomochain(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
@@ -148,12 +151,14 @@ extension CoinType: Identifiable {
             case "zcash": self = .zcash
             case "ethereum": self = .ethereum
             case "binanceSmartChain": self = .binanceSmartChain
+            case "polygon": self = .polygon
             default: self = .unsupported(type: String(chunks[0]))
             }
         } else {
             switch chunks[0] {
             case "erc20": self = .erc20(address: String(chunks[1]))
             case "bep20": self = .bep20(address: String(chunks[1]))
+            case "mrc20": self = .mrc20(address: String(chunks[1]))
             case "bep2": self = .bep2(symbol: String(chunks[1]))
             case "arbitrumOne": self = .arbitrumOne(address: String(chunks[1]))
             case "avalanche": self = .avalanche(address: String(chunks[1]))
@@ -163,7 +168,6 @@ extension CoinType: Identifiable {
             case "iotex": self = .iotex(address: String(chunks[1]))
             case "moonriver": self = .moonriver(address: String(chunks[1]))
             case "okexChain": self = .okexChain(address: String(chunks[1]))
-            case "polygonPos": self = .polygonPos(address: String(chunks[1]))
             case "solana": self = .solana(address: String(chunks[1]))
             case "sora": self = .sora(address: String(chunks[1]))
             case "tomochain": self = .tomochain(address: String(chunks[1]))
@@ -183,8 +187,10 @@ extension CoinType: Identifiable {
         case .zcash: return "zcash"
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binanceSmartChain"
+        case .polygon: return "polygon"
         case .erc20(let address): return ["erc20", address].joined(separator: "|")
         case .bep20(let address): return ["bep20", address].joined(separator: "|")
+        case .mrc20(let address): return ["mrc20", address].joined(separator: "|")
         case .bep2(let symbol): return ["bep2", symbol].joined(separator: "|")
         case .arbitrumOne(let address): return ["arbitrumOne", address].joined(separator: "|")
         case .avalanche(let address): return ["avalanche", address].joined(separator: "|")
@@ -194,7 +200,6 @@ extension CoinType: Identifiable {
         case .iotex(let address): return ["iotex", address].joined(separator: "|")
         case .moonriver(let address): return ["moonriver", address].joined(separator: "|")
         case .okexChain(let address): return ["okexChain", address].joined(separator: "|")
-        case .polygonPos(let address): return ["polygonPos", address].joined(separator: "|")
         case .solana(let address): return ["solana", address].joined(separator: "|")
         case .sora(let address): return ["sora", address].joined(separator: "|")
         case .tomochain(let address): return ["tomochain", address].joined(separator: "|")
@@ -216,8 +221,10 @@ extension CoinType: CustomStringConvertible {
         case .zcash: return "zcash"
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binanceSmartChain"
+        case .polygon: return "polygon"
         case .erc20(let address): return ["erc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .bep20(let address): return ["bep20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
+        case .mrc20(let address): return ["mrc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .bep2(let symbol): return ["bep2", symbol].joined(separator: "|")
         case .arbitrumOne(let address): return ["arbitrumOne", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .avalanche(let address): return ["avalanche", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
@@ -227,7 +234,6 @@ extension CoinType: CustomStringConvertible {
         case .iotex(let address): return ["iotex", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .moonriver(let address): return ["moonriver", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .okexChain(let address): return ["okexChain", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
-        case .polygonPos(let address): return ["polygonPos", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .solana(let address): return ["solana", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .sora(let address): return ["sora", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .tomochain(let address): return ["tomochain", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
