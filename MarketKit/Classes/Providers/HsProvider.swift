@@ -172,6 +172,15 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_history", method: .get, parameters: parameters, headers: headers)
     }
 
+    func coinPriceChartSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<[ChartCoinPriceResponse]> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+            "interval": interval.rawValue
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart", method: .get, parameters: parameters, headers: headers)
+    }
+
     // Holders
 
     func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
@@ -238,6 +247,29 @@ extension HsProvider {
             timestamp = try map.value("timestamp")
             price = try map.value("price", using: Transform.stringToDecimalTransform)
         }
+    }
+
+    struct ChartCoinPriceResponse: ImmutableMappable {
+        let timestamp: Int
+        let price: Decimal
+        let totalVolume: Decimal?
+
+        init(map: Map) throws {
+            timestamp = try map.value("date") //todo: wait and rename to timestamp
+            price = try map.value("price", using: Transform.stringToDecimalTransform)
+            totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
+        }
+
+        var chartPoint: ChartPoint {
+            ChartPoint(
+                    timestamp: TimeInterval(timestamp),
+                    value: price,
+                    extra: totalVolume.flatMap { volume in
+                        [ChartPoint.volume: volume]
+                    } ?? [:]
+            )
+        }
+
     }
 
 }

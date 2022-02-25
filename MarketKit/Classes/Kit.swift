@@ -198,16 +198,16 @@ extension Kit {
 
     // Chart Info
 
-    public func chartInfo(coinUid: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
-        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    public func chartInfo(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> ChartInfo? {
+        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
     }
 
-    public func chartInfoSingle(coinUid: String, currencyCode: String, chartType: ChartType) -> Single<ChartInfo> {
-        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    public func chartInfoSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<ChartInfo> {
+        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
     }
 
-    public func chartInfoObservable(coinUid: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo> {
-        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, chartType: chartType)
+    public func chartInfoObservable(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Observable<ChartInfo> {
+        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
     }
 
     // Posts

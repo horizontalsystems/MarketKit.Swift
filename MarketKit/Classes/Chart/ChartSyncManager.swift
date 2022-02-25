@@ -64,12 +64,12 @@ class ChartSyncManager {
 
 extension ChartSyncManager {
 
-    func chartInfoObservable(coinUid: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo> {
+    func chartInfoObservable(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Observable<ChartInfo> {
         queue.sync {
             guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
                 return Observable.error(Kit.KitError.noChartData)
             }
-            let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
+            let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, interval: interval)
 
             guard !failedKeys.contains(key) else {
                 return Observable.error(Kit.KitError.noChartData)

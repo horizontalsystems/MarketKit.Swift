@@ -6,10 +6,10 @@ public class ChartPoint {
     public let value: Decimal
     public var extra: [String: Decimal]
 
-    public init(timestamp: TimeInterval, value: Decimal, extra: [String: Decimal] = [:]) {
+    public init(timestamp: TimeInterval, value: Decimal, extra: [String: Decimal]? = nil) {
         self.timestamp = timestamp
         self.value = value
-        self.extra = extra
+        self.extra = extra ?? [:]
     }
 
     @discardableResult public func added(field: String, value: Decimal?) -> Self {

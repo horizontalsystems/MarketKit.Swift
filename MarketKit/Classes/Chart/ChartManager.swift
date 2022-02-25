@@ -10,12 +10,12 @@ class ChartManager {
 
     private let coinManager: CoinManager
     private let storage: ChartStorage
-    private let provider: CoinGeckoProvider
+    private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, storage: ChartStorage, provider: CoinGeckoProvider) {
+    init(coinManager: CoinManager, storage: ChartStorage, hsProvider: HsProvider) {
         self.coinManager = coinManager
         self.storage = storage
-        self.provider = provider
+        self.hsProvider = hsProvider
     }
 
     private static var utcStartOfToday: Date {
@@ -24,42 +24,30 @@ class ChartManager {
         return calendar.startOfDay(for: Date())
     }
 
-    private static func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
-        guard let lastPoint = chartPoints.last else {
+    private static func chartInfo(points: [ChartPoint], interval: HsTimePeriod) -> ChartInfo? {
+        guard let lastPoint = points.last else {
             return nil
         }
 
+        let lastPointTimestamp = TimeInterval(lastPoint.timestamp)
+
+        // visible window for chart
         let startTimestamp: TimeInterval
-        var endTimestamp = Date().timeIntervalSince1970
-        let lastPointDiffInterval = endTimestamp - lastPoint.timestamp
+        var currentTimestamp = Date().timeIntervalSince1970
 
-        if key.chartType == .today {
-            startTimestamp = utcStartOfToday.timeIntervalSince1970
-            let day = 24 * 60 * 60
-            endTimestamp = startTimestamp + TimeInterval(day)
-        } else {
-            startTimestamp = lastPoint.timestamp - key.chartType.rangeInterval
-        }
+        let lastPointGap = currentTimestamp - lastPointTimestamp
+        startTimestamp = lastPointTimestamp - interval.range
 
-        guard lastPointDiffInterval < key.chartType.rangeInterval else {
+        // if points not in visible window (too early) just return nil
+        guard lastPointGap < interval.range else {
             return nil
-        }
-
-        guard lastPointDiffInterval < key.chartType.expirationInterval else {
-            // expired chart info, current timestamp more than last point
-            return ChartInfo(
-                    points: chartPoints,
-                    startTimestamp: startTimestamp,
-                    endTimestamp: endTimestamp,
-                    expired: true
-            )
         }
 
         return ChartInfo(
-                points: chartPoints,
+                points: points,
                 startTimestamp: startTimestamp,
-                endTimestamp: endTimestamp,
-                expired: false
+                endTimestamp: currentTimestamp,
+                expired: lastPointGap > interval.expiration
         )
     }
 
@@ -75,45 +63,52 @@ extension ChartManager {
         storedChartPoints(key: key).last?.timestamp
     }
 
-    func chartInfo(coinUid: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
+    func chartInfo(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> ChartInfo? {
         guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
             return nil
         }
 
-        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
-        return Self.chartInfo(chartPoints: storedChartPoints(key: key), key: key)
+        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, interval: interval)
+        return Self.chartInfo(points: storedChartPoints(key: key), interval: interval)
     }
 
-    func chartInfoSingle(coinUid: String, currencyCode: String, chartType: ChartType) -> Single<ChartInfo> {
+    func chartInfoSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<ChartInfo> {
         guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
             return Single.error(Kit.KitError.noChartData)
         }
 
-        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, chartType: chartType)
-        return provider
-                .chartPointsSingle(key: key)
-                .flatMap { points in
-                    if let chartInfo = Self.chartInfo(chartPoints: points, key: key) {
+        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, interval: interval)
+        return hsProvider
+                .coinPriceChartSingle(coinUid: fullCoin.coin.uid, currencyCode: currencyCode, interval: interval)
+                .flatMap { chartCoinPriceResponse in
+                    let points = chartCoinPriceResponse.map {
+                        $0.chartPoint
+                    }
+
+                    if let chartInfo = Self.chartInfo(points: points, interval: interval) {
                         return Single.just(chartInfo)
                     }
+
                     return Single.error(Kit.KitError.noChartData)
                 }
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
-        let records = chartPoints.map {
-            ChartPointRecord(coinUid: key.coin.uid,
+        let records = chartPoints.map { point in
+            ChartPointRecord(
+                    coinUid: key.coin.uid,
                     currencyCode: key.currencyCode,
-                    chartType: key.chartType,
-                    timestamp: $0.timestamp,
-                    value: $0.value,
-                    volume: $0.extra[ChartPoint.volume])
+                    interval: key.interval,
+                    timestamp: point.timestamp,
+                    value: point.value,
+                    volume: point.extra[ChartPoint.volume]
+            )
         }
 
         storage.deleteChartPoints(key: key)
         storage.save(chartPoints: records)
 
-        if let chartInfo = Self.chartInfo(chartPoints: chartPoints, key: key) {
+        if let chartInfo = Self.chartInfo(points: chartPoints, interval: key.interval) {
             delegate?.didUpdate(chartInfo: chartInfo, key: key)
         } else {
             delegate?.didFoundNoChartInfo(key: key)

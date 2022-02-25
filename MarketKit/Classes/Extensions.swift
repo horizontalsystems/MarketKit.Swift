@@ -24,3 +24,19 @@ extension Decimal: DatabaseValueConvertible {
     }
 
 }
+
+extension TimeInterval {
+
+    public static func minutes(_ count: Self) -> Self {
+        count * 60
+    }
+
+    public static func hours(_ count: Self) -> Self {
+        count * minutes(60)
+    }
+
+    public static func days(_ count: Self) -> Self {
+        count * hours(24)
+    }
+
+}
