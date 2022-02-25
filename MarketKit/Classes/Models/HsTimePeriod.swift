@@ -1,4 +1,4 @@
-public enum HsTimePeriod: String {
+public enum HsTimePeriod: String, CaseIterable {
     case day1 = "1d"
     case week1 = "1w"
     case week2 = "2w"
@@ -7,15 +7,37 @@ public enum HsTimePeriod: String {
     case month6 = "6m"
     case year1 = "1y"
 
-    public init(chartType: ChartType) {
-        switch chartType {
-        case .week: self = .week1
-        case .week2: self = .week2
-        case .month, .monthByDay: self = .month1
-        case .month3: self = .month3
-        case .halfYear: self = .month6
-        case .year: self = .year1
-        default: self = .day1
+    var expiration: TimeInterval {
+        switch self {
+        case .day1: return .minutes(30)
+        case .week1: return .hours(4)
+        case .week2: return .hours(8)
+        case .month1, .month3, .month6, .year1: return .days(1)
         }
     }
+
+    var range: TimeInterval {
+        switch self {
+        case .day1: return .days(1)
+        case .week1: return  .days(7)
+        case .week2: return  .days(14)
+        case .month1: return  .days(30)
+        case .month3: return  .days(90)
+        case .month6: return  .days(180)
+        case .year1: return  .days(365)
+        }
+    }
+
+}
+
+extension HsTimePeriod: Comparable {
+
+    public static func <(lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
+        lhs.range < rhs.range
+    }
+
+    public static func ==(lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
+        lhs.range == rhs.range
+    }
+
 }

@@ -46,11 +46,11 @@ class MarketInfoOverviewRaw: ImmutableMappable {
                 return nil
             }
 
-            var performanceChanges = [TimePeriod: Decimal]()
+            var performanceChanges = [HsTimePeriod: Decimal]()
             for (timePeriodStr, change) in changes {
                 if let changeStr = change,
                    let changeDecimal = Decimal(string: changeStr),
-                   let timePeriod = TimePeriod(rawValue: timePeriodStr) {
+                   let timePeriod = Self.timePeriod(timePeriodStr) {
                     performanceChanges[timePeriod] = changeDecimal
                 }
             }
@@ -77,6 +77,18 @@ class MarketInfoOverviewRaw: ImmutableMappable {
                 coinTypes: platforms.compactMap { $0.coinType },
                 links: convertedLinks
         )
+    }
+
+    static func timePeriod(_ timePeriod: String) -> HsTimePeriod? {
+        switch timePeriod {
+        case "24h": return .day1
+        case "7d": return .week1
+        case "14d": return .week2
+        case "30d": return .month1
+        case "200d": return .month6
+        case "1y": return .year1
+        default: return nil
+        }
     }
 
 }

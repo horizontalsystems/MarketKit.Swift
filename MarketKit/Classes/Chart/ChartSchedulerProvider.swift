@@ -3,19 +3,23 @@ import RxSwift
 class ChartSchedulerProvider {
     private let key: ChartInfoKey
     private let manager: ChartManager
-    private let provider: CoinGeckoProvider
+    private let hsProvider: HsProvider
 
     let retryInterval: TimeInterval
 
-    init(key: ChartInfoKey, manager: ChartManager, provider: CoinGeckoProvider, retryInterval: TimeInterval) {
+    init(key: ChartInfoKey, manager: ChartManager, hsProvider: HsProvider, retryInterval: TimeInterval) {
         self.key = key
         self.manager = manager
-        self.provider = provider
+        self.hsProvider = hsProvider
         self.retryInterval = retryInterval
     }
 
-    private func handleUpdated(chartPoints: [ChartPoint]) {
-        manager.handleUpdated(chartPoints: chartPoints, key: key)
+    private func handleUpdated(chartCoinPriceResponse: [HsProvider.ChartCoinPriceResponse]) {
+        let points = chartCoinPriceResponse.map {
+            $0.chartPoint
+        }
+
+        manager.handleUpdated(chartPoints: points, key: key)
     }
 
     private func handleNoChartPoints() {
@@ -35,19 +39,19 @@ extension ChartSchedulerProvider: ISchedulerProvider {
     }
 
     var expirationInterval: TimeInterval {
-        key.chartType.expirationInterval
+        key.interval.expiration
     }
 
     var syncSingle: Single<Void> {
-        provider.chartPointsSingle(key: key)
-                .do(onSuccess: { [weak self] chartPoints in
-                    self?.handleUpdated(chartPoints: chartPoints)
+        hsProvider.coinPriceChartSingle(coinUid: key.coin.uid, currencyCode: key.currencyCode, interval: key.interval)
+                .do(onSuccess: { [weak self] response in
+                    self?.handleUpdated(chartCoinPriceResponse: response)
                 }, onError: { [weak self] error in
-                    if case CoinGeckoProvider.CoinGeckoError.noCoinGeckoId = error {
-                        self?.handleNoChartPoints()
-                    }
+                    self?.handleNoChartPoints()
                 })
-                .map { _ in () }
+                .map { _ in
+                    ()
+                }
     }
 
     func notifyExpired() {

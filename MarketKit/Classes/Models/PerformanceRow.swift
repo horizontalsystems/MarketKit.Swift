@@ -2,7 +2,7 @@ import Foundation
 
 public struct PerformanceRow {
     public let base: PerformanceBase
-    public let changes: [TimePeriod: Decimal]
+    public let changes: [HsTimePeriod: Decimal]
 }
 
 public enum PerformanceBase: String, CaseIterable {
