@@ -23,7 +23,7 @@ extension HsProvider {
 
     func fullCoinsSingle(page: Int, limit: Int) -> Single<[FullCoin]> {
         let parameters: Parameters = [
-            "fields": "name,code,market_cap_rank,coingecko_id,platforms",
+            "fields": "name,code,market_cap_rank,coingecko_id,all_platforms",
             "page": page,
             "limit": limit
         ]
@@ -55,7 +55,7 @@ extension HsProvider {
     func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfoRaw]> {
         let parameters: Parameters = [
             "limit": top,
-            "fields": "platforms,price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
+            "fields": "all_platforms,price,market_cap,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
             "currency": currencyCode.lowercased(),
             "order_by_rank": "true",
         ]
