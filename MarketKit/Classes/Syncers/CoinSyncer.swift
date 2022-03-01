@@ -2,8 +2,10 @@ import RxSwift
 
 class CoinSyncer {
     private let keyLastSyncTimestamp = "coin-syncer-last-sync-timestamp"
+    private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
     private let syncPeriod: TimeInterval = 24 * 60 * 60 // 1 day
     private let limit = 1000
+    private let currentVersion = 1
 
     private let coinManager: CoinManager
     private let hsProvider: HsProvider
@@ -43,7 +45,7 @@ extension CoinSyncer {
 
     func initialSync() {
         do {
-            guard try coinManager.coinsCount() == 0 else {
+            if let versionString = try syncerStateStorage.value(key: keyInitialSyncVersion), let version = Int(versionString), currentVersion == version {
                 return
             }
 
@@ -52,11 +54,13 @@ extension CoinSyncer {
             }
 
             let jsonString = try String(contentsOfFile: path, encoding: .utf8)
-            guard let responses = try [FullCoinResponse](JSONString: jsonString) else {
+            guard let responses = [FullCoinResponse](JSONString: jsonString) else {
                 return
             }
 
             coinManager.handleFetched(fullCoins: responses.map { $0.fullCoin() })
+            try syncerStateStorage.save(value: "\(currentVersion)", key: keyInitialSyncVersion)
+            try syncerStateStorage.delete(key: keyLastSyncTimestamp)
         } catch {
             print("CoinSyncer: initial sync error: \(error)")
         }

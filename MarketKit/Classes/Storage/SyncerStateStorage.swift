@@ -39,4 +39,10 @@ extension SyncerStateStorage {
         }
     }
 
+    func delete(key: String) throws {
+        _ = try dbPool.write { db in
+            try SyncerState.filter(SyncerState.Columns.key == key).deleteAll(db)
+        }
+    }
+
 }
