@@ -12,10 +12,13 @@ class ChartManager {
     private let storage: ChartStorage
     private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, storage: ChartStorage, hsProvider: HsProvider) {
+    private let indicatorPoints: Int
+
+    init(coinManager: CoinManager, storage: ChartStorage, hsProvider: HsProvider, indicatorPoints: Int) {
         self.coinManager = coinManager
         self.storage = storage
         self.hsProvider = hsProvider
+        self.indicatorPoints = indicatorPoints
     }
 
     private static var utcStartOfToday: Date {
@@ -79,7 +82,7 @@ extension ChartManager {
 
         let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, interval: interval)
         return hsProvider
-                .coinPriceChartSingle(coinUid: fullCoin.coin.uid, currencyCode: currencyCode, interval: interval)
+                .coinPriceChartSingle(coinUid: fullCoin.coin.uid, currencyCode: currencyCode, interval: interval, indicatorPoints: indicatorPoints)
                 .flatMap { chartCoinPriceResponse in
                     let points = chartCoinPriceResponse.map {
                         $0.chartPoint

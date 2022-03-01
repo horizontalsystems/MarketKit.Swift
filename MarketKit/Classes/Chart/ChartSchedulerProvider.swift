@@ -5,13 +5,15 @@ class ChartSchedulerProvider {
     private let manager: ChartManager
     private let hsProvider: HsProvider
 
-    let retryInterval: TimeInterval
+    private let indicatorPoints: Int
+    private let retryInterval: TimeInterval
 
-    init(key: ChartInfoKey, manager: ChartManager, hsProvider: HsProvider, retryInterval: TimeInterval) {
+    init(key: ChartInfoKey, manager: ChartManager, hsProvider: HsProvider, retryInterval: TimeInterval, indicatorPoints: Int) {
         self.key = key
         self.manager = manager
         self.hsProvider = hsProvider
         self.retryInterval = retryInterval
+        self.indicatorPoints = indicatorPoints
     }
 
     private func handleUpdated(chartCoinPriceResponse: [HsProvider.ChartCoinPriceResponse]) {
@@ -43,7 +45,7 @@ extension ChartSchedulerProvider: ISchedulerProvider {
     }
 
     var syncSingle: Single<Void> {
-        hsProvider.coinPriceChartSingle(coinUid: key.coin.uid, currencyCode: key.currencyCode, interval: key.interval)
+        hsProvider.coinPriceChartSingle(coinUid: key.coin.uid, currencyCode: key.currencyCode, interval: key.interval, indicatorPoints: indicatorPoints)
                 .do(onSuccess: { [weak self] response in
                     self?.handleUpdated(chartCoinPriceResponse: response)
                 }, onError: { [weak self] error in

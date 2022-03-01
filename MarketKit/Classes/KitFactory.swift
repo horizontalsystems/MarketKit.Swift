@@ -5,7 +5,7 @@ extension Kit {
     private static let dataDirectoryName = "market-kit"
     private static let databaseFileName = "market-kit"
 
-    public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, defiYieldApiKey: String? = nil, hsProviderApiKey: String? = nil, minLogLevel: Logger.Level = .error) throws -> Kit {
+    public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, defiYieldApiKey: String? = nil, hsProviderApiKey: String? = nil, indicatorPoints: Int = 50, minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
         let networkManager = NetworkManager(logger: logger)
@@ -42,9 +42,9 @@ extension Kit {
         let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, hsProvider: hsProvider)
 
         let chartStorage = try ChartStorage(dbPool: dbPool)
-        let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, hsProvider: hsProvider)
+        let chartManager = ChartManager(coinManager: coinManager, storage: chartStorage, hsProvider: hsProvider, indicatorPoints: indicatorPoints)
 
-        let chartSchedulerFactory = ChartSchedulerFactory(manager: chartManager, hsProvider: hsProvider, reachabilityManager: reachabilityManager, retryInterval: 30, logger: logger)
+        let chartSchedulerFactory = ChartSchedulerFactory(manager: chartManager, hsProvider: hsProvider, reachabilityManager: reachabilityManager, retryInterval: 30, indicatorPoints: indicatorPoints, logger: logger)
         let chartSyncManager = ChartSyncManager(coinManager: coinManager, schedulerFactory: chartSchedulerFactory, coinPriceSyncManager: coinPriceSyncManager)
 
         chartManager.delegate = chartSyncManager

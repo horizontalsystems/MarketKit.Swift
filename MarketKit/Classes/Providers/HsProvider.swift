@@ -172,10 +172,14 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_history", method: .get, parameters: parameters, headers: headers)
     }
 
-    func coinPriceChartSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<[ChartCoinPriceResponse]> {
+    func coinPriceChartSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod, indicatorPoints: Int) -> Single<[ChartCoinPriceResponse]> {
+        let currentTime = Date().timeIntervalSince1970
+        let fromTimestamp = HsChartRequestHelper.fromTimestamp(currentTime, interval: interval, indicatorPoints: indicatorPoints)
+
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
-            "interval": interval.rawValue
+            "from_timestamp": Int(fromTimestamp),
+            "interval": HsChartRequestHelper.pointInterval(interval).rawValue
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart", method: .get, parameters: parameters, headers: headers)
@@ -255,9 +259,9 @@ extension HsProvider {
         let totalVolume: Decimal?
 
         init(map: Map) throws {
-            timestamp = try map.value("date") //todo: wait and rename to timestamp
+            timestamp = try map.value("timestamp")
             price = try map.value("price", using: Transform.stringToDecimalTransform)
-            totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
+            totalVolume = try? map.value("volume", using: Transform.stringToDecimalTransform)
         }
 
         var chartPoint: ChartPoint {
