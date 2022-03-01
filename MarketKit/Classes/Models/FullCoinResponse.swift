@@ -14,7 +14,7 @@ class FullCoinResponse: ImmutableMappable {
         code = try map.value("code")
         marketCapRank = try? map.value("market_cap_rank")
         coinGeckoId = try? map.value("coingecko_id")
-        platforms = try map.value("platforms")
+        platforms = try map.value("all_platforms")
     }
 
     init(uid: String, name: String, code: String, marketCapRank: Int?, coinGeckoId: String?, platforms: [PlatformResponse]) {
@@ -44,7 +44,7 @@ class FullCoinResponse: ImmutableMappable {
         code          >>> map["code"]
         marketCapRank >>> map["marketCapRank"]
         coinGeckoId   >>> map["coinGeckoId"]
-        platforms     >>> map["platforms"]
+        platforms     >>> map["all_platforms"]
     }
 
 }

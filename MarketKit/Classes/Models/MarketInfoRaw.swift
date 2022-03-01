@@ -28,7 +28,7 @@ class MarketInfoRaw: ImmutableMappable {
         totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
         athPercentage = try? map.value("ath_percentage", using: Transform.stringToDecimalTransform)
         atlPercentage = try? map.value("atl_percentage", using: Transform.stringToDecimalTransform)
-        platforms = try? map.value("platforms")
+        platforms = try? map.value("all_platforms")
     }
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
