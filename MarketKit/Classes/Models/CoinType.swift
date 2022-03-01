@@ -41,6 +41,7 @@ public enum CoinType: Decodable {
         case "zcash": self = .zcash
         case "ethereum": self = .ethereum
         case "binance-smart-chain": self = .binanceSmartChain
+        case "polygon": self = .polygon
         case "erc20": if let address = address { self = .erc20(address: address) } else { return nil }
         case "bep20": if let address = address { self = .bep20(address: address) } else { return nil }
         case "bep2": if let symbol = symbol { self = .bep2(symbol: symbol) } else { return nil }
@@ -52,7 +53,7 @@ public enum CoinType: Decodable {
         case "iotex": if let address = address { self = .iotex(address: address) } else { return nil }
         case "moonriver": if let address = address { self = .moonriver(address: address) } else { return nil }
         case "okex-chain": if let address = address { self = .okexChain(address: address) } else { return nil }
-        case "polygon-pos": if let address = address { self = address == "0x0000000000000000000000000000000000001010" ? .polygon : .mrc20(address: address) } else { return nil }
+        case "polygon-pos": if let address = address { self = .mrc20(address: address) } else { return nil }
         case "solana": if let address = address { self = .solana(address: address) } else { return nil }
         case "sora": if let address = address { self = .sora(address: address) } else { return nil }
         case "tomochain": if let address = address { self = .tomochain(address: address) } else { return nil }
@@ -70,7 +71,7 @@ public enum CoinType: Decodable {
         case .zcash: return (type: "zcash", address: nil, symbol: nil)
         case .ethereum: return (type: "ethereum", address: nil, symbol: nil)
         case .binanceSmartChain: return (type: "binance-smart-chain", address: nil, symbol: nil)
-        case .polygon: return (type: "polygon-pos", address: "0x0000000000000000000000000000000000001010", symbol: nil)
+        case .polygon: return (type: "polygon", address: nil, symbol: nil)
         case .erc20(let address): return (type: "erc20", address: address, symbol: nil)
         case .bep20(let address): return (type: "bep20", address: address, symbol: nil)
         case .mrc20(let address): return (type: "polygon-pos", address: address, symbol: nil)
