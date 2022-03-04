@@ -7,11 +7,14 @@ public enum CoinType: Decodable {
     case ethereum
     case binanceSmartChain
     case polygon
+    case ethereumOptimism
+    case ethereumArbitrumOne
     case erc20(address: String)
     case bep20(address: String)
     case mrc20(address: String)
+    case optimismErc20(address: String)
+    case arbitrumOneErc20(address: String)
     case bep2(symbol: String)
-    case arbitrumOne(address: String)
     case avalanche(address: String)
     case fantom(address: String)
     case harmonyShard0(address: String)
@@ -42,10 +45,14 @@ public enum CoinType: Decodable {
         case "ethereum": self = .ethereum
         case "binance-smart-chain": self = .binanceSmartChain
         case "polygon": self = .polygon
+        case "ethereum-optimism": self = .ethereumOptimism
+        case "ethereum-arbitrum-one": self = .ethereumArbitrumOne
         case "erc20": if let address = address { self = .erc20(address: address) } else { return nil }
         case "bep20": if let address = address { self = .bep20(address: address) } else { return nil }
+        case "polygon-pos": if let address = address { self = .mrc20(address: address) } else { return nil }
+        case "optimistic-ethereum": if let address = address { self = .optimismErc20(address: address) } else { return nil }
+        case "arbitrum-one": if let address = address { self = .arbitrumOneErc20(address: address) } else { return nil }
         case "bep2": if let symbol = symbol { self = .bep2(symbol: symbol) } else { return nil }
-        case "arbitrum-one": if let address = address { self = .arbitrumOne(address: address) } else { return nil }
         case "avalanche": if let address = address { self = .avalanche(address: address) } else { return nil }
         case "fantom": if let address = address { self = .fantom(address: address) } else { return nil }
         case "harmony-shard-0": if let address = address { self = .harmonyShard0(address: address) } else { return nil }
@@ -53,7 +60,6 @@ public enum CoinType: Decodable {
         case "iotex": if let address = address { self = .iotex(address: address) } else { return nil }
         case "moonriver": if let address = address { self = .moonriver(address: address) } else { return nil }
         case "okex-chain": if let address = address { self = .okexChain(address: address) } else { return nil }
-        case "polygon-pos": if let address = address { self = .mrc20(address: address) } else { return nil }
         case "solana": if let address = address { self = .solana(address: address) } else { return nil }
         case "sora": if let address = address { self = .sora(address: address) } else { return nil }
         case "tomochain": if let address = address { self = .tomochain(address: address) } else { return nil }
@@ -72,11 +78,14 @@ public enum CoinType: Decodable {
         case .ethereum: return (type: "ethereum", address: nil, symbol: nil)
         case .binanceSmartChain: return (type: "binance-smart-chain", address: nil, symbol: nil)
         case .polygon: return (type: "polygon", address: nil, symbol: nil)
+        case .ethereumOptimism: return (type: "ethereum-optimism", address: nil, symbol: nil)
+        case .ethereumArbitrumOne: return (type: "ethereum-arbitrum-one", address: nil, symbol: nil)
         case .erc20(let address): return (type: "erc20", address: address, symbol: nil)
         case .bep20(let address): return (type: "bep20", address: address, symbol: nil)
         case .mrc20(let address): return (type: "polygon-pos", address: address, symbol: nil)
+        case .optimismErc20(let address): return (type: "optimistic-ethereum", address: address, symbol: nil)
+        case .arbitrumOneErc20(let address): return (type: "arbitrum-one", address: address, symbol: nil)
         case .bep2(let symbol): return (type: "bep2", address: nil, symbol: symbol)
-        case .arbitrumOne(let address): return (type: "arbitrum-one", address: address, symbol: nil)
         case .avalanche(let address): return (type: "avalanche", address: address, symbol: nil)
         case .fantom(let address): return (type: "fantom", address: address, symbol: nil)
         case .harmonyShard0(let address): return (type: "harmony-shard-0", address: address, symbol: nil)
@@ -106,11 +115,14 @@ extension CoinType: Equatable {
         case (.ethereum, .ethereum): return true
         case (.binanceSmartChain, .binanceSmartChain): return true
         case (.polygon, .polygon): return true
+        case (.ethereumOptimism, .ethereumOptimism): return true
+        case (.ethereumArbitrumOne, .ethereumArbitrumOne): return true
         case (.erc20(let lhsAddress), .erc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.bep20(let lhsAddress), .bep20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.mrc20(let lhsAddress), .mrc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
+        case (.optimismErc20(let lhsAddress), .optimismErc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
+        case (.arbitrumOneErc20(let lhsAddress), .arbitrumOneErc20(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.bep2(let lhsSymbol), .bep2(let rhsSymbol)): return lhsSymbol == rhsSymbol
-        case (.arbitrumOne(let lhsAddress), .arbitrumOne(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.avalanche(let lhsAddress), .avalanche(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.fantom(let lhsAddress), .fantom(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
         case (.harmonyShard0(let lhsAddress), .harmonyShard0(let rhsAddress)): return lhsAddress.lowercased() == rhsAddress.lowercased()
@@ -153,6 +165,8 @@ extension CoinType: Identifiable {
             case "ethereum": self = .ethereum
             case "binanceSmartChain": self = .binanceSmartChain
             case "polygon": self = .polygon
+            case "ethereumOptimism": self = .ethereumOptimism
+            case "ethereumArbitrumOne": self = .ethereumArbitrumOne
             default: self = .unsupported(type: String(chunks[0]))
             }
         } else {
@@ -160,8 +174,9 @@ extension CoinType: Identifiable {
             case "erc20": self = .erc20(address: String(chunks[1]))
             case "bep20": self = .bep20(address: String(chunks[1]))
             case "mrc20": self = .mrc20(address: String(chunks[1]))
+            case "optimismErc20": self = .optimismErc20(address: String(chunks[1]))
+            case "arbitrumOneErc20": self = .arbitrumOneErc20(address: String(chunks[1]))
             case "bep2": self = .bep2(symbol: String(chunks[1]))
-            case "arbitrumOne": self = .arbitrumOne(address: String(chunks[1]))
             case "avalanche": self = .avalanche(address: String(chunks[1]))
             case "fantom": self = .fantom(address: String(chunks[1]))
             case "harmonyShard0": self = .harmonyShard0(address: String(chunks[1]))
@@ -189,11 +204,14 @@ extension CoinType: Identifiable {
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binanceSmartChain"
         case .polygon: return "polygon"
+        case .ethereumOptimism: return "ethereumOptimism"
+        case .ethereumArbitrumOne: return "ethereumArbitrumOne"
         case .erc20(let address): return ["erc20", address].joined(separator: "|")
         case .bep20(let address): return ["bep20", address].joined(separator: "|")
         case .mrc20(let address): return ["mrc20", address].joined(separator: "|")
+        case .optimismErc20(let address): return ["optimismErc20", address].joined(separator: "|")
+        case .arbitrumOneErc20(let address): return ["arbitrumOneErc20", address].joined(separator: "|")
         case .bep2(let symbol): return ["bep2", symbol].joined(separator: "|")
-        case .arbitrumOne(let address): return ["arbitrumOne", address].joined(separator: "|")
         case .avalanche(let address): return ["avalanche", address].joined(separator: "|")
         case .fantom(let address): return ["fantom", address].joined(separator: "|")
         case .harmonyShard0(let address): return ["harmonyShard0", address].joined(separator: "|")
@@ -223,11 +241,14 @@ extension CoinType: CustomStringConvertible {
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binanceSmartChain"
         case .polygon: return "polygon"
+        case .ethereumOptimism: return "ethereumOptimism"
+        case .ethereumArbitrumOne: return "ethereumArbitrumOne"
         case .erc20(let address): return ["erc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .bep20(let address): return ["bep20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .mrc20(let address): return ["mrc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
+        case .optimismErc20(let address): return ["optimismErc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
+        case .arbitrumOneErc20(let address): return ["arbitrumOneErc20", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .bep2(let symbol): return ["bep2", symbol].joined(separator: "|")
-        case .arbitrumOne(let address): return ["arbitrumOne", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .avalanche(let address): return ["avalanche", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .fantom(let address): return ["fantom", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
         case .harmonyShard0(let address): return ["harmonyShard0", "\(address.prefix(4))...\(address.suffix(2))"].joined(separator: "|")
