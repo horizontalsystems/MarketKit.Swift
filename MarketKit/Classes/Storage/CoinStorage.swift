@@ -112,7 +112,7 @@ extension CoinStorage {
         try dbPool.read { db in
             let request = Platform
                     .including(required: Platform.coin.filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%")))
-                    .filter(platformType.coinTypeIdPrefixes.map { Platform.Columns.coinType.like("\($0)%") }.joined(operator: .or))
+                    .filter(Platform.Columns.coinType == platformType.baseCoinType.id || Platform.Columns.coinType.like("\(platformType.evmCoinTypeIdPrefix)%"))
                     .order(literal: searchOrder(filter: filter))
                     .limit(limit)
 
