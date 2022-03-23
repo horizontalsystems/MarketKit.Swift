@@ -19,6 +19,12 @@ class HsProvider {
 
 extension HsProvider {
 
+    // Status
+
+    func statusSingle() -> Single<HsStatus> {
+        networkManager.single(url: "\(baseUrl)/v1/status/updates", method: .get, headers: headers)
+    }
+
     // Full Coins
 
     func fullCoinsSingle(page: Int, limit: Int) -> Single<[FullCoin]> {

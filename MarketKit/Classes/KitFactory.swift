@@ -30,7 +30,9 @@ extension Kit {
         let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, coinGeckoProvider: coinGeckoProvider, defiYieldProvider: defiYieldProvider, categoryManager: coinCategoryManager, exchangeManager: exchangeManager)
 
         let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
-        let coinCategorySyncer = CoinCategorySyncer(hsProvider: hsProvider, coinCategoryManager: coinCategoryManager)
+        let coinCategorySyncer = CoinCategorySyncer(coinCategoryManager: coinCategoryManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
+
+        let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, coinCategorySyncer: coinCategorySyncer, hsProvider: hsProvider)
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
         let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
@@ -57,8 +59,8 @@ extension Kit {
         return Kit(
                 coinManager: coinManager,
                 coinCategoryManager: coinCategoryManager,
+                hsDataSyncer: hsDataSyncer,
                 coinSyncer: coinSyncer,
-                coinCategorySyncer: coinCategorySyncer,
                 exchangeSyncer: exchangeSyncer,
                 coinPriceManager: coinPriceManager,
                 coinPriceSyncManager: coinPriceSyncManager,

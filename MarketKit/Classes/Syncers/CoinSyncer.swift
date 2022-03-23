@@ -1,9 +1,9 @@
 import RxSwift
 
 class CoinSyncer {
-    private let keyLastSyncTimestamp = "coin-syncer-last-sync-timestamp"
+    private let keyPlatformsLastSyncTimestamp = "coin-syncer-coins-last-sync-timestamp"
+    private let keyCoinsLastSyncTimestamp = "coin-syncer-platforms-last-sync-timestamp"
     private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
-    private let syncPeriod: TimeInterval = 24 * 60 * 60 // 1 day
     private let limit = 1000
     private let currentVersion = 1
 
@@ -35,8 +35,12 @@ class CoinSyncer {
         print("MarketCoins fetch error: \(error)")
     }
 
-    private func save(lastSyncTimestamp: TimeInterval) {
-        try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyLastSyncTimestamp)
+    private func saveCoins(lastSyncTimestamp: Int) {
+        try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyCoinsLastSyncTimestamp)
+    }
+
+    private func savePlatforms(lastSyncTimestamp: Int) {
+        try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyPlatformsLastSyncTimestamp)
     }
 
 }
@@ -60,7 +64,8 @@ extension CoinSyncer {
 
             coinManager.handleFetched(fullCoins: responses.map { $0.fullCoin() })
             try syncerStateStorage.save(value: "\(currentVersion)", key: keyInitialSyncVersion)
-            try syncerStateStorage.delete(key: keyLastSyncTimestamp)
+            try syncerStateStorage.delete(key: keyCoinsLastSyncTimestamp)
+            try syncerStateStorage.delete(key: keyPlatformsLastSyncTimestamp)
         } catch {
             print("CoinSyncer: initial sync error: \(error)")
         }
@@ -91,10 +96,18 @@ extension CoinSyncer {
         return fullCoinResponses.toJSONString()
     }
 
-    func sync() {
-        let currentTimestamp = Date().timeIntervalSince1970
+    func sync(coinsTimestamp: Int, platformsTimestamp: Int) {
+        var coinsOutdated = true
+        var platformsOutdated = true
 
-        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyLastSyncTimestamp), let lastSyncTimestamp = Double(rawLastSyncTimestamp), currentTimestamp - lastSyncTimestamp < syncPeriod {
+        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), coinsTimestamp == lastSyncTimestamp {
+            coinsOutdated = false
+        }
+        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyPlatformsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), platformsTimestamp == lastSyncTimestamp {
+            platformsOutdated = false
+        }
+
+        guard coinsOutdated || platformsOutdated else {
             return
         }
 
@@ -102,7 +115,8 @@ extension CoinSyncer {
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] fullCoins in
                     self?.coinManager.handleFetched(fullCoins: fullCoins)
-                    self?.save(lastSyncTimestamp: currentTimestamp)
+                    self?.saveCoins(lastSyncTimestamp: coinsTimestamp)
+                    self?.savePlatforms(lastSyncTimestamp: platformsTimestamp)
                 }, onError: { [weak self] error in
                     self?.handleFetch(error: error)
                 })
