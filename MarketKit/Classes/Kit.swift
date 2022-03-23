@@ -167,6 +167,10 @@ extension Kit {
         try coinCategoryManager.coinCategory(uid: uid)
     }
 
+    public func updateCategories(currencyCode: String) {
+        coinCategorySyncer.sync(currencyCode: currencyCode)
+    }
+
     // Coin Prices
 
     public func refreshCoinPrices(currencyCode: String) {
