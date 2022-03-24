@@ -26,12 +26,12 @@ class CoinCategorySyncer {
 
 extension CoinCategorySyncer {
 
-    func sync(currencyCode: String, timestamp: Int) {
+    func sync(timestamp: Int) {
         if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), timestamp == lastSyncTimestamp {
             return
         }
 
-        hsProvider.coinCategoriesSingle(currencyCode: currencyCode)
+        hsProvider.coinCategoriesSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] coinCategories in
                     self?.coinCategoryManager.handleFetched(coinCategories: coinCategories)
