@@ -26,15 +26,6 @@ class CoinCategoryStorage {
             }
         }
 
-        migrator.registerMigration("Add stats fields") { db in
-            try db.alter(table: CoinCategory.databaseTableName) { t in
-                t.add(column: CoinCategory.Columns.marketCap.name, .text)
-                t.add(column: CoinCategory.Columns.change24H.name, .text)
-                t.add(column: CoinCategory.Columns.change1W.name, .text)
-                t.add(column: CoinCategory.Columns.change1M.name, .text)
-            }
-        }
-
         return migrator
     }
 
