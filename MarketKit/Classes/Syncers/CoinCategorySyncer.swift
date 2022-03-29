@@ -42,4 +42,8 @@ extension CoinCategorySyncer {
                 .disposed(by: disposeBag)
     }
 
+    func categoryMarketDataSingle(currencyCode: String) -> Single<[CoinCategoryMarketData]> {
+        hsProvider.coinCategoriesMarketDataSingle(currencyCode: currencyCode)
+    }
+
 }

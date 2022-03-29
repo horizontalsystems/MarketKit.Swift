@@ -149,6 +149,11 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/categories", method: .get, headers: headers)
     }
 
+    func coinCategoriesMarketDataSingle(currencyCode: String) -> Single<[CoinCategoryMarketData]> {
+        let parameters: Parameters = ["currency": currencyCode.lowercased()]
+        return networkManager.single(url: "\(baseUrl)/v1/categories", method: .get, parameters: parameters, headers: headers)
+    }
+
     // Coin Prices
 
     func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {

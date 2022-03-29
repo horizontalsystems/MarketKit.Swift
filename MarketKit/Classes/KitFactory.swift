@@ -68,7 +68,8 @@ extension Kit {
                 chartManager: chartManager,
                 chartSyncManager: chartSyncManager,
                 postManager: postManager,
-                globalMarketInfoManager: globalMarketInfoManager
+                globalMarketInfoManager: globalMarketInfoManager,
+                coinCategorySyncer: coinCategorySyncer
         )
     }
 
