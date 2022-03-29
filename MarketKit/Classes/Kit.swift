@@ -5,6 +5,7 @@ public class Kit {
     private let coinCategoryManager: CoinCategoryManager
     private let hsDataSyncer: HsDataSyncer
     private let coinSyncer: CoinSyncer
+    private let coinCategorySyncer: CoinCategorySyncer
     private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
@@ -14,11 +15,12 @@ public class Kit {
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager) {
+    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, coinCategorySyncer: CoinCategorySyncer) {
         self.coinManager = coinManager
         self.coinCategoryManager = coinCategoryManager
         self.hsDataSyncer = hsDataSyncer
         self.coinSyncer = coinSyncer
+        self.coinCategorySyncer = coinCategorySyncer
         self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
@@ -165,6 +167,10 @@ extension Kit {
 
     public func coinCategory(uid: String) throws -> CoinCategory? {
         try coinCategoryManager.coinCategory(uid: uid)
+    }
+
+    public func categoriesMarketDataSingle(currencyCode: String) -> Single<[CoinCategoryMarketData]> {
+        coinCategorySyncer.categoryMarketDataSingle(currencyCode: currencyCode)
     }
 
     // Coin Prices
