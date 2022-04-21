@@ -96,7 +96,7 @@ extension ChartSyncManager: IChartInfoManagerDelegate {
 
     func didFoundNoChartInfo(key: ChartInfoKey) {
         queue.async {
-            self.failedKeys.append(key)
+//            self.failedKeys.append(key)                   : Todo: filter errors from backend and handle it!
             self.subjects[key]?.onError(Kit.KitError.noChartData)
         }
     }
