@@ -227,6 +227,12 @@ extension Kit {
         globalMarketInfoManager.globalMarketPointsSingle(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    // Platforms
+
+    public func topPlatformsSingle(currencyCode: String) -> Single<[TopPlatform]> {
+        coinManager.topPlatformsSingle(currencyCode: currencyCode)
+    }
+
 }
 
 extension Kit {

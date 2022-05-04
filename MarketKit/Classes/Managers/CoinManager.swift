@@ -51,6 +51,34 @@ class CoinManager {
         }
     }
 
+    private func topPlatforms(responses: [TopPlatformResponse]) -> [TopPlatform] {
+        do {
+            let fullCoins = try storage.fullCoins(coinUids: responses.map { $0.name })
+            let fullCoinsDictionary = Dictionary(uniqueKeysWithValues: fullCoins.map { ($0.coin.uid, $0) })
+
+            return responses.compactMap {
+                guard let fullCoin = fullCoinsDictionary[$0.name] else {
+                    return nil
+                }
+
+                return TopPlatform(
+                        fullCoin: fullCoin,
+                        marketCap: $0.marketCap,
+                        rank: $0.rank,
+                        oneDayRank: $0.stats.oneDayRank,
+                        sevenDaysRank: $0.stats.sevenDaysRank,
+                        thirtyDaysRank: $0.stats.thirtyDaysRank,
+                        oneDayChange: $0.stats.oneDayChange,
+                        sevenDayChange: $0.stats.sevenDayChange,
+                        thirtyDayChange: $0.stats.thirtyDayChange,
+                        protocolsCount: $0.stats.protocolsCount
+                )
+            }
+        } catch {
+            return []
+        }
+    }
+
 }
 
 extension CoinManager {
@@ -195,6 +223,15 @@ extension CoinManager {
 
     func twitterUsername(coinUid: String) -> Single<String?> {
         hsProvider.twitterUsername(coinUid: coinUid)
+    }
+
+
+    //Top Platforms
+
+    func topPlatformsSingle(currencyCode: String) -> Single<[TopPlatform]> {
+        hsProvider.topPlatformsSingle(currencyCode: currencyCode).map { [weak self] in
+            self?.topPlatforms(responses: $0) ?? []
+        }
     }
 
 }

@@ -250,6 +250,16 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters, headers: headers)
     }
 
+    //Top Platfroms
+
+    func topPlatformsSingle(currencyCode: String) -> Single<[TopPlatformResponse]> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/top-platforms", method: .get, parameters: parameters)
+    }
+
 }
 
 extension HsProvider {
