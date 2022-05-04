@@ -67,6 +67,18 @@ class MiscController: UIViewController {
         dumpCoinsButton.setTitle("Dump Coins", for: .normal)
         dumpCoinsButton.setTitleColor(.systemBlue, for: .normal)
         dumpCoinsButton.addTarget(self, action: #selector(onTapDumpCoins), for: .touchUpInside)
+
+        let platformsButton = UIButton()
+
+        view.addSubview(platformsButton)
+        platformsButton.snp.makeConstraints { maker in
+            maker.top.equalTo(dumpCoinsButton.snp.bottom).offset(8)
+            maker.centerX.equalToSuperview()
+        }
+
+        platformsButton.setTitle("Platforms", for: .normal)
+        platformsButton.setTitleColor(.systemBlue, for: .normal)
+        platformsButton.addTarget(self, action: #selector(onTapPlatforms), for: .touchUpInside)
     }
 
     @objc private func onTapCoinPrices() {
@@ -123,6 +135,16 @@ class MiscController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 
         present(alert, animated: true)
+    }
+
+    @objc private func onTapPlatforms() {
+        Singleton.instance.kit.topPlatformsSingle(currencyCode: "USD")
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
+                .observeOn(MainScheduler.instance)
+                .subscribe(onSuccess: { [weak self] topPlatforms in
+                    print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
+                })
+                .disposed(by: disposeBag)
     }
 
 }
