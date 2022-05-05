@@ -1,15 +1,20 @@
+import Foundation
 import ObjectMapper
 
 struct TopPlatformResponse: ImmutableMappable {
+    let uid: String
     let name: String
-    let marketCap: Decimal?
     let rank: Int?
+    let protocolsCount: Int?
+    let marketCap: Decimal?
     let stats: TopPlatformStatsResponse
 
     init(map: Map) throws {
+        uid = try map.value("uid")
         name = try map.value("name")
-        marketCap = try? map.value("market_cap", using: Transform.stringToDecimalTransform)
         rank = try? map.value("rank")
+        protocolsCount = try? map.value("protocols")
+        marketCap = try? map.value("market_cap", using: Transform.stringToDecimalTransform)
         stats = try map.value("stats")
     }
 
@@ -24,7 +29,6 @@ extension TopPlatformResponse {
         let oneDayChange: Decimal?
         let sevenDayChange: Decimal?
         let thirtyDayChange: Decimal?
-        let protocolsCount: Int?
 
         init(map: Map) throws {
             oneDayRank = try? map.value("rank_1d", using: Transform.stringToIntTransform)
@@ -35,7 +39,6 @@ extension TopPlatformResponse {
             sevenDayChange = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
             thirtyDayChange = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
 
-            protocolsCount = try? map.value("protocols", using: Transform.stringToIntTransform)
         }
     }
 

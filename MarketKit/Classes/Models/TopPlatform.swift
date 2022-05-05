@@ -1,9 +1,13 @@
 import Foundation
 
 public struct TopPlatform {
-    public let fullCoin: FullCoin
-    public let marketCap: Decimal?
+    public let uid: String
+    public let name: String
     public let rank: Int?
+    public let protocolsCount: Int?
+    public let marketCap: Decimal?
+
+    public let fullCoin: FullCoin?
 
     public let oneDayRank: Int?
     public let sevenDaysRank: Int?
@@ -13,5 +17,4 @@ public struct TopPlatform {
     public let sevenDayChange: Decimal?
     public let thirtyDayChange: Decimal?
 
-    public let protocolsCount: Int?
 }

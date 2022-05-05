@@ -141,7 +141,7 @@ class MiscController: UIViewController {
         Singleton.instance.kit.topPlatformsSingle(currencyCode: "USD")
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { [weak self] topPlatforms in
+                .subscribe(onSuccess: { topPlatforms in
                     print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
                 })
                 .disposed(by: disposeBag)
