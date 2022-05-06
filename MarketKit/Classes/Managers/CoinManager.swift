@@ -232,4 +232,22 @@ extension CoinManager {
         }
     }
 
+    //Pro charts
+
+    func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexLiquidityResponse> {
+        hsProvider.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, sessionKey: sessionKey)
+    }
+
+    func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexVolumeResponse> {
+        hsProvider.dexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, sessionKey: sessionKey)
+    }
+
+    func transactionDataSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?, sessionKey: String?) -> Single<TransactionDataResponse> {
+        hsProvider.transactionDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform, sessionKey: sessionKey)
+    }
+
+    func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<[ProChartPointDataResponse]> {
+        hsProvider.activeAddressesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, sessionKey: sessionKey)
+    }
+
 }
