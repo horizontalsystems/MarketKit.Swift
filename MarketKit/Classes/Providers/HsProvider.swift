@@ -260,6 +260,57 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/top-platforms", method: .get, parameters: parameters)
     }
 
+    //Pro Charts
+
+    private func proHeaders(sessionKey: String?) -> HTTPHeaders? {
+        guard let sessionKey = sessionKey else {
+            return headers
+        }
+        var proHeaders = HTTPHeaders()
+
+        headers?.forEach { proHeaders.add($0) }
+        proHeaders.add(.authorization(bearerToken: sessionKey))
+
+        return proHeaders
+    }
+
+    func proDataSingle<T: IHsProChartResource & ImmutableMappable>(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?, sessionKey: String?) -> Single<T> {
+        var parameters: Parameters = [
+            "coin_uid": coinUid,
+//            "currency": currencyCode.lowercased(),
+            "interval": timePeriod.rawValue
+        ]
+
+        if let platform = platform {
+            parameters["platform"] = platform
+        }
+
+        let headers = proHeaders(sessionKey: sessionKey)
+        return networkManager.single(url: "\(baseUrl)/v1/\(T.source)", method: .get, parameters: parameters, headers: headers)
+    }
+
+    func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexLiquidityResponse> {
+        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: nil, sessionKey: sessionKey)
+    }
+
+    func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexVolumeResponse> {
+        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: nil, sessionKey: sessionKey)
+    }
+
+    func transactionDataSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?, sessionKey: String?) -> Single<TransactionDataResponse> {
+        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform, sessionKey: sessionKey)
+    }
+
+    func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<[ProChartPointDataResponse]> {
+        var parameters: Parameters = [
+            "coin_uid": coinUid,
+            "interval": timePeriod.rawValue
+        ]
+
+        let headers = proHeaders(sessionKey: sessionKey)
+        return networkManager.single(url: "\(baseUrl)/v1/addresses", method: .get, parameters: parameters, headers: headers)
+    }
+
 }
 
 extension HsProvider {
