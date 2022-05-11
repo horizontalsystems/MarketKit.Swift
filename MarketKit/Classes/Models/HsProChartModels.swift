@@ -13,22 +13,15 @@ protocol IHsProChartResource {
 
 public class ProChartPointDataResponse: ImmutableMappable {
     let timestamp: TimeInterval
-    let count: Decimal?
+    let count: Int?
     let volume: Decimal?
 
     required public init(map: Map) throws {
-//      todo: wait backend and change
-//      timestamp = try map.value("timestamp")
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-
-        let dateString: String? = try map.value("date")
-        let date = dateString.flatMap { formatter.date(from: $0) }
-
-        timestamp = date?.timeIntervalSince1970 ?? -1
-        count = try? map.value("count", using: Transform.stringToDecimalTransform)
+        timestamp = try map.value("timestamp")
+        count = try? map.value("count")
         volume = try? map.value("volume", using: Transform.stringToDecimalTransform)
     }
+
 }
 
 extension Collection where Element: ProChartPointDataResponse {
@@ -41,7 +34,7 @@ extension Collection where Element: ProChartPointDataResponse {
 
     public var countPoints: [ChartPoint] {
         self.compactMap { item in
-            item.count.map { ChartPoint(timestamp: item.timestamp, value: $0) }
+            item.count.map { ChartPoint(timestamp: item.timestamp, value: Decimal($0)) }
         }
     }
 
