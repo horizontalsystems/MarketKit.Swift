@@ -169,8 +169,8 @@ extension Kit {
         try coinCategoryManager.coinCategory(uid: uid)
     }
 
-    public func categoriesMarketDataSingle(currencyCode: String) -> Single<[CoinCategoryMarketData]> {
-        coinCategorySyncer.categoryMarketDataSingle(currencyCode: currencyCode)
+    public func coinCategoriesSingle(currencyCode: String) -> Single<[CoinCategory]> {
+        coinCategorySyncer.coinCategoriesSingle(currencyCode: currencyCode)
     }
 
     // Coin Prices
