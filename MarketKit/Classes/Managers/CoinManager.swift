@@ -52,28 +52,20 @@ class CoinManager {
     }
 
     private func topPlatforms(responses: [TopPlatformResponse]) -> [TopPlatform] {
-        do {
-            let fullCoins = try storage.fullCoins(coinUids: responses.map { $0.uid })
-            let fullCoinsDictionary = Dictionary(uniqueKeysWithValues: fullCoins.map { ($0.coin.uid, $0) })
-
-            return responses.compactMap {
-                TopPlatform(
-                        uid: $0.uid,
-                        name: $0.name,
-                        rank: $0.rank,
-                        protocolsCount: $0.protocolsCount,
-                        marketCap: $0.marketCap,
-                        fullCoin: fullCoinsDictionary[$0.uid],
-                        oneDayRank: $0.stats.oneDayRank,
-                        sevenDaysRank: $0.stats.sevenDaysRank,
-                        thirtyDaysRank: $0.stats.thirtyDaysRank,
-                        oneDayChange: $0.stats.oneDayChange,
-                        sevenDayChange: $0.stats.sevenDayChange,
-                        thirtyDayChange: $0.stats.thirtyDayChange
-                )
-            }
-        } catch {
-            return []
+        responses.compactMap {
+            TopPlatform(
+                    uid: $0.uid,
+                    name: $0.name,
+                    rank: $0.rank,
+                    protocolsCount: $0.protocolsCount,
+                    marketCap: $0.marketCap,
+                    oneDayRank: $0.stats.oneDayRank,
+                    sevenDaysRank: $0.stats.sevenDaysRank,
+                    thirtyDaysRank: $0.stats.thirtyDaysRank,
+                    oneDayChange: $0.stats.oneDayChange,
+                    sevenDayChange: $0.stats.sevenDayChange,
+                    thirtyDayChange: $0.stats.thirtyDayChange
+            )
         }
     }
 

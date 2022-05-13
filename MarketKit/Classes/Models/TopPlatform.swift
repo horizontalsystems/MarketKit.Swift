@@ -7,8 +7,6 @@ public struct TopPlatform {
     public let protocolsCount: Int?
     public let marketCap: Decimal?
 
-    public let fullCoin: FullCoin?
-
     public let oneDayRank: Int?
     public let sevenDaysRank: Int?
     public let thirtyDaysRank: Int?
