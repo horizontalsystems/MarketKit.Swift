@@ -153,6 +153,16 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/categories", method: .get, parameters: parameters, headers: headers)
     }
 
+    func coinCategoryMarketCapChartSingle(category: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
+        var parameters: Parameters = [:]
+        if let currencyCode = currencyCode {
+            parameters["currency"] = currencyCode.lowercased()
+        }
+        parameters["interval"] = timePeriod.rawValue
+
+        return networkManager.single(url: "\(baseUrl)/v1/categories/\(category)/market_cap", method: .get, parameters: parameters, headers: headers)
+    }
+
 
     // Coin Prices
 
