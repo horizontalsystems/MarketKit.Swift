@@ -173,6 +173,10 @@ extension Kit {
         coinCategorySyncer.coinCategoriesSingle(currencyCode: currencyCode)
     }
 
+    public func coinCategoryMarketCapChartSingle(category: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
+        coinCategorySyncer.coinCategoryMarketCapChartSingle(category: category, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
     // Coin Prices
 
     public func refreshCoinPrices(currencyCode: String) {

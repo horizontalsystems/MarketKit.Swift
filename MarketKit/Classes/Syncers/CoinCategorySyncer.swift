@@ -46,4 +46,8 @@ extension CoinCategorySyncer {
         hsProvider.coinCategoriesSingle(currencyCode: currencyCode)
     }
 
+    func coinCategoryMarketCapChartSingle(category: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
+        hsProvider.coinCategoryMarketCapChartSingle(category: category, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
 }
