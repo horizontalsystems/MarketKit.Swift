@@ -27,8 +27,8 @@ extension TopPlatformResponse {
         let sevenDaysRank: Int?
         let thirtyDaysRank: Int?
         let oneDayChange: Decimal?
-        let sevenDayChange: Decimal?
-        let thirtyDayChange: Decimal?
+        let sevenDaysChange: Decimal?
+        let thirtyDaysChange: Decimal?
 
         init(map: Map) throws {
             oneDayRank = try? map.value("rank_1d", using: Transform.stringToIntTransform)
@@ -36,8 +36,8 @@ extension TopPlatformResponse {
             thirtyDaysRank = try? map.value("rank_1m", using: Transform.stringToIntTransform)
 
             oneDayChange = try? map.value("change_1d", using: Transform.stringToDecimalTransform)
-            sevenDayChange = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
-            thirtyDayChange = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
+            sevenDaysChange = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
+            thirtyDaysChange = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
 
         }
     }

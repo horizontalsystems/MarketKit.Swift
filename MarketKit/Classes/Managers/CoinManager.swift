@@ -1,3 +1,4 @@
+import Foundation
 import RxSwift
 import RxRelay
 
@@ -53,18 +54,24 @@ class CoinManager {
 
     private func topPlatforms(responses: [TopPlatformResponse]) -> [TopPlatform] {
         responses.compactMap {
-            TopPlatform(
+            var ranks = [HsTimePeriod: Int]()
+            ranks[.day1] = $0.stats.oneDayRank
+            ranks[.week1] = $0.stats.sevenDaysRank
+            ranks[.month1] = $0.stats.thirtyDaysRank
+
+            var changes = [HsTimePeriod: Decimal]()
+            changes[.day1] = $0.stats.oneDayChange
+            changes[.week1] = $0.stats.sevenDaysChange
+            changes[.month1] = $0.stats.thirtyDaysChange
+
+            return TopPlatform(
                     uid: $0.uid,
                     name: $0.name,
                     rank: $0.rank,
                     protocolsCount: $0.protocolsCount,
                     marketCap: $0.marketCap,
-                    oneDayRank: $0.stats.oneDayRank,
-                    sevenDaysRank: $0.stats.sevenDaysRank,
-                    thirtyDaysRank: $0.stats.thirtyDaysRank,
-                    oneDayChange: $0.stats.oneDayChange,
-                    sevenDayChange: $0.stats.sevenDayChange,
-                    thirtyDayChange: $0.stats.thirtyDayChange
+                    ranks: ranks,
+                    changes: changes
             )
         }
     }
