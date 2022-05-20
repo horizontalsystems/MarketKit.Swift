@@ -7,12 +7,6 @@ public struct TopPlatform {
     public let protocolsCount: Int?
     public let marketCap: Decimal?
 
-    public let oneDayRank: Int?
-    public let sevenDaysRank: Int?
-    public let thirtyDaysRank: Int?
-
-    public let oneDayChange: Decimal?
-    public let sevenDayChange: Decimal?
-    public let thirtyDayChange: Decimal?
-
+    public let ranks: [HsTimePeriod: Int]
+    public let changes: [HsTimePeriod: Decimal]
 }
