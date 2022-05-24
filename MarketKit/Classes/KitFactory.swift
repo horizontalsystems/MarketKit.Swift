@@ -13,8 +13,6 @@ extension Kit {
         let databaseURL = try dataDirectoryUrl().appendingPathComponent("\(databaseFileName).sqlite")
         let dbPool = try DatabasePool(path: databaseURL.path)
         let coinStorage = try CoinStorage(dbPool: dbPool)
-        let coinCategoryStorage = try CoinCategoryStorage(dbPool: dbPool)
-        let coinCategoryManager = CoinCategoryManager(storage: coinCategoryStorage)
 
         let syncerStateStorage = try SyncerStateStorage(dbPool: dbPool)
 
@@ -27,12 +25,11 @@ extension Kit {
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, apiKey: hsProviderApiKey)
         let defiYieldProvider = DefiYieldProvider(networkManager: networkManager, apiKey: defiYieldApiKey)
 
-        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, coinGeckoProvider: coinGeckoProvider, defiYieldProvider: defiYieldProvider, categoryManager: coinCategoryManager, exchangeManager: exchangeManager)
+        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, coinGeckoProvider: coinGeckoProvider, defiYieldProvider: defiYieldProvider, exchangeManager: exchangeManager)
 
         let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
-        let coinCategorySyncer = CoinCategorySyncer(coinCategoryManager: coinCategoryManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
 
-        let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, coinCategorySyncer: coinCategorySyncer, hsProvider: hsProvider)
+        let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, hsProvider: hsProvider)
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
         let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
@@ -58,7 +55,6 @@ extension Kit {
 
         return Kit(
                 coinManager: coinManager,
-                coinCategoryManager: coinCategoryManager,
                 hsDataSyncer: hsDataSyncer,
                 coinSyncer: coinSyncer,
                 exchangeSyncer: exchangeSyncer,
@@ -69,7 +65,7 @@ extension Kit {
                 chartSyncManager: chartSyncManager,
                 postManager: postManager,
                 globalMarketInfoManager: globalMarketInfoManager,
-                coinCategorySyncer: coinCategorySyncer
+                hsProvider: hsProvider
         )
     }
 

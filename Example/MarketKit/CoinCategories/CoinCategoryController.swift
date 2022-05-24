@@ -31,24 +31,14 @@ class CoinCategoryController: UIViewController {
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
 
-        Singleton.instance.kit.coinCategoriesObservable
+        Singleton.instance.kit.coinCategoriesSingle(currencyCode: "usd")
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] _ in
-                    self?.syncCategories()
+                .subscribe(onSuccess: { [weak self] coinCategories in
+                    self?.coinCategories = coinCategories
+                    self?.tableView.reloadData()
                 })
                 .disposed(by: disposeBag)
-
-        syncCategories()
-    }
-
-    private func syncCategories() {
-        do {
-            coinCategories = try Singleton.instance.kit.coinCategories()
-            tableView.reloadData()
-        } catch {
-            print("Failed to sync categories: \(error)")
-        }
     }
 
 }

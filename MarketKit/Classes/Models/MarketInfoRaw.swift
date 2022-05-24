@@ -1,6 +1,7 @@
+import Foundation
 import ObjectMapper
 
-class MarketInfoRaw: ImmutableMappable {
+struct MarketInfoRaw: ImmutableMappable {
     let uid: String
     let price: Decimal?
     let priceChange24h: Decimal?
@@ -15,7 +16,7 @@ class MarketInfoRaw: ImmutableMappable {
     let atlPercentage: Decimal?
     let platforms: [PlatformResponse]?
 
-    required init(map: Map) throws {
+    public init(map: Map) throws {
         uid = try map.value("uid")
         price = try? map.value("price", using: Transform.stringToDecimalTransform)
         priceChange24h = try? map.value("price_change_24h", using: Transform.stringToDecimalTransform)

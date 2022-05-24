@@ -7,7 +7,7 @@ struct TopPlatformResponse: ImmutableMappable {
     let rank: Int?
     let protocolsCount: Int?
     let marketCap: Decimal?
-    let stats: TopPlatformStatsResponse
+    let stats: StatsResponse
 
     init(map: Map) throws {
         uid = try map.value("uid")
@@ -18,11 +18,33 @@ struct TopPlatformResponse: ImmutableMappable {
         stats = try map.value("stats")
     }
 
+    var topPlatform: TopPlatform {
+        var ranks = [HsTimePeriod: Int]()
+        ranks[.day1] = stats.oneDayRank
+        ranks[.week1] = stats.sevenDaysRank
+        ranks[.month1] = stats.thirtyDaysRank
+
+        var changes = [HsTimePeriod: Decimal]()
+        changes[.day1] = stats.oneDayChange
+        changes[.week1] = stats.sevenDaysChange
+        changes[.month1] = stats.thirtyDaysChange
+
+        return TopPlatform(
+                uid: uid,
+                name: name,
+                rank: rank,
+                protocolsCount: protocolsCount,
+                marketCap: marketCap,
+                ranks: ranks,
+                changes: changes
+        )
+    }
+
 }
 
 extension TopPlatformResponse {
 
-    struct TopPlatformStatsResponse: ImmutableMappable {
+    struct StatsResponse: ImmutableMappable {
         let oneDayRank: Int?
         let sevenDaysRank: Int?
         let thirtyDaysRank: Int?

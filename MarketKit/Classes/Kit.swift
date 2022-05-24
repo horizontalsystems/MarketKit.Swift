@@ -2,10 +2,8 @@ import RxSwift
 
 public class Kit {
     private let coinManager: CoinManager
-    private let coinCategoryManager: CoinCategoryManager
     private let hsDataSyncer: HsDataSyncer
     private let coinSyncer: CoinSyncer
-    private let coinCategorySyncer: CoinCategorySyncer
     private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
@@ -14,13 +12,12 @@ public class Kit {
     private let chartSyncManager: ChartSyncManager
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
+    private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, coinCategoryManager: CoinCategoryManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, coinCategorySyncer: CoinCategorySyncer) {
+    init(coinManager: CoinManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
         self.coinManager = coinManager
-        self.coinCategoryManager = coinCategoryManager
         self.hsDataSyncer = hsDataSyncer
         self.coinSyncer = coinSyncer
-        self.coinCategorySyncer = coinCategorySyncer
         self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
@@ -29,6 +26,7 @@ public class Kit {
         self.chartSyncManager = chartSyncManager
         self.postManager = postManager
         self.globalMarketInfoManager = globalMarketInfoManager
+        self.hsProvider = hsProvider
 
         coinSyncer.initialSync()
     }
@@ -107,7 +105,7 @@ extension Kit {
     }
 
     public func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        coinManager.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
     }
 
     public func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
@@ -157,24 +155,12 @@ extension Kit {
 
     // Categories
 
-    public var coinCategoriesObservable: Observable<[CoinCategory]> {
-        coinCategoryManager.coinCategoriesObservable
-    }
-
-    public func coinCategories() throws -> [CoinCategory] {
-        try coinCategoryManager.coinCategories()
-    }
-
-    public func coinCategory(uid: String) throws -> CoinCategory? {
-        try coinCategoryManager.coinCategory(uid: uid)
-    }
-
     public func coinCategoriesSingle(currencyCode: String) -> Single<[CoinCategory]> {
-        coinCategorySyncer.coinCategoriesSingle(currencyCode: currencyCode)
+        hsProvider.coinCategoriesSingle(currencyCode: currencyCode)
     }
 
     public func coinCategoryMarketCapChartSingle(category: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
-        coinCategorySyncer.coinCategoryMarketCapChartSingle(category: category, currencyCode: currencyCode, timePeriod: timePeriod)
+        hsProvider.coinCategoryMarketCapChartSingle(category: category, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
     // Coin Prices
@@ -254,6 +240,16 @@ extension Kit {
 
     public func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<[ProChartPointDataResponse]> {
         coinManager.activeAddressesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, sessionKey: sessionKey)
+    }
+
+    // Overview
+
+    public func marketOverviewSingle(currencyCode: String) -> Single<MarketOverview> {
+        hsProvider.marketOverviewSingle(currencyCode: currencyCode)
+    }
+
+    public func topMoversSingle(currencyCode: String) -> Single<TopMovers> {
+        coinManager.topMoversSingle(currencyCode: currencyCode)
     }
 
 }

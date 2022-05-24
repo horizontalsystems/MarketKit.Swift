@@ -7,18 +7,15 @@ class CoinManager {
     private let hsProvider: HsProvider
     private let coinGeckoProvider: CoinGeckoProvider
     private let defiYieldProvider: DefiYieldProvider
-    private let categoryManager: CoinCategoryManager
     private let exchangeManager: ExchangeManager
 
     private let fullCoinsUpdatedRelay = PublishRelay<Void>()
 
-    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider,
-         categoryManager: CoinCategoryManager, exchangeManager: ExchangeManager) {
+    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
         self.coinGeckoProvider = coinGeckoProvider
         self.defiYieldProvider = defiYieldProvider
-        self.categoryManager = categoryManager
         self.exchangeManager = exchangeManager
     }
 
@@ -161,13 +158,6 @@ extension CoinManager {
                 }
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
-                .map { [weak self] (rawMarketInfoOverview: MarketInfoOverviewRaw) -> MarketInfoOverview in
-                    rawMarketInfoOverview.marketInfoOverview(categories: self?.categoryManager.coinCategories(uids: rawMarketInfoOverview.categoryUids) ?? [])
-                }
-    }
-
     func marketTickerSingle(coinUid: String) -> Single<[MarketTicker]> {
         guard let coin = try? storage.coin(uid: coinUid),
               let coinGeckoId = coin.coinGeckoId else {
@@ -247,6 +237,22 @@ extension CoinManager {
 
     func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<[ProChartPointDataResponse]> {
         hsProvider.activeAddressesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, sessionKey: sessionKey)
+    }
+
+    // Top Movers
+
+    func topMoversSingle(currencyCode: String) -> Single<TopMovers> {
+        hsProvider.topMoversRawSingle(currencyCode: currencyCode)
+                .map { [weak self] raw in
+                    TopMovers(
+                            gainers100: self?.marketInfos(rawMarketInfos: raw.gainers100) ?? [],
+                            gainers200: self?.marketInfos(rawMarketInfos: raw.gainers200) ?? [],
+                            gainers300: self?.marketInfos(rawMarketInfos: raw.gainers300) ?? [],
+                            losers100: self?.marketInfos(rawMarketInfos: raw.losers100) ?? [],
+                            losers200: self?.marketInfos(rawMarketInfos: raw.losers200) ?? [],
+                            losers300: self?.marketInfos(rawMarketInfos: raw.losers300) ?? []
+                    )
+                }
     }
 
 }

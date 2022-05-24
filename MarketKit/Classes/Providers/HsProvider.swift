@@ -15,6 +15,28 @@ class HsProvider {
 
         headers = apiKey.flatMap { HTTPHeaders([HTTPHeader(name: "apikey", value: $0)]) }
     }
+
+}
+
+extension HsProvider {
+
+    func marketOverviewSingle(currencyCode: String) -> Single<MarketOverview> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/markets/overview", method: .get, parameters: parameters, headers: headers)
+                .map { (response: MarketOverviewResponse) in response.marketOverview }
+    }
+
+    func topMoversRawSingle(currencyCode: String) -> Single<TopMoversRaw> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/coins/top-movers", method: .get, parameters: parameters, headers: headers)
+    }
+
 }
 
 extension HsProvider {
@@ -87,13 +109,14 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters, headers: headers)
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewRaw> {
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
             "language": languageCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters, headers: headers)
+                .map { (response: MarketInfoOverviewResponse) in response.marketInfoOverview }
     }
 
     func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
@@ -312,7 +335,7 @@ extension HsProvider {
     }
 
     func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<[ProChartPointDataResponse]> {
-        var parameters: Parameters = [
+        let parameters: Parameters = [
             "coin_uid": coinUid,
             "interval": timePeriod.rawValue
         ]

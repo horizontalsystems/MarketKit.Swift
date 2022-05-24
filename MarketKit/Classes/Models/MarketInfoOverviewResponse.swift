@@ -1,7 +1,7 @@
 import ObjectMapper
 import Foundation
 
-class MarketInfoOverviewRaw: ImmutableMappable {
+class MarketInfoOverviewResponse: ImmutableMappable {
     let marketCap: Decimal?
     let marketCapRank: Int?
     let totalSupply: Decimal?
@@ -11,7 +11,7 @@ class MarketInfoOverviewRaw: ImmutableMappable {
     let tvl: Decimal?
     let performance: [String: [String: String?]]
     let genesisDate: Date?
-    let categoryUids: [String]
+    let categories: [CoinCategory]
     let description: String
     let platforms: [PlatformResponse]
     let links: [String: String?]
@@ -26,13 +26,13 @@ class MarketInfoOverviewRaw: ImmutableMappable {
         tvl = try? map.value("market_data.total_value_locked", using: Transform.stringToDecimalTransform)
         performance = try map.value("performance")
         genesisDate = try? map.value("genesis_date", using: Transform.stringToDateTransform)
-        categoryUids = try map.value("category_uids")
+        categories = try map.value("categories")
         description = (try? map.value("description")) ?? ""
         platforms = try map.value("platforms")
         links = try map.value("links")
     }
 
-    func marketInfoOverview(categories: [CoinCategory]) -> MarketInfoOverview {
+    var marketInfoOverview: MarketInfoOverview {
         var convertedLinks = [LinkType: String]()
 
         for (type, link) in links {
