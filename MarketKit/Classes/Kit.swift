@@ -2,6 +2,8 @@ import RxSwift
 
 public class Kit {
     private let coinManager: CoinManager
+    private let nftManager: NftManager
+    private let marketOverviewManager: MarketOverviewManager
     private let hsDataSyncer: HsDataSyncer
     private let coinSyncer: CoinSyncer
     private let exchangeSyncer: ExchangeSyncer
@@ -14,8 +16,10 @@ public class Kit {
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
+    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
         self.coinManager = coinManager
+        self.nftManager = nftManager
+        self.marketOverviewManager = marketOverviewManager
         self.hsDataSyncer = hsDataSyncer
         self.coinSyncer = coinSyncer
         self.exchangeSyncer = exchangeSyncer
@@ -245,11 +249,37 @@ extension Kit {
     // Overview
 
     public func marketOverviewSingle(currencyCode: String) -> Single<MarketOverview> {
-        hsProvider.marketOverviewSingle(currencyCode: currencyCode)
+        marketOverviewManager.marketOverviewSingle(currencyCode: currencyCode)
     }
 
     public func topMoversSingle(currencyCode: String) -> Single<TopMovers> {
         coinManager.topMoversSingle(currencyCode: currencyCode)
+    }
+
+    // NFT
+
+    public func nftAssetCollectionSingle(address: String) -> Single<NftAssetCollection> {
+        nftManager.assetCollectionSingle(address: address)
+    }
+
+    public func nftCollectionSingle(uid: String) -> Single<NftCollection> {
+        nftManager.collectionSingle(uid: uid)
+    }
+
+    public func nftCollectionsSingle() -> Single<[NftCollection]> {
+        nftManager.collectionsSingle()
+    }
+
+    public func nftAssetSingle(contractAddress: String, tokenId: String) -> Single<NftAsset> {
+        nftManager.assetSingle(contractAddress: contractAddress, tokenId: tokenId)
+    }
+
+    public func nftAssetsSingle(collectionUid: String, cursor: String? = nil) -> Single<PagedNftAssets> {
+        nftManager.assetsSingle(collectionUid: collectionUid, cursor: cursor)
+    }
+
+    public func nftEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
+        nftManager.eventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor)
     }
 
 }

@@ -20,13 +20,12 @@ class HsProvider {
 
 extension HsProvider {
 
-    func marketOverviewSingle(currencyCode: String) -> Single<MarketOverview> {
+    func marketOverviewSingle(currencyCode: String) -> Single<MarketOverviewResponse> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/markets/overview", method: .get, parameters: parameters, headers: headers)
-                .map { (response: MarketOverviewResponse) in response.marketOverview }
     }
 
     func topMoversRawSingle(currencyCode: String) -> Single<TopMoversRaw> {
