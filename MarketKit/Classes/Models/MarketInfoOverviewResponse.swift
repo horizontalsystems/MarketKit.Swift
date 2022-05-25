@@ -29,7 +29,7 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         categories = try map.value("categories")
         description = (try? map.value("description")) ?? ""
         platforms = try map.value("platforms")
-        links = try map.value("links")
+        links = (try? map.value("links")) ?? [:]
     }
 
     var marketInfoOverview: MarketInfoOverview {
