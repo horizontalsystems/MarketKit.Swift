@@ -245,6 +245,7 @@ struct NftCollectionStatsResponse: ImmutableMappable {
     let oneDayChange: Decimal
     let sevenDayChange: Decimal
     let thirtyDayChange: Decimal
+    let averagePrice1d: Decimal
     let averagePrice7d: Decimal
     let averagePrice30d: Decimal
     let floorPrice: Decimal?
@@ -263,6 +264,7 @@ struct NftCollectionStatsResponse: ImmutableMappable {
         oneDayChange = try map.value("one_day_change", using: Transform.doubleToDecimalTransform)
         sevenDayChange = try map.value("seven_day_change", using: Transform.doubleToDecimalTransform)
         thirtyDayChange = try map.value("thirty_day_change", using: Transform.doubleToDecimalTransform)
+        averagePrice1d = try map.value("one_day_average_price", using: Transform.doubleToDecimalTransform)
         averagePrice7d = try map.value("seven_day_average_price", using: Transform.doubleToDecimalTransform)
         averagePrice30d = try map.value("thirty_day_average_price", using: Transform.doubleToDecimalTransform)
         floorPrice = try? map.value("floor_price", using: Transform.doubleToDecimalTransform)
