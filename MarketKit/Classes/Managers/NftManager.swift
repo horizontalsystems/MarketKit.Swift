@@ -87,6 +87,7 @@ class NftManager {
                 count: response.count,
                 ownerCount: response.ownerCount,
                 totalSupply: response.totalSupply,
+                averagePrice1d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice1d, shift: false),
                 averagePrice7d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice7d, shift: false),
                 averagePrice30d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice30d, shift: false),
                 floorPrice: nftPrice(platformCoin: ethereumPlatformCoin, value: response.floorPrice, shift: false),
