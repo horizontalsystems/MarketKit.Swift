@@ -5,7 +5,7 @@ import HsToolKit
 import Alamofire
 
 class HsNftProvider {
-    private let collectionLimit = 300
+    private let collectionLimit = 100
     private let assetLimit = 50
 
     private let baseUrl: String
