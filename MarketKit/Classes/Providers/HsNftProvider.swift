@@ -5,7 +5,8 @@ import HsToolKit
 import Alamofire
 
 class HsNftProvider {
-    private let collectionLimit = 100
+    private let topCollectionLimit = 1500
+    private let collectionLimit = 300
     private let assetLimit = 50
 
     private let baseUrl: String
@@ -59,7 +60,7 @@ extension HsNftProvider {
 
     func collectionsSingle(address: String? = nil, page: Int? = nil) -> Single<[NftCollectionResponse]> {
         var parameters: Parameters = [
-            "limit": collectionLimit
+            "limit": topCollectionLimit
         ]
 
         if let address = address {
