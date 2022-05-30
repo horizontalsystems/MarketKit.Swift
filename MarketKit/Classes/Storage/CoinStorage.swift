@@ -102,7 +102,7 @@ extension CoinStorage {
         try dbPool.read { db in
             let request = Platform
                     .including(required: Platform.coin)
-                    .filter(Platform.Columns.coinType == coinType.id)
+                    .filter(Platform.Columns.coinType.lowercased == coinType.id.lowercased())
 
             return try PlatformCoin.fetchOne(db, request)
         }
