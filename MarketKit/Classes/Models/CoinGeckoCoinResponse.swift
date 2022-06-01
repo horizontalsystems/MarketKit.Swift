@@ -31,7 +31,7 @@ class CoinGeckoCoinResponse: ImmutableMappable {
         return smartContractRegex.firstMatch(in: symbolUnwrapped, options: [], range: NSRange(location: 0, length: symbolUnwrapped.count)) != nil
     }
 
-    func marketTickers(imageUrls: [String: String]) -> [MarketTicker] {
+    func marketTickers(imageUrls: [String: String], targetCoins: [Coin]?) -> [MarketTicker] {
         let contractAddresses = platforms.compactMap { (platformName, contractAddress) -> String? in
             smartContractPlatforms.contains(platformName) ? contractAddress.lowercased() : nil
         }
@@ -54,8 +54,19 @@ class CoinGeckoCoinResponse: ImmutableMappable {
                 }
             }
 
-            if isSmartContractAddress(symbol: base) || isSmartContractAddress(symbol: target) {
-                return nil
+            if isSmartContractAddress(symbol: base) {
+                if let coin = coin(coins: targetCoins, coinId: raw.coinId) {
+                    base = coin.code.uppercased()
+                } else {
+                    return nil
+                }
+            }
+            if isSmartContractAddress(symbol: target) {
+                if let coin = coin(coins: targetCoins, coinId: raw.targetCoinId) {
+                    target = coin.code.uppercased()
+                } else {
+                    return nil
+                }
             }
 
             if base.lowercased() == symbol.lowercased() {
@@ -67,8 +78,6 @@ class CoinGeckoCoinResponse: ImmutableMappable {
 
                 volume = volume * lastRate
                 lastRate = 1 / lastRate
-            } else {
-                return nil
             }
 
             let imageUrl = imageUrls[raw.marketId]
@@ -83,6 +92,10 @@ class CoinGeckoCoinResponse: ImmutableMappable {
         }
     }
 
+    private func coin(coins: [Coin]?, coinId: String) -> Coin? {
+        coins?.first { $0.uid == coinId }
+    }
+
 }
 
 extension CoinGeckoCoinResponse {
@@ -94,6 +107,9 @@ extension CoinGeckoCoinResponse {
         let marketName: String
         let lastRate: Double
         let volume: Double
+        let coinId: String
+        let targetCoinId: String
+        let tradeUrl: String?
 
         init(map: Map) throws {
             base = try map.value("base")
@@ -102,6 +118,9 @@ extension CoinGeckoCoinResponse {
             marketName = try map.value("market.name")
             lastRate = try map.value("last")
             volume = try map.value("volume")
+            coinId = try map.value("coin_id")
+            targetCoinId = try map.value("target_coin_id")
+            tradeUrl = try map.value("trade_url")
         }
     }
 
