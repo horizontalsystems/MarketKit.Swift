@@ -62,7 +62,7 @@ class CoinGeckoCoinResponse: ImmutableMappable {
                 }
             }
             if isSmartContractAddress(symbol: target) {
-                if let coinCode = coinCode(coins: coins, coinId: raw.targetCoinId) {
+                if let targetCoinId = raw.targetCoinId, let coinCode = coinCode(coins: coins, coinId: targetCoinId) {
                     target = coinCode.uppercased()
                 } else {
                     return nil
@@ -108,7 +108,7 @@ extension CoinGeckoCoinResponse {
         let lastRate: Double
         let volume: Double
         let coinId: String
-        let targetCoinId: String
+        let targetCoinId: String?
         let tradeUrl: String?
 
         init(map: Map) throws {
@@ -119,8 +119,8 @@ extension CoinGeckoCoinResponse {
             lastRate = try map.value("last")
             volume = try map.value("volume")
             coinId = try map.value("coin_id")
-            targetCoinId = try map.value("target_coin_id")
-            tradeUrl = try map.value("trade_url")
+            targetCoinId = try? map.value("target_coin_id")
+            tradeUrl = try? map.value("trade_url")
         }
     }
 
