@@ -165,10 +165,10 @@ extension CoinManager {
 
         return coinGeckoProvider.marketTickersSingle(coinId: coinGeckoId)
                 .map { [weak self] response in
-                    var coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap { $0 }
-                    let fullCoins = (try? self?.storage.fullCoins(coinUids: coinUids)) ?? []
+                    let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap { $0 }
+                    let coins = (try? self?.storage.coins(coinUids: coinUids)) ?? []
 
-                    return response.marketTickers(imageUrls: self?.exchangeManager.imageUrlsMap(ids: response.exchangeIds) ?? [:], fullCoins: fullCoins)
+                    return response.marketTickers(imageUrls: self?.exchangeManager.imageUrlsMap(ids: response.exchangeIds) ?? [:], coins: coins)
                 }
     }
 

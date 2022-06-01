@@ -69,6 +69,14 @@ extension CoinStorage {
         }
     }
 
+    func coins(coinUids: [String]) throws -> [Coin] {
+        try dbPool.read { db in
+            try Coin
+                    .filter(coinUids.contains(Coin.Columns.uid))
+                    .fetchAll(db)
+        }
+    }
+
     func fullCoins(coinUids: [String]) throws -> [FullCoin] {
         try dbPool.read { db in
             let request = Coin
