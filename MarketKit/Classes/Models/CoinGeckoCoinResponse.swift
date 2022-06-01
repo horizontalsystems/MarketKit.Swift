@@ -31,7 +31,7 @@ class CoinGeckoCoinResponse: ImmutableMappable {
         return smartContractRegex.firstMatch(in: symbolUnwrapped, options: [], range: NSRange(location: 0, length: symbolUnwrapped.count)) != nil
     }
 
-    func marketTickers(imageUrls: [String: String], fullCoins: [FullCoin]) -> [MarketTicker] {
+    func marketTickers(imageUrls: [String: String], coins: [Coin]) -> [MarketTicker] {
         let contractAddresses = platforms.compactMap { (platformName, contractAddress) -> String? in
             smartContractPlatforms.contains(platformName) ? contractAddress.lowercased() : nil
         }
@@ -55,14 +55,14 @@ class CoinGeckoCoinResponse: ImmutableMappable {
             }
 
             if isSmartContractAddress(symbol: base) {
-                if let coinCode = coinCode(fullCoins: fullCoins, coinId: raw.coinId) {
+                if let coinCode = coinCode(coins: coins, coinId: raw.coinId) {
                     base = coinCode.uppercased()
                 } else {
                     return nil
                 }
             }
             if isSmartContractAddress(symbol: target) {
-                if let coinCode = coinCode(fullCoins: fullCoins, coinId: raw.targetCoinId) {
+                if let coinCode = coinCode(coins: coins, coinId: raw.targetCoinId) {
                     target = coinCode.uppercased()
                 } else {
                     return nil
@@ -92,8 +92,8 @@ class CoinGeckoCoinResponse: ImmutableMappable {
         }
     }
 
-    private func coinCode(fullCoins: [FullCoin], coinId: String) -> String? {
-        fullCoins.first { $0.coin.uid == coinId }?.coin.code
+    private func coinCode(coins: [Coin], coinId: String) -> String? {
+        coins.first { $0.uid == coinId }?.code
     }
 
 }
