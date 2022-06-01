@@ -87,7 +87,8 @@ class CoinGeckoCoinResponse: ImmutableMappable {
                     marketName: raw.marketName,
                     marketImageUrl: imageUrl,
                     rate: lastRate,
-                    volume: volume
+                    volume: volume,
+                    tradeUrl: raw.tradeUrl
             )
         }
     }

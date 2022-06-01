@@ -5,4 +5,5 @@ public struct MarketTicker {
     public let marketImageUrl: String?
     public let rate: Decimal
     public let volume: Decimal
+    public let tradeUrl: String?
 }
