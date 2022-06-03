@@ -5,7 +5,6 @@ import HsToolKit
 import Alamofire
 
 class HsNftProvider {
-    private let topCollectionLimit = 1500
     private let collectionLimit = 300
     private let assetLimit = 50
 
@@ -25,7 +24,7 @@ class HsNftProvider {
 
 extension HsNftProvider {
 
-    func recursiveCollectionsSingle(address: String, page: Int = 1, allCollections: [NftCollectionResponse] = []) -> Single<[NftCollectionResponse]> {
+    func recursiveCollectionsSingle(address: String? = nil, page: Int = 1, allCollections: [NftCollectionResponse] = []) -> Single<[NftCollectionResponse]> {
         collectionsSingle(address: address, page: page).flatMap { [unowned self] collections in
             let allCollections = allCollections + collections
 
@@ -60,7 +59,7 @@ extension HsNftProvider {
 
     func collectionsSingle(address: String? = nil, page: Int? = nil) -> Single<[NftCollectionResponse]> {
         var parameters: Parameters = [
-            "limit": topCollectionLimit
+            "limit": collectionLimit
         ]
 
         if let address = address {

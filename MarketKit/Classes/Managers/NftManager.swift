@@ -252,7 +252,7 @@ extension NftManager {
     }
 
     func collectionsSingle() -> Single<[NftCollection]> {
-        provider.collectionsSingle().map { [weak self] responses in
+        provider.recursiveCollectionsSingle().map { [weak self] responses in
             self?.collections(responses: responses) ?? []
         }
     }
