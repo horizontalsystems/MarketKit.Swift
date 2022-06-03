@@ -3,6 +3,7 @@ import RxSwift
 class CoinSyncer {
     private let keyPlatformsLastSyncTimestamp = "coin-syncer-coins-last-sync-timestamp"
     private let keyCoinsLastSyncTimestamp = "coin-syncer-platforms-last-sync-timestamp"
+    private let keyFullCoinsLastSyncTimestamp = "coin-syncer-full-coins-last-sync-timestamp"
     private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
     private let limit = 1000
     private let currentVersion = 1
@@ -99,6 +100,7 @@ extension CoinSyncer {
     func sync(coinsTimestamp: Int, platformsTimestamp: Int) {
         var coinsOutdated = true
         var platformsOutdated = true
+        var forceUpdateOutdated = true
 
         if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), coinsTimestamp == lastSyncTimestamp {
             coinsOutdated = false
@@ -106,8 +108,11 @@ extension CoinSyncer {
         if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyPlatformsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), platformsTimestamp == lastSyncTimestamp {
             platformsOutdated = false
         }
+        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyFullCoinsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), Date().timeIntervalSince1970 - Double(lastSyncTimestamp) < 60 * 60 * 24 {
+            forceUpdateOutdated = false
+        }
 
-        guard coinsOutdated || platformsOutdated else {
+        guard coinsOutdated || platformsOutdated || forceUpdateOutdated else {
             return
         }
 
