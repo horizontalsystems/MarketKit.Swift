@@ -9,8 +9,6 @@ class CoinManager {
     private let defiYieldProvider: DefiYieldProvider
     private let exchangeManager: ExchangeManager
 
-    private let fullCoinsUpdatedRelay = PublishRelay<Void>()
-
     init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
@@ -21,7 +19,7 @@ class CoinManager {
 
     private func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
         do {
-            let fullCoins = try storage.fullCoins(coinUids: rawMarketInfos.map { $0.uid })
+            let fullCoins = try fullCoins(coinUids: rawMarketInfos.map { $0.uid })
             let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
 
             return rawMarketInfos.compactMap { rawMarketInfo in
@@ -38,7 +36,7 @@ class CoinManager {
 
     private func defiCoins(rawDefiCoins: [DefiCoinRaw]) -> [DefiCoin] {
         do {
-            let fullCoins = try storage.fullCoins(coinUids: rawDefiCoins.compactMap { $0.uid })
+            let fullCoins = try fullCoins(coinUids: rawDefiCoins.compactMap { $0.uid })
             let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
 
             return rawDefiCoins.map { rawDefiCoin in
@@ -79,53 +77,46 @@ extension CoinManager {
 
     // Coins
 
-    var fullCoinsUpdatedObservable: Observable<Void> {
-        fullCoinsUpdatedRelay.asObservable()
-    }
-
     func coinsCount() throws -> Int {
         try storage.coinsCount()
-    }
-
-    func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
-        try storage.fullCoins(filter: filter, limit: limit)
-    }
-
-    func fullCoins(coinUids: [String]) throws -> [FullCoin] {
-        try storage.fullCoins(coinUids: coinUids)
-    }
-
-    func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
-        try storage.fullCoins(coinTypes: coinTypes)
-    }
-
-    func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
-        try storage.platformCoin(coinType: coinType)
-    }
-
-    func platformCoins(platformType: PlatformType, filter: String, limit: Int) throws -> [PlatformCoin] {
-        try storage.platformCoins(platformType: platformType, filter: filter, limit: limit)
-    }
-
-    func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
-        try storage.platformCoins(coinTypeIds: coinTypes.map { $0.id} )
-    }
-
-    func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
-        try storage.platformCoins(coinTypeIds: coinTypeIds)
     }
 
     func coin(uid: String) throws -> Coin? {
         try storage.coin(uid: uid)
     }
 
-    func handleFetched(fullCoins: [FullCoin]) {
-        do {
-            try storage.update(fullCoins: fullCoins)
-            fullCoinsUpdatedRelay.accept(())
-        } catch {
-            // todo
-        }
+    func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
+        try storage.coinTokenRecords(filter: filter, limit: limit)
+                .map { $0.fullCoin }
+    }
+
+    func fullCoin(uid: String) throws -> FullCoin? {
+        try storage.coinTokenRecord(uid: uid)?.fullCoin
+    }
+
+    func fullCoins(coinUids: [String]) throws -> [FullCoin] {
+        try storage.coinTokenRecords(coinUids: coinUids)
+                .map { $0.fullCoin }
+    }
+
+    func token(query: TokenQuery) throws -> Token? {
+        try storage.tokenInfoRecord(query: query)
+                .map { $0.token }
+    }
+
+    func tokens(queries: [TokenQuery]) throws -> [Token] {
+        try storage.tokenInfoRecords(queries: queries)
+                .map { $0.token }
+    }
+
+    func tokens(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [Token] {
+        try storage.tokenInfoRecords(blockchainType: blockchainType, filter: filter, limit: limit)
+                .map { $0.token }
+    }
+
+    func blockchains(uids: [String]) throws -> [Blockchain] {
+        try storage.blockchains(uids: uids)
+                .map { $0.blockchain }
     }
 
     // Market Info
@@ -158,6 +149,17 @@ extension CoinManager {
                 }
     }
 
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
+        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+                .flatMap { [weak self] response in
+                    if let fullCoin = try? self?.fullCoin(uid: coinUid) {
+                        return Single.just(response.marketInfoOverview(fullCoin: fullCoin))
+                    } else {
+                        return Single.error(Kit.KitError.noFullCoin)
+                    }
+                }
+    }
+
     func marketTickerSingle(coinUid: String) -> Single<[MarketTicker]> {
         guard let coin = try? storage.coin(uid: coinUid), let coinGeckoId = coin.coinGeckoId else {
             return Single.just([])
@@ -166,7 +168,7 @@ extension CoinManager {
         return coinGeckoProvider.marketTickersSingle(coinId: coinGeckoId)
                 .map { [weak self] response in
                     let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap({ $0 }).compactMap { $0 }
-                    let coins = (try? self?.storage.coins(coinUids: coinUids)) ?? []
+                    let coins = (try? self?.storage.coins(uids: coinUids)) ?? []
 
                     return response.marketTickers(imageUrls: self?.exchangeManager.imageUrlsMap(ids: response.exchangeIds) ?? [:], coins: coins)
                 }

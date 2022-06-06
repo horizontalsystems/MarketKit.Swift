@@ -68,11 +68,35 @@ class MiscController: UIViewController {
         dumpCoinsButton.setTitleColor(.systemBlue, for: .normal)
         dumpCoinsButton.addTarget(self, action: #selector(onTapDumpCoins), for: .touchUpInside)
 
+        let dumpBlockchainsButton = UIButton()
+
+        view.addSubview(dumpBlockchainsButton)
+        dumpBlockchainsButton.snp.makeConstraints { maker in
+            maker.top.equalTo(dumpCoinsButton.snp.bottom).offset(8)
+            maker.centerX.equalToSuperview()
+        }
+
+        dumpBlockchainsButton.setTitle("Dump Blockchains", for: .normal)
+        dumpBlockchainsButton.setTitleColor(.systemBlue, for: .normal)
+        dumpBlockchainsButton.addTarget(self, action: #selector(onTapDumpBlockchains), for: .touchUpInside)
+
+        let dumpTokensButton = UIButton()
+
+        view.addSubview(dumpTokensButton)
+        dumpTokensButton.snp.makeConstraints { maker in
+            maker.top.equalTo(dumpBlockchainsButton.snp.bottom).offset(8)
+            maker.centerX.equalToSuperview()
+        }
+
+        dumpTokensButton.setTitle("Dump Tokens", for: .normal)
+        dumpTokensButton.setTitleColor(.systemBlue, for: .normal)
+        dumpTokensButton.addTarget(self, action: #selector(onTapDumpTokens), for: .touchUpInside)
+
         let platformsButton = UIButton()
 
         view.addSubview(platformsButton)
         platformsButton.snp.makeConstraints { maker in
-            maker.top.equalTo(dumpCoinsButton.snp.bottom).offset(8)
+            maker.top.equalTo(dumpTokensButton.snp.bottom).offset(8)
             maker.centerX.equalToSuperview()
         }
 
@@ -118,12 +142,34 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapDumpCoins() {
+        dump { try Singleton.instance.kit.coinsDump() }
+    }
+
+    @objc private func onTapDumpBlockchains() {
+        dump { try Singleton.instance.kit.blockchainsDump() }
+    }
+
+    @objc private func onTapDumpTokens() {
+        dump { try Singleton.instance.kit.tokenRecordsDump() }
+    }
+
+    @objc private func onTapPlatforms() {
+        Singleton.instance.kit.topPlatformsSingle(currencyCode: "USD")
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
+                .observeOn(MainScheduler.instance)
+                .subscribe(onSuccess: { topPlatforms in
+                    print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
+                })
+                .disposed(by: disposeBag)
+    }
+
+    private func dump(dumpBlock: () throws -> String?) {
         let message: String
 
         do {
-            if let coinsDump = try Singleton.instance.kit.coinsDump() {
+            if let coinsDump = try dumpBlock() {
                 UIPasteboard.general.string = coinsDump
-                message = "The JSON dump is copied to the clipboard.\nPaste it in full_coins.json file and commit"
+                message = "The JSON dump is copied to the clipboard.\nPaste it into corresponding file and commit"
             } else {
                 message = "Unexpected Error"
             }
@@ -135,16 +181,6 @@ class MiscController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 
         present(alert, animated: true)
-    }
-
-    @objc private func onTapPlatforms() {
-        Singleton.instance.kit.topPlatformsSingle(currencyCode: "USD")
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { topPlatforms in
-                    print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
-                })
-                .disposed(by: disposeBag)
     }
 
 }

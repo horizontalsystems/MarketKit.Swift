@@ -1,12 +1,10 @@
-import GRDB
-
-public struct FullCoin: FetchableRecord, Decodable {
+public struct FullCoin {
     public let coin: Coin
-    public let platforms: [Platform]
+    public let tokens: [Token]
 
-    public init(coin: Coin, platforms: [Platform]) {
+    public init(coin: Coin, tokens: [Token]) {
         self.coin = coin
-        self.platforms = platforms
+        self.tokens = tokens
     }
 
 }

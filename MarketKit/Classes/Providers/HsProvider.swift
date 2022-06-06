@@ -46,20 +46,18 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/status/updates", method: .get, headers: headers)
     }
 
-    // Full Coins
+    // Coins
 
-    func fullCoinsSingle(page: Int, limit: Int) -> Single<[FullCoin]> {
-        let parameters: Parameters = [
-            "fields": "name,code,market_cap_rank,coingecko_id,all_platforms",
-            "page": page,
-            "limit": limit
-        ]
+    func allCoinsSingle() -> Single<[Coin]> {
+        networkManager.single(url: "\(baseUrl)/v1/coins/list", method: .get, headers: headers)
+    }
 
-        return networkManager
-                .single(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
-                .map { (fullCoinResponses: [FullCoinResponse]) -> [FullCoin] in
-                    fullCoinResponses.map { $0.fullCoin() }
-                }
+    func allBlockchainRecordsSingle() -> Single<[BlockchainRecord]> {
+        networkManager.single(url: "\(baseUrl)/v1/blockchains/list", method: .get, headers: headers)
+    }
+
+    func allTokenRecordsSingle() -> Single<[TokenRecord]> {
+        networkManager.single(url: "\(baseUrl)/v1/tokens/list", method: .get, headers: headers)
     }
 
     // Market Infos
@@ -108,14 +106,13 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters, headers: headers)
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
+    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverviewResponse> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
             "language": languageCode.lowercased()
         ]
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters, headers: headers)
-                .map { (response: MarketInfoOverviewResponse) in response.marketInfoOverview }
     }
 
     func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {

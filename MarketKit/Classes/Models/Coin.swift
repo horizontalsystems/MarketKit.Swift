@@ -1,13 +1,18 @@
 import GRDB
+import ObjectMapper
 
-public class Coin: Record, Decodable {
-    static let platforms = hasMany(Platform.self)
+public class Coin: Record, Decodable, ImmutableMappable {
+    static let tokens = hasMany(TokenRecord.self)
 
     public let uid: String
     public let name: String
     public let code: String
     public let marketCapRank: Int?
     public let coinGeckoId: String?
+
+    override open class var databaseTableName: String {
+        "coin"
+    }
 
     enum Columns: String, ColumnExpression {
         case uid, name, code, marketCapRank, coinGeckoId
@@ -23,7 +28,26 @@ public class Coin: Record, Decodable {
         super.init()
     }
 
-    required public init(row: Row) {
+    required public init(map: Map) throws {
+        uid = try map.value("uid")
+        name = try map.value("name")
+        let code: String = try map.value("code")
+        self.code = code.uppercased()
+        marketCapRank = try? map.value("market_cap_rank")
+        coinGeckoId = try? map.value("coingecko_id")
+
+        super.init()
+    }
+
+    public func mapping(map: Map) {
+        uid >>> map["uid"]
+        name >>> map["name"]
+        code >>> map["code"]
+        marketCapRank >>> map["market_cap_rank"]
+        coinGeckoId >>> map["coingecko_id"]
+    }
+
+    required init(row: Row) {
         uid = row[Columns.uid]
         name = row[Columns.name]
         code = row[Columns.code]
@@ -31,10 +55,6 @@ public class Coin: Record, Decodable {
         coinGeckoId = row[Columns.coinGeckoId]
 
         super.init(row: row)
-    }
-
-    override open class var databaseTableName: String {
-        "coin"
     }
 
     override open func encode(to container: inout PersistenceContainer) {

@@ -55,7 +55,7 @@ extension Kit {
     // Coins
 
     public var fullCoinsUpdatedObservable: Observable<Void> {
-        coinManager.fullCoinsUpdatedObservable
+        coinSyncer.fullCoinsUpdatedObservable
     }
 
     public func fullCoins(filter: String, limit: Int = 20) throws -> [FullCoin] {
@@ -66,28 +66,32 @@ extension Kit {
         try coinManager.fullCoins(coinUids: coinUids)
     }
 
-    public func fullCoins(coinTypes: [CoinType]) throws -> [FullCoin] {
-        try coinManager.fullCoins(coinTypes: coinTypes)
-    }
-
     public func coinsDump() throws -> String? {
         try coinSyncer.coinsDump()
     }
 
-    public func platformCoin(coinType: CoinType) throws -> PlatformCoin? {
-        try coinManager.platformCoin(coinType: coinType)
+    public func blockchainsDump() throws -> String? {
+        try coinSyncer.blockchainsDump()
     }
 
-    public func platformCoins(platformType: PlatformType, filter: String, limit: Int = 20) throws -> [PlatformCoin] {
-        try coinManager.platformCoins(platformType: platformType, filter: filter, limit: limit)
+    public func tokenRecordsDump() throws -> String? {
+        try coinSyncer.tokenRecordsDump()
     }
 
-    public func platformCoins(coinTypes: [CoinType]) throws -> [PlatformCoin] {
-        try coinManager.platformCoins(coinTypes: coinTypes)
+    public func token(query: TokenQuery) throws -> Token? {
+        try coinManager.token(query: query)
     }
 
-    public func platformCoins(coinTypeIds: [String]) throws -> [PlatformCoin] {
-        try coinManager.platformCoins(coinTypeIds: coinTypeIds)
+    public func tokens(queries: [TokenQuery]) throws -> [Token] {
+        try coinManager.tokens(queries: queries)
+    }
+
+    public func blockchains(uids: [String]) throws -> [Blockchain] {
+        try coinManager.blockchains(uids: uids)
+    }
+
+    public func tokens(blockchainType: BlockchainType, filter: String, limit: Int = 20) throws -> [Token] {
+        try coinManager.tokens(blockchainType: blockchainType, filter: filter, limit: limit)
     }
 
     // Market Info
@@ -109,7 +113,7 @@ extension Kit {
     }
 
     public func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+        coinManager.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
     }
 
     public func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
@@ -288,6 +292,7 @@ extension Kit {
 
     public enum KitError: Error {
         case noChartData
+        case noFullCoin
     }
 
 }

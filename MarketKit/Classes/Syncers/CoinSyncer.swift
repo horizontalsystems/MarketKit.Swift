@@ -1,52 +1,49 @@
 import RxSwift
+import RxRelay
 
 class CoinSyncer {
-    private let keyPlatformsLastSyncTimestamp = "coin-syncer-coins-last-sync-timestamp"
-    private let keyCoinsLastSyncTimestamp = "coin-syncer-platforms-last-sync-timestamp"
-    private let keyFullCoinsLastSyncTimestamp = "coin-syncer-full-coins-last-sync-timestamp"
+    private let keyCoinsLastSyncTimestamp = "coin-syncer-coins-last-sync-timestamp"
+    private let keyBlockchainsLastSyncTimestamp = "coin-syncer-blockchains-last-sync-timestamp"
+    private let keyTokensLastSyncTimestamp = "coin-syncer-tokens-last-sync-timestamp"
     private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
     private let limit = 1000
-    private let currentVersion = 1
+    private let currentVersion = 2
 
-    private let coinManager: CoinManager
+    private let storage: CoinStorage
     private let hsProvider: HsProvider
     private let syncerStateStorage: SyncerStateStorage
     private let disposeBag = DisposeBag()
 
-    init(coinManager: CoinManager, hsProvider: HsProvider, syncerStateStorage: SyncerStateStorage) {
-        self.coinManager = coinManager
+    private let fullCoinsUpdatedRelay = PublishRelay<Void>()
+
+    init(storage: CoinStorage, hsProvider: HsProvider, syncerStateStorage: SyncerStateStorage) {
+        self.storage = storage
         self.hsProvider = hsProvider
         self.syncerStateStorage = syncerStateStorage
     }
 
-    private func recursiveSyncSingle(page: Int = 1, loadedFullCoins: [FullCoin] = []) -> Single<[FullCoin]> {
-        hsProvider.fullCoinsSingle(page: page, limit: limit)
-                .flatMap { [unowned self] fullCoins in
-                    let loadedFullCoins = loadedFullCoins + fullCoins
-
-                    if fullCoins.count < limit {
-                        return Single.just(loadedFullCoins)
-                    }
-
-                    return recursiveSyncSingle(page: page + 1, loadedFullCoins: loadedFullCoins)
-                }
+    private func saveLastSyncTimestamps(coins: Int, blockchains: Int, tokens: Int) {
+        try? syncerStateStorage.save(value: String(coins), key: keyCoinsLastSyncTimestamp)
+        try? syncerStateStorage.save(value: String(blockchains), key: keyBlockchainsLastSyncTimestamp)
+        try? syncerStateStorage.save(value: String(tokens), key: keyTokensLastSyncTimestamp)
     }
 
-    private func handleFetch(error: Error) {
-        print("MarketCoins fetch error: \(error)")
-    }
-
-    private func saveCoins(lastSyncTimestamp: Int) {
-        try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyCoinsLastSyncTimestamp)
-    }
-
-    private func savePlatforms(lastSyncTimestamp: Int) {
-        try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyPlatformsLastSyncTimestamp)
+    func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
+        do {
+            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+            fullCoinsUpdatedRelay.accept(())
+        } catch {
+            print("Fetched data error: \(error)")
+        }
     }
 
 }
 
 extension CoinSyncer {
+
+    var fullCoinsUpdatedObservable: Observable<Void> {
+        fullCoinsUpdatedRelay.asObservable()
+    }
 
     func initialSync() {
         do {
@@ -54,76 +51,82 @@ extension CoinSyncer {
                 return
             }
 
-            guard let path = Kit.bundle?.path(forResource: "full_coins", ofType: "json") else {
+            guard let coinsPath = Kit.bundle?.path(forResource: "coins", ofType: "json") else {
+                return
+            }
+            guard let blockchainsPath = Kit.bundle?.path(forResource: "blockchains", ofType: "json") else {
+                return
+            }
+            guard let tokensPath = Kit.bundle?.path(forResource: "tokens", ofType: "json") else {
                 return
             }
 
-            let jsonString = try String(contentsOfFile: path, encoding: .utf8)
-            guard let responses = [FullCoinResponse](JSONString: jsonString) else {
+            guard let coins = [Coin](JSONString: try String(contentsOfFile: coinsPath, encoding: .utf8)) else {
+                return
+            }
+            guard let blockchainRecords = [BlockchainRecord](JSONString: try String(contentsOfFile: blockchainsPath, encoding: .utf8)) else {
+                return
+            }
+            guard let tokenRecords = [TokenRecord](JSONString: try String(contentsOfFile: tokensPath, encoding: .utf8)) else {
                 return
             }
 
-            coinManager.handleFetched(fullCoins: responses.map { $0.fullCoin() })
+            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+
             try syncerStateStorage.save(value: "\(currentVersion)", key: keyInitialSyncVersion)
             try syncerStateStorage.delete(key: keyCoinsLastSyncTimestamp)
-            try syncerStateStorage.delete(key: keyPlatformsLastSyncTimestamp)
+            try syncerStateStorage.delete(key: keyBlockchainsLastSyncTimestamp)
+            try syncerStateStorage.delete(key: keyTokensLastSyncTimestamp)
         } catch {
             print("CoinSyncer: initial sync error: \(error)")
         }
     }
 
     func coinsDump() throws -> String? {
-        let fullCoins =  try coinManager.fullCoins(filter: "", limit: 1_000_000)
-
-        let fullCoinResponses: [FullCoinResponse] = fullCoins.map { fullCoin in
-            FullCoinResponse(
-                    uid: fullCoin.coin.uid,
-                    name: fullCoin.coin.name,
-                    code: fullCoin.coin.code,
-                    marketCapRank: fullCoin.coin.marketCapRank,
-                    coinGeckoId: fullCoin.coin.coinGeckoId,
-                    platforms: fullCoin.platforms.map { platform in
-                        let coinTypeAttributes = platform.coinType.coinTypeAttributes
-                        return PlatformResponse(
-                                type: coinTypeAttributes.type,
-                                decimals: platform.decimals,
-                                address: coinTypeAttributes.address,
-                                symbol: coinTypeAttributes.symbol
-                        )
-                    }
-            )
-        }
-
-        return fullCoinResponses.toJSONString()
+        let coins = try storage.allCoins()
+        return coins.toJSONString()
     }
 
-    func sync(coinsTimestamp: Int, platformsTimestamp: Int) {
+    func blockchainsDump() throws -> String? {
+        let blockchainRecords = try storage.allBlockchainRecords()
+        return blockchainRecords.toJSONString()
+    }
+
+    func tokenRecordsDump() throws -> String? {
+        let tokenRecords = try storage.allTokenRecords()
+        return tokenRecords.toJSONString()
+    }
+
+    func sync(coinsTimestamp: Int, blockchainsTimestamp: Int, tokensTimestamp: Int) {
         var coinsOutdated = true
-        var platformsOutdated = true
-        var forceUpdateOutdated = true
+        var blockchainsOutdated = true
+        var tokensOutdated = true
 
         if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), coinsTimestamp == lastSyncTimestamp {
             coinsOutdated = false
         }
-        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyPlatformsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), platformsTimestamp == lastSyncTimestamp {
-            platformsOutdated = false
+        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyBlockchainsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), blockchainsTimestamp == lastSyncTimestamp {
+            blockchainsOutdated = false
         }
-        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyFullCoinsLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), Date().timeIntervalSince1970 - Double(lastSyncTimestamp) < 60 * 60 * 24 {
-            forceUpdateOutdated = false
+        if let rawLastSyncTimestamp = try? syncerStateStorage.value(key: keyTokensLastSyncTimestamp), let lastSyncTimestamp = Int(rawLastSyncTimestamp), tokensTimestamp == lastSyncTimestamp {
+            tokensOutdated = false
         }
 
-        guard coinsOutdated || platformsOutdated || forceUpdateOutdated else {
+        guard coinsOutdated || blockchainsOutdated || tokensOutdated else {
             return
         }
 
-        recursiveSyncSingle()
+        let coinsSingle = coinsOutdated ? hsProvider.allCoinsSingle() : Single.just([])
+        let blockchainRecordsSingle = blockchainsOutdated ? hsProvider.allBlockchainRecordsSingle() : Single.just([])
+        let tokenRecordsSingle = tokensOutdated ? hsProvider.allTokenRecordsSingle() : Single.just([])
+
+        Single.zip(coinsSingle, blockchainRecordsSingle, tokenRecordsSingle)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .subscribe(onSuccess: { [weak self] fullCoins in
-                    self?.coinManager.handleFetched(fullCoins: fullCoins)
-                    self?.saveCoins(lastSyncTimestamp: coinsTimestamp)
-                    self?.savePlatforms(lastSyncTimestamp: platformsTimestamp)
-                }, onError: { [weak self] error in
-                    self?.handleFetch(error: error)
+                .subscribe(onSuccess: { [weak self] coins, blockchainRecords, tokenRecords in
+                    self?.handleFetched(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+                    self?.saveLastSyncTimestamps(coins: coinsTimestamp, blockchains: blockchainsTimestamp, tokens: tokensTimestamp)
+                }, onError: { error in
+                    print("Market data fetch error: \(error)")
                 })
                 .disposed(by: disposeBag)
     }
