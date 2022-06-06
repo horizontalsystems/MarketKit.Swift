@@ -18,7 +18,7 @@ extension HsDataSyncer {
         hsProvider.statusSingle()
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] status in
-                    self?.coinSyncer.sync(coinsTimestamp: status.coins, platformsTimestamp: status.platforms)
+                    self?.coinSyncer.sync(coinsTimestamp: status.coins, blockchainsTimestamp: status.blockchains, tokensTimestamp: status.tokens)
                 }, onError: { error in
                     print("Hs Status sync error: \(error)")
                 })

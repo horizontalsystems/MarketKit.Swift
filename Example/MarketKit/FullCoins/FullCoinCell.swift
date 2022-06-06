@@ -48,7 +48,7 @@ class FullCoinCell: UITableViewCell {
         let coin = fullCoin.coin
         nameLabel.text = coin.name
         codeLabel.text = "\(coin.code), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a"), cgi: \(coin.coinGeckoId.map { "\($0)" } ?? "n/a")"
-        platformsLabel.text = "platforms: \(fullCoin.platforms.count)"
+        platformsLabel.text = "\(fullCoin.tokens.count)"
     }
 
 }

@@ -18,10 +18,10 @@ public struct NftCollectionStatCharts {
 extension NftCollectionStatCharts {
 
     public class PricePoint: Point {
-        public let coin: PlatformCoin?
+        public let token: Token?
 
-        public init(timestamp: TimeInterval, value: Decimal, coin: PlatformCoin?) {
-            self.coin = coin
+        public init(timestamp: TimeInterval, value: Decimal, token: Token?) {
+            self.token = token
             super.init(timestamp: timestamp, value: value)
         }
 

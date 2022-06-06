@@ -30,7 +30,7 @@ extension Kit {
         let nftManager = NftManager(coinManager: coinManager, provider: hsNftProvider)
         let marketOverviewManager = MarketOverviewManager(nftManager: nftManager, hsProvider: hsProvider)
 
-        let coinSyncer = CoinSyncer(coinManager: coinManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
+        let coinSyncer = CoinSyncer(storage: coinStorage, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
 
         let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, hsProvider: hsProvider)
 

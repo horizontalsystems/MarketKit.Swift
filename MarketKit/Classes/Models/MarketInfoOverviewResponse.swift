@@ -13,7 +13,6 @@ class MarketInfoOverviewResponse: ImmutableMappable {
     let genesisDate: Date?
     let categories: [CoinCategory]
     let description: String
-    let platforms: [PlatformResponse]
     let links: [String: String?]
 
     required init(map: Map) throws {
@@ -28,11 +27,10 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         genesisDate = try? map.value("genesis_date", using: Transform.stringToDateTransform)
         categories = try map.value("categories")
         description = (try? map.value("description")) ?? ""
-        platforms = try map.value("platforms")
         links = (try? map.value("links")) ?? [:]
     }
 
-    var marketInfoOverview: MarketInfoOverview {
+    func marketInfoOverview(fullCoin: FullCoin) -> MarketInfoOverview {
         var convertedLinks = [LinkType: String]()
 
         for (type, link) in links {
@@ -63,6 +61,7 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         }.sorted { $0.base < $1.base }
 
         return MarketInfoOverview(
+                fullCoin: fullCoin,
                 marketCap: marketCap,
                 marketCapRank: marketCapRank,
                 totalSupply: totalSupply,
@@ -74,7 +73,6 @@ class MarketInfoOverviewResponse: ImmutableMappable {
                 genesisDate: genesisDate,
                 categories: categories,
                 description: description,
-                coinTypes: platforms.compactMap { $0.coinType },
                 links: convertedLinks
         )
     }

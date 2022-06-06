@@ -12,26 +12,26 @@ class NftManager {
         self.provider = provider
     }
 
-    private func coinType(address: String) -> CoinType {
+    private func tokenType(address: String) -> TokenType {
         if address == zeroAddress {
-            return .ethereum
+            return .native
         } else {
-            return .erc20(address: address)
+            return .eip20(address: address)
         }
     }
 
-    private func platformCoinMap(addresses: [String]) -> [String: PlatformCoin] {
+    private func tokenMap(addresses: [String]) -> [String: Token] {
         do {
-            var map = [String: PlatformCoin]()
-            let coinTypes = addresses.map { coinType(address: $0) }
-            let platformCoins = try coinManager.platformCoins(coinTypes: coinTypes)
+            var map = [String: Token]()
+            let tokenTypes = addresses.map { tokenType(address: $0) }
+            let tokens = try coinManager.tokens(queries: tokenTypes.map { TokenQuery(blockchainType: .ethereum, tokenType: $0) })
 
-            for platformCoin in platformCoins {
-                switch platformCoin.coinType {
-                case .ethereum:
-                    map[zeroAddress] = platformCoin
-                case .erc20(let address):
-                    map[address.lowercased()] = platformCoin
+            for token in tokens {
+                switch token.type {
+                case .native:
+                    map[zeroAddress] = token
+                case .eip20(let address):
+                    map[address.lowercased()] = token
                 default:
                     ()
                 }
@@ -43,20 +43,20 @@ class NftManager {
         }
     }
 
-    private func nftPrice(platformCoin: PlatformCoin?, value: Decimal?, shift: Bool) -> NftPrice? {
-        guard let platformCoin = platformCoin, let value = value else {
+    private func nftPrice(token: Token?, value: Decimal?, shift: Bool) -> NftPrice? {
+        guard let token = token, let value = value else {
             return nil
         }
 
         return NftPrice(
-                platformCoin: platformCoin,
-                value: shift ? Decimal(sign: .plus, exponent: -platformCoin.decimals, significand: value) : value
+                token: token,
+                value: shift ? Decimal(sign: .plus, exponent: -token.decimals, significand: value) : value
         )
     }
 
-    private func createNftPrices(values: [HsTimePeriod: Decimal], ethereumPlatformCoin: PlatformCoin?) -> [HsTimePeriod: NftPrice] {
+    private func createNftPrices(values: [HsTimePeriod: Decimal], ethereumToken: Token?) -> [HsTimePeriod: NftPrice] {
         Dictionary<HsTimePeriod, NftPrice>(uniqueKeysWithValues: values.compactMap { key, value in
-            guard let nftPrice = nftPrice(platformCoin: ethereumPlatformCoin, value: value, shift: false) else {
+            guard let nftPrice = nftPrice(token: ethereumToken, value: value, shift: false) else {
                 return nil
             }
 
@@ -64,8 +64,8 @@ class NftManager {
         })
     }
 
-    private func collection(response: NftCollectionResponse, ethereumPlatformCoin: PlatformCoin? = nil) -> NftCollection {
-        let ethereumPlatformCoin = ethereumPlatformCoin ?? (try? coinManager.platformCoin(coinType: .ethereum))
+    private func collection(response: NftCollectionResponse, ethereumToken: Token? = nil) -> NftCollection {
+        let ethereumToken = ethereumToken ?? (try? coinManager.token(query: TokenQuery(blockchainType: .ethereum, tokenType: .native)))
 
         return NftCollection(
                 contracts: response.contracts.map { NftCollection.Contract(address: $0.address, schemaName: $0.type) },
@@ -77,27 +77,27 @@ class NftManager {
                 externalUrl: response.externalUrl,
                 discordUrl: response.discordUrl,
                 twitterUsername: response.twitterUsername,
-                stats: collectionStats(response: response.stats, ethereumPlatformCoin: ethereumPlatformCoin),
-                statCharts: statCharts(statChartPoints: response.statChartPoints, ethereumPlatformCoin: ethereumPlatformCoin)
+                stats: collectionStats(response: response.stats, ethereumToken: ethereumToken),
+                statCharts: statCharts(statChartPoints: response.statChartPoints, ethereumToken: ethereumToken)
         )
     }
 
-    private func collectionStats(response: NftCollectionStatsResponse, ethereumPlatformCoin: PlatformCoin?) -> NftCollectionStats {
+    private func collectionStats(response: NftCollectionStatsResponse, ethereumToken: Token?) -> NftCollectionStats {
         NftCollectionStats(
                 count: response.count,
                 ownerCount: response.ownerCount,
                 totalSupply: response.totalSupply,
-                averagePrice1d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice1d, shift: false),
-                averagePrice7d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice7d, shift: false),
-                averagePrice30d: nftPrice(platformCoin: ethereumPlatformCoin, value: response.averagePrice30d, shift: false),
-                floorPrice: nftPrice(platformCoin: ethereumPlatformCoin, value: response.floorPrice, shift: false),
+                averagePrice1d: nftPrice(token: ethereumToken, value: response.averagePrice1d, shift: false),
+                averagePrice7d: nftPrice(token: ethereumToken, value: response.averagePrice7d, shift: false),
+                averagePrice30d: nftPrice(token: ethereumToken, value: response.averagePrice30d, shift: false),
+                floorPrice: nftPrice(token: ethereumToken, value: response.floorPrice, shift: false),
                 totalVolume: response.totalVolume,
-                marketCap: nftPrice(platformCoin: ethereumPlatformCoin, value: response.marketCap, shift: false),
+                marketCap: nftPrice(token: ethereumToken, value: response.marketCap, shift: false),
                 volumes: createNftPrices(values: [
                     .day1: response.oneDayVolume,
                     .week1: response.sevenDayVolume,
                     .month1: response.thirtyDayVolume
-                ], ethereumPlatformCoin: ethereumPlatformCoin),
+                ], ethereumToken: ethereumToken),
                 changes: [
                     .day1: response.oneDayChange,
                     .week1: response.sevenDayChange,
@@ -106,14 +106,14 @@ class NftManager {
         )
     }
 
-    private func statCharts(statChartPoints: [CollectionStatChartPointResponse]?, ethereumPlatformCoin: PlatformCoin?) -> NftCollectionStatCharts? {
+    private func statCharts(statChartPoints: [CollectionStatChartPointResponse]?, ethereumToken: Token?) -> NftCollectionStatCharts? {
         guard let statChartPoints = statChartPoints else {
             return nil
         }
 
-        let oneDayVolumePoints = statChartPoints.compactMap { point in point.oneDayVolume.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, coin: ethereumPlatformCoin) } }
-        let averagePricePoints = statChartPoints.compactMap { point in point.averagePrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, coin: ethereumPlatformCoin) } }
-        let floorPricePoints = statChartPoints.compactMap { point in point.floorPrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, coin: ethereumPlatformCoin) } }
+        let oneDayVolumePoints = statChartPoints.compactMap { point in point.oneDayVolume.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: ethereumToken) } }
+        let averagePricePoints = statChartPoints.compactMap { point in point.averagePrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: ethereumToken) } }
+        let floorPricePoints = statChartPoints.compactMap { point in point.floorPrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: ethereumToken) } }
         let oneDaySalesPoints = statChartPoints.compactMap { point in point.oneDaySales.map { NftCollectionStatCharts.Point(timestamp: point.timestamp, value: $0) } }
 
         if oneDayVolumePoints.isEmpty && averagePricePoints.isEmpty && floorPricePoints.isEmpty && oneDayVolumePoints.isEmpty {
@@ -137,18 +137,18 @@ class NftManager {
             }
         }
 
-        let platformCoinMap = platformCoinMap(addresses: addresses)
+        let tokenMap = tokenMap(addresses: addresses)
 
         return responses.map { response in
-            asset(response: response, platformCoinMap: platformCoinMap)
+            asset(response: response, tokenMap: tokenMap)
         }
     }
 
-    private func asset(response: NftAssetResponse, platformCoinMap: [String: PlatformCoin]? = nil) -> NftAsset {
-        let map: [String: PlatformCoin]
+    private func asset(response: NftAssetResponse, tokenMap: [String: Token]? = nil) -> NftAsset {
+        let map: [String: Token]
 
-        if let platformCoinMap = platformCoinMap {
-            map = platformCoinMap
+        if let tokenMap = tokenMap {
+            map = tokenMap
         } else {
             var addresses = [String]()
 
@@ -159,7 +159,7 @@ class NftManager {
                 addresses.append(order.paymentToken.address)
             }
 
-            map = self.platformCoinMap(addresses: addresses)
+            map = self.tokenMap(addresses: addresses)
         }
 
         return NftAsset(
@@ -173,17 +173,17 @@ class NftManager {
                 externalLink: response.externalLink,
                 permalink: response.permalink,
                 traits: response.traits.map { NftAsset.Trait(type: $0.type, value: $0.value, count: $0.count) },
-                lastSalePrice: response.lastSale.flatMap { nftPrice(platformCoin: map[$0.paymentTokenAddress], value: $0.totalPrice, shift: true) },
+                lastSalePrice: response.lastSale.flatMap { nftPrice(token: map[$0.paymentTokenAddress], value: $0.totalPrice, shift: true) },
                 onSale: !response.sellOrders.isEmpty,
-                orders: assetOrders(responses: response.orders, platformCoinMap: map)
+                orders: assetOrders(responses: response.orders, tokenMap: map)
         )
     }
 
-    private func assetOrders(responses: [NftOrderResponse], platformCoinMap: [String: PlatformCoin]) -> [NftAssetOrder] {
+    private func assetOrders(responses: [NftOrderResponse], tokenMap: [String: Token]) -> [NftAssetOrder] {
         responses.map { response in
             NftAssetOrder(
                     closingDate: response.closingDate,
-                    price: platformCoinMap[response.paymentToken.address].flatMap { nftPrice(platformCoin: $0, value: response.currentPrice, shift: true) },
+                    price: tokenMap[response.paymentToken.address].flatMap { nftPrice(token: $0, value: response.currentPrice, shift: true) },
                     emptyTaker: response.takerAddress == zeroAddress,
                     side: response.side,
                     v: response.v,
@@ -201,13 +201,13 @@ class NftManager {
             }
         }
 
-        let platformCoinMap = platformCoinMap(addresses: addresses)
+        let tokenMap = tokenMap(addresses: addresses)
 
         return responses.compactMap { response in
             var amount: NftPrice?
 
             if let paymentToken = response.paymentToken, let value = response.amount {
-                amount = nftPrice(platformCoin: platformCoinMap[paymentToken.address], value: value, shift: true)
+                amount = nftPrice(token: tokenMap[paymentToken.address], value: value, shift: true)
             }
 
             return NftEvent(
@@ -224,10 +224,10 @@ class NftManager {
 extension NftManager {
 
     func collections(responses: [NftCollectionResponse]) -> [NftCollection] {
-        let ethereumPlatformCoin = try? coinManager.platformCoin(coinType: .ethereum)
+        let ethereumToken = try? coinManager.token(query: TokenQuery(blockchainType: .ethereum, tokenType: .native))
 
         return responses.map { response in
-            collection(response: response, ethereumPlatformCoin: ethereumPlatformCoin)
+            collection(response: response, ethereumToken: ethereumToken)
         }
     }
 

@@ -1,11 +1,11 @@
 import Foundation
 
 public struct NftPrice {
-    public let platformCoin: PlatformCoin
+    public let token: Token
     public let value: Decimal
 
-    public init(platformCoin: PlatformCoin, value: Decimal) {
-        self.platformCoin = platformCoin
+    public init(token: Token, value: Decimal) {
+        self.token = token
         self.value = value
     }
 
