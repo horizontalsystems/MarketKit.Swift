@@ -164,6 +164,12 @@ extension CoinStorage {
         }
     }
 
+    func blockchain(uid: String) throws -> BlockchainRecord? {
+        try dbPool.read { db in
+            try BlockchainRecord.filter(BlockchainRecord.Columns.uid == uid).fetchOne(db)
+        }
+    }
+
     func blockchains(uids: [String]) throws -> [BlockchainRecord] {
         try dbPool.read { db in
             try BlockchainRecord.filter(uids.contains(BlockchainRecord.Columns.uid)).fetchAll(db)

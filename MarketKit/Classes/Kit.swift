@@ -90,6 +90,10 @@ extension Kit {
         try coinManager.blockchains(uids: uids)
     }
 
+    public func blockchain(uid: String) throws -> Blockchain? {
+        try coinManager.blockchain(uid: uid)
+    }
+
     public func tokens(blockchainType: BlockchainType, filter: String, limit: Int = 20) throws -> [Token] {
         try coinManager.tokens(blockchainType: blockchainType, filter: filter, limit: limit)
     }
