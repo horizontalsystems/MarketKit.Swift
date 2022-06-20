@@ -109,6 +109,11 @@ extension CoinManager {
                 .map { $0.token }
     }
 
+    func tokens(reference: String) throws -> [Token] {
+        try storage.tokenInfoRecords(reference: reference)
+                .map { $0.token }
+    }
+
     func tokens(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [Token] {
         try storage.tokenInfoRecords(blockchainType: blockchainType, filter: filter, limit: limit)
                 .map { $0.token }

@@ -152,6 +152,17 @@ extension CoinStorage {
         }
     }
 
+    func tokenInfoRecords(reference: String) throws -> [TokenInfoRecord] {
+        try dbPool.read { db in
+            let request = TokenRecord
+                    .including(required: TokenRecord.coin)
+                    .including(required: TokenRecord.blockchain)
+                    .filter(TokenRecord.Columns.reference.like(reference))
+
+            return try TokenInfoRecord.fetchAll(db, request)
+        }
+    }
+
     func tokenInfoRecords(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [TokenInfoRecord] {
         try dbPool.read { db in
             let request = TokenRecord
