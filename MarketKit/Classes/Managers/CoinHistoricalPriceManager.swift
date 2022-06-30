@@ -14,12 +14,12 @@ class CoinHistoricalPriceManager {
 
 extension CoinHistoricalPriceManager {
 
-    func coinHistoricalPriceValueSingle(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
-        if let storedPrice = try? storage.coinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp) {
-            return Single.just(storedPrice.value)
-        }
+    func coinHistoricalPriceValue(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
+        try? storage.coinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)?.value
+    }
 
-        return hsProvider.historicalCoinPriceSingle(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)
+    func coinHistoricalPriceValueSingle(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        hsProvider.historicalCoinPriceSingle(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)
                 .flatMap { [weak self] response in
                     if abs(Int(timestamp) - response.timestamp) < 24 * 60 * 60 { // 1 day
                         try? self?.storage.save(coinHistoricalPrice: CoinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, value: response.price, timestamp: timestamp))
