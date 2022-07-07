@@ -47,30 +47,6 @@ class CoinManager {
         }
     }
 
-    private func topPlatforms(responses: [TopPlatformResponse]) -> [TopPlatform] {
-        responses.compactMap {
-            var ranks = [HsTimePeriod: Int]()
-            ranks[.day1] = $0.stats.oneDayRank
-            ranks[.week1] = $0.stats.sevenDaysRank
-            ranks[.month1] = $0.stats.thirtyDaysRank
-
-            var changes = [HsTimePeriod: Decimal]()
-            changes[.day1] = $0.stats.oneDayChange
-            changes[.week1] = $0.stats.sevenDaysChange
-            changes[.month1] = $0.stats.thirtyDaysChange
-
-            return TopPlatform(
-                    uid: $0.uid,
-                    name: $0.name,
-                    rank: $0.rank,
-                    protocolsCount: $0.protocolsCount,
-                    marketCap: $0.marketCap,
-                    ranks: ranks,
-                    changes: changes
-            )
-        }
-    }
-
 }
 
 extension CoinManager {
@@ -230,8 +206,8 @@ extension CoinManager {
     //Top Platforms
 
     func topPlatformsSingle(currencyCode: String) -> Single<[TopPlatform]> {
-        hsProvider.topPlatformsSingle(currencyCode: currencyCode).map { [weak self] in
-            self?.topPlatforms(responses: $0) ?? []
+        hsProvider.topPlatformsSingle(currencyCode: currencyCode).map { responses in
+            responses.map { $0.topPlatform }
         }
     }
 
