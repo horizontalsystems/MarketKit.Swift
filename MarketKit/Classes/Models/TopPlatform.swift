@@ -1,8 +1,7 @@
 import Foundation
 
 public struct TopPlatform {
-    public let uid: String
-    public let name: String
+    public let blockchain: Blockchain
     public let rank: Int?
     public let protocolsCount: Int?
     public let marketCap: Decimal?
