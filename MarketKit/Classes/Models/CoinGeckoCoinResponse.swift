@@ -24,7 +24,7 @@ class CoinGeckoCoinResponse: ImmutableMappable {
     }
 
     private func isSmartContractAddress(symbol: String?) -> Bool {
-        guard let symbolUnwrapped = symbol, symbolUnwrapped.count == 42 else {
+        guard let symbolUnwrapped = symbol else {
             return false
         }
 
