@@ -105,15 +105,23 @@ extension HsNftProvider {
         return networkManager.single(request: request)
     }
 
-    func eventsSingle(collectionUid: String?, eventType: NftEvent.EventType?, cursor: String?) -> Single<NftEventsResponse> {
+    private func eventsSingle(collectionUid: String?, contractAddress: String?, eventType: NftEvent.EventType?, tokenId: String?, cursor: String?) -> Single<NftEventsResponse> {
         var parameters: Parameters = [:]
 
         if let collectionUid = collectionUid {
             parameters["collection_uid"] = collectionUid
         }
 
+        if let contractAddress = contractAddress {
+            parameters["asset_contract"] = contractAddress
+        }
+
         if let eventType = eventType {
             parameters["event_type"] = eventType.rawValue
+        }
+
+        if let tokenId = tokenId {
+            parameters["token_id"] = tokenId
         }
 
         if let cursor = cursor {
@@ -122,6 +130,14 @@ extension HsNftProvider {
 
         let request = networkManager.session.request("\(baseUrl)/v1/nft/events", parameters: parameters, encoding: encoding, headers: headers)
         return networkManager.single(request: request)
+    }
+
+    func collectionEventsSingle(collectionUid: String?, eventType: NftEvent.EventType?, cursor: String?) -> Single<NftEventsResponse> {
+        eventsSingle(collectionUid: collectionUid, contractAddress: nil, eventType: eventType, tokenId: nil, cursor: cursor)
+    }
+
+    func assetEventsSingle(contractAddress: String?, tokenId: String?, eventType: NftEvent.EventType?, cursor: String?) -> Single<NftEventsResponse> {
+        eventsSingle(collectionUid: nil, contractAddress: contractAddress, eventType: eventType, tokenId: tokenId, cursor: cursor)
     }
 
 }

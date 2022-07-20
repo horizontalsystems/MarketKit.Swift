@@ -294,8 +294,12 @@ extension Kit {
         nftManager.assetsSingle(collectionUid: collectionUid, cursor: cursor)
     }
 
-    public func nftEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
-        nftManager.eventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor)
+    public func nftCollectionEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
+        nftManager.collectionEventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor)
+    }
+
+    public func nftAssetEventsSingle(contractAddress: String, tokenId: String?, eventType: NftEvent.EventType?, cursor: String?) -> Single<PagedNftEvents> {
+        nftManager.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor)
     }
 
 }

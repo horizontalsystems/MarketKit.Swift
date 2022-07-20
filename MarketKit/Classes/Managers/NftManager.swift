@@ -272,8 +272,18 @@ extension NftManager {
         }
     }
 
-    func eventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
-        provider.eventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor).map { [unowned self] response in
+
+    func collectionEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
+        provider.collectionEventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor).map { [unowned self] response in
+            PagedNftEvents(
+                    events: events(responses: response.events),
+                    cursor: response.cursor
+            )
+        }
+    }
+
+    func assetEventsSingle(contractAddress: String, tokenId: String?, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
+        provider.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor).map { [unowned self] response in
             PagedNftEvents(
                     events: events(responses: response.events),
                     cursor: response.cursor
