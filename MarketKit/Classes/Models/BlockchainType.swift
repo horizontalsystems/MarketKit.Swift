@@ -8,6 +8,7 @@ public enum BlockchainType {
     case binanceSmartChain
     case binanceChain
     case polygon
+    case avalanche
     case optimism
     case arbitrumOne
     case unsupported(uid: String)
@@ -23,6 +24,7 @@ public enum BlockchainType {
         case "binance-smart-chain": self = .binanceSmartChain
         case "binancecoin": self = .binanceChain
         case "polygon-pos": self = .polygon
+        case "avalanche": self = .avalanche
         case "optimistic-ethereum": self = .optimism
         case "arbitrum-one": self = .arbitrumOne
         default: self = .unsupported(uid: uid)
@@ -40,6 +42,7 @@ public enum BlockchainType {
         case .binanceSmartChain: return "binance-smart-chain"
         case .binanceChain: return "binancecoin"
         case .polygon: return "polygon-pos"
+        case .avalanche: return "avalanche"
         case .optimism: return "optimistic-ethereum"
         case .arbitrumOne: return "arbitrum-one"
         case .unsupported(let uid): return uid
