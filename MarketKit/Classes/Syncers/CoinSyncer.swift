@@ -116,11 +116,7 @@ extension CoinSyncer {
             return
         }
 
-        let coinsSingle = coinsOutdated ? hsProvider.allCoinsSingle() : Single.just([])
-        let blockchainRecordsSingle = blockchainsOutdated ? hsProvider.allBlockchainRecordsSingle() : Single.just([])
-        let tokenRecordsSingle = tokensOutdated ? hsProvider.allTokenRecordsSingle() : Single.just([])
-
-        Single.zip(coinsSingle, blockchainRecordsSingle, tokenRecordsSingle)
+        Single.zip(hsProvider.allCoinsSingle(), hsProvider.allBlockchainRecordsSingle(), hsProvider.allTokenRecordsSingle())
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onSuccess: { [weak self] coins, blockchainRecords, tokenRecords in
                     self?.handleFetched(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
