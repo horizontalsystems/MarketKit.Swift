@@ -343,14 +343,14 @@ struct NftEventResponse: ImmutableMappable {
         return dateFormatter
     }()
 
-    let asset: NftAssetResponse
+    let asset: NftAssetResponse?
     let type: String
     let date: Date
     let amount: Decimal?
     let paymentToken: NftPaymentTokenResponse?
 
     init(map: Map) throws {
-        asset = try map.value("asset")
+        asset = try? map.value("asset")
         date = try map.value("date", using: DateFormatterTransform(dateFormatter: Self.reusableDateFormatter))
         type = try map.value("type")
         amount = try? map.value("amount", using: Transform.stringToDecimalTransform)

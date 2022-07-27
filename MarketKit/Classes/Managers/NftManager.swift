@@ -210,8 +210,12 @@ class NftManager {
                 amount = nftPrice(token: tokenMap[paymentToken.address], value: value, shift: true)
             }
 
+            guard let assetResponse = response.asset else {
+                return nil
+            }
+
             return NftEvent(
-                    asset: asset(response: response.asset),
+                    asset: asset(response: assetResponse),
                     type: NftEvent.EventType(rawValue: response.type),
                     date: response.date,
                     amount: amount
