@@ -289,6 +289,24 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/top-platforms", method: .get, parameters: parameters)
     }
 
+    func topPlatformCoinsListSingle(blockchain: String, currencyCode: String) -> Single<[MarketInfoRaw]> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/top-platforms/\(blockchain)/list", method: .get, parameters: parameters)
+    }
+
+    func topPlatformMarketCapChartSingle(platform: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
+        var parameters: Parameters = [:]
+        if let currencyCode = currencyCode {
+            parameters["currency"] = currencyCode.lowercased()
+        }
+        parameters["interval"] = timePeriod.rawValue
+
+        return networkManager.single(url: "\(baseUrl)/v1/top-platforms/\(platform)/chart", method: .get, parameters: parameters, headers: headers)
+    }
+
     //Pro Charts
 
     private func proHeaders(sessionKey: String?) -> HTTPHeaders? {
