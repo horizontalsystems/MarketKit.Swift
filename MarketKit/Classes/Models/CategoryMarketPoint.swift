@@ -6,7 +6,7 @@ public class CategoryMarketPoint: ImmutableMappable {
     public let marketCap: Decimal
 
     required public init(map: Map) throws {
-        timestamp = try map.value("timestamp")
+        timestamp = try ((try? map.value("timestamp")) ?? (try map.value("date"))) //todo remove date afte API update
         marketCap = try map.value("market_cap", using: Transform.stringToDecimalTransform)
     }
 

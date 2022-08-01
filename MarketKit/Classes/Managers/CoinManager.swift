@@ -211,6 +211,13 @@ extension CoinManager {
         }
     }
 
+    func topPlatformsCoinsListSingle(blockchain: String, currencyCode: String) -> Single<[MarketInfo]> {
+        hsProvider.topPlatformCoinsListSingle(blockchain: blockchain, currencyCode: currencyCode)
+                .map { [weak self] rawMarketInfos in
+                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
+                }
+    }
+
     //Pro charts
 
     func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexLiquidityResponse> {

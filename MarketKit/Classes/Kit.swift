@@ -243,6 +243,14 @@ extension Kit {
         coinManager.topPlatformsSingle(currencyCode: currencyCode)
     }
 
+    public func topPlatformMarketInfosSingle(blockchain: String, currencyCode: String) -> Single<[MarketInfo]> {
+        coinManager.topPlatformsCoinsListSingle(blockchain: blockchain, currencyCode: currencyCode)
+    }
+
+    public func topPlatformMarketCapChartSingle(platform: String, currencyCode: String?, timePeriod: HsTimePeriod) -> Single<[CategoryMarketPoint]> {
+        hsProvider.topPlatformMarketCapChartSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
     // Pro Charts
 
     public func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, sessionKey: String?) -> Single<DexLiquidityResponse> {
