@@ -29,7 +29,13 @@ extension MarketOverviewManager {
 
     func marketOverviewSingle(currencyCode: String) -> Single<MarketOverview> {
         hsProvider.marketOverviewSingle(currencyCode: currencyCode)
-                .map { [unowned self] in marketOverview(response: $0) }
+                .flatMap { [weak self] in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    return Single.just(strongSelf.marketOverview(response: $0))
+                }
     }
 
 }

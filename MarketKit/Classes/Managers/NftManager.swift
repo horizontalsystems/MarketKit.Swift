@@ -250,9 +250,14 @@ extension NftManager {
     }
 
     func collectionSingle(uid: String) -> Single<NftCollection> {
-        provider.collectionSingle(uid: uid).map { [unowned self] response in
-            collection(response: response)
-        }
+        provider.collectionSingle(uid: uid)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    return Single.just(strongSelf.collection(response: response))
+                }
     }
 
     func collectionsSingle() -> Single<[NftCollection]> {
@@ -262,37 +267,63 @@ extension NftManager {
     }
 
     func assetSingle(contractAddress: String, tokenId: String) -> Single<NftAsset> {
-        provider.assetSingle(contractAddress: contractAddress, tokenId: tokenId).map { [unowned self] response in
-            asset(response: response)
-        }
+        provider.assetSingle(contractAddress: contractAddress, tokenId: tokenId)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    return Single.just(strongSelf.asset(response: response))
+                }
     }
 
     func assetsSingle(collectionUid: String, cursor: String? = nil) -> Single<PagedNftAssets> {
-        provider.assetsSingle(collectionUid: collectionUid, cursor: cursor).map { [unowned self] response in
-            PagedNftAssets(
-                    assets: assets(responses: response.assets),
-                    cursor: response.cursor
-            )
-        }
+        provider.assetsSingle(collectionUid: collectionUid, cursor: cursor)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    let pagedNftAssets = PagedNftAssets(
+                            assets: strongSelf.assets(responses: response.assets),
+                            cursor: response.cursor
+                    )
+
+                    return Single.just(pagedNftAssets)
+                }
     }
 
 
     func collectionEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
-        provider.collectionEventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor).map { [unowned self] response in
-            PagedNftEvents(
-                    events: events(responses: response.events),
-                    cursor: response.cursor
-            )
-        }
+        provider.collectionEventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    let pagedNftAssets = PagedNftEvents(
+                            events: strongSelf.events(responses: response.events),
+                            cursor: response.cursor
+                    )
+
+                    return Single.just(pagedNftAssets)
+                }
     }
 
     func assetEventsSingle(contractAddress: String, tokenId: String?, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
-        provider.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor).map { [unowned self] response in
-            PagedNftEvents(
-                    events: events(responses: response.events),
-                    cursor: response.cursor
-            )
-        }
+        provider.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
+
+                    let pagedNftAssets = PagedNftEvents(
+                            events: strongSelf.events(responses: response.events),
+                            cursor: response.cursor
+                    )
+
+                    return Single.just(pagedNftAssets)
+                }
     }
 
 }

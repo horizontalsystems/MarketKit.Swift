@@ -25,27 +25,37 @@ class HsNftProvider {
 extension HsNftProvider {
 
     func recursiveCollectionsSingle(address: String? = nil, page: Int = 1, allCollections: [NftCollectionResponse] = []) -> Single<[NftCollectionResponse]> {
-        collectionsSingle(address: address, page: page).flatMap { [unowned self] collections in
-            let allCollections = allCollections + collections
+        collectionsSingle(address: address, page: page)
+                .flatMap { [weak self] collections in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
 
-            if collections.count == collectionLimit {
-                return recursiveCollectionsSingle(address: address, page: page + 1, allCollections: allCollections)
-            } else {
-                return Single.just(allCollections)
-            }
-        }
+                    let allCollections = allCollections + collections
+
+                    if collections.count == strongSelf.collectionLimit {
+                        return strongSelf.recursiveCollectionsSingle(address: address, page: page + 1, allCollections: allCollections)
+                    } else {
+                        return Single.just(allCollections)
+                    }
+                }
     }
 
     func recursiveAssetsSingle(address: String, cursor: String? = nil, allAssets: [NftAssetResponse] = []) -> Single<[NftAssetResponse]> {
-        assetsSingle(address: address, cursor: cursor).flatMap { [unowned self] response in
-            let allAssets = allAssets + response.assets
+        assetsSingle(address: address, cursor: cursor)
+                .flatMap { [weak self] response in
+                    guard let strongSelf = self else {
+                        throw Kit.KitError.weakReference
+                    }
 
-            if let cursor = response.cursor {
-                return recursiveAssetsSingle(address: address, cursor: cursor, allAssets: allAssets)
-            } else {
-                return Single.just(allAssets)
-            }
-        }
+                    let allAssets = allAssets + response.assets
+
+                    if let cursor = response.cursor {
+                        return strongSelf.recursiveAssetsSingle(address: address, cursor: cursor, allAssets: allAssets)
+                    } else {
+                        return Single.just(allAssets)
+                    }
+                }
     }
 
     func collectionSingle(uid: String) -> Single<NftCollectionResponse> {

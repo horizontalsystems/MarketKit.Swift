@@ -317,6 +317,7 @@ extension Kit {
     public enum KitError: Error {
         case noChartData
         case noFullCoin
+        case weakReference
     }
 
 }
