@@ -127,4 +127,12 @@ extension CoinSyncer {
                 .disposed(by: disposeBag)
     }
 
+    func syncInfo() -> Kit.SyncInfo {
+        Kit.SyncInfo(
+                coinsTimestamp: try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp),
+                blockchainsTimestamp: try? syncerStateStorage.value(key: keyBlockchainsLastSyncTimestamp),
+                tokensTimestamp: try? syncerStateStorage.value(key: keyTokensLastSyncTimestamp)
+        )
+    }
+
 }

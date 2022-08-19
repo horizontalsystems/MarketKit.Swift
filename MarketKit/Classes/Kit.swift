@@ -310,9 +310,21 @@ extension Kit {
         nftManager.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor)
     }
 
+    // Misc
+
+    public func syncInfo() -> SyncInfo {
+        coinSyncer.syncInfo()
+    }
+
 }
 
 extension Kit {
+
+    public struct SyncInfo {
+        public let coinsTimestamp: String?
+        public let blockchainsTimestamp: String?
+        public let tokensTimestamp: String?
+    }
 
     public enum KitError: Error {
         case noChartData
