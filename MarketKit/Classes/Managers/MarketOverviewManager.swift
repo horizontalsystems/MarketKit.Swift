@@ -16,9 +16,9 @@ class MarketOverviewManager {
                 coinCategories: response.coinCategories,
                 topPlatforms: response.topPlatforms.map { $0.topPlatform },
                 collections: [
-                    .day1: nftManager.collections(responses: response.collections1d),
-                    .week1: nftManager.collections(responses: response.collections1w),
-                    .month1: nftManager.collections(responses: response.collections1m)
+                    .day1: nftManager.topCollections(responses: response.collections1d),
+                    .week1: nftManager.topCollections(responses: response.collections1w),
+                    .month1: nftManager.topCollections(responses: response.collections1m)
                 ]
         )
     }

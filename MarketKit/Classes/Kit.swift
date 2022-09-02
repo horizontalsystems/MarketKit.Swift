@@ -282,32 +282,12 @@ extension Kit {
 
     // NFT
 
-    public func nftAssetCollectionSingle(address: String) -> Single<NftAssetCollection> {
-        nftManager.assetCollectionSingle(address: address)
+    public func nftCollectionStatChartsSingle(blockchainType: BlockchainType, providerUid: String) -> Single<NftCollectionStatCharts?> {
+        nftManager.collectionStatChartsSingle(blockchainType: blockchainType, providerUid: providerUid)
     }
 
-    public func nftCollectionSingle(uid: String) -> Single<NftCollection> {
-        nftManager.collectionSingle(uid: uid)
-    }
-
-    public func nftCollectionsSingle() -> Single<[NftCollection]> {
-        nftManager.collectionsSingle()
-    }
-
-    public func nftAssetSingle(contractAddress: String, tokenId: String) -> Single<NftAsset> {
-        nftManager.assetSingle(contractAddress: contractAddress, tokenId: tokenId)
-    }
-
-    public func nftAssetsSingle(collectionUid: String, cursor: String? = nil) -> Single<PagedNftAssets> {
-        nftManager.assetsSingle(collectionUid: collectionUid, cursor: cursor)
-    }
-
-    public func nftCollectionEventsSingle(collectionUid: String, eventType: NftEvent.EventType?, cursor: String? = nil) -> Single<PagedNftEvents> {
-        nftManager.collectionEventsSingle(collectionUid: collectionUid, eventType: eventType, cursor: cursor)
-    }
-
-    public func nftAssetEventsSingle(contractAddress: String, tokenId: String?, eventType: NftEvent.EventType?, cursor: String?) -> Single<PagedNftEvents> {
-        nftManager.assetEventsSingle(contractAddress: contractAddress, tokenId: tokenId, eventType: eventType, cursor: cursor)
+    public func nftTopCollectionsSingle() -> Single<[NftTopCollection]> {
+        nftManager.topCollectionsSingle()
     }
 
     // Misc

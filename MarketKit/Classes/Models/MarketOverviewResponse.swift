@@ -4,9 +4,9 @@ struct MarketOverviewResponse: ImmutableMappable {
     let globalMarketPoints: [GlobalMarketPoint]
     let coinCategories: [CoinCategory]
     let topPlatforms: [TopPlatformResponse]
-    let collections1d: [NftCollectionResponse]
-    let collections1w: [NftCollectionResponse]
-    let collections1m: [NftCollectionResponse]
+    let collections1d: [NftTopCollectionResponse]
+    let collections1w: [NftTopCollectionResponse]
+    let collections1m: [NftTopCollectionResponse]
 
     init(map: Map) throws {
         globalMarketPoints = try map.value("global")
