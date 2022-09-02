@@ -4,6 +4,6 @@ public struct NftTopCollection {
     public let name: String
     public let thumbnailImageUrl: String?
     public let floorPrice: NftPrice?
-    public let volumes: [HsTimePeriod: NftPrice?]
-    public let changes: [HsTimePeriod: Decimal?]
+    public let volumes: [HsTimePeriod: NftPrice]
+    public let changes: [HsTimePeriod: Decimal]
 }

@@ -65,22 +65,26 @@ class NftManager {
         let blockchainType = BlockchainType(uid: response.blockchainUid)
         let baseToken = baseTokenMap[blockchainType]
 
+        let volumes: [HsTimePeriod: NftPrice?] = [
+            .day1: nftPrice(token: baseToken, value: response.volume1d),
+            .week1: nftPrice(token: baseToken, value: response.volume7d),
+            .month1: nftPrice(token: baseToken, value: response.volume30d)
+        ]
+
+        let changes: [HsTimePeriod: Decimal?] = [
+            .day1: response.change1d,
+            .week1: response.change7d,
+            .month1: response.change30d
+        ]
+
         return NftTopCollection(
                 blockchainType: blockchainType,
                 providerUid: response.providerUid,
                 name: response.name,
                 thumbnailImageUrl: response.thumbnailImageUrl,
                 floorPrice: nftPrice(token: baseToken, value: response.floorPrice),
-                volumes: [
-                    .day1: nftPrice(token: baseToken, value: response.volume1d),
-                    .week1: nftPrice(token: baseToken, value: response.volume7d),
-                    .month1: nftPrice(token: baseToken, value: response.volume30d)
-                ],
-                changes: [
-                    .day1: response.change1d,
-                    .week1: response.change7d,
-                    .month1: response.change30d,
-                ]
+                volumes: volumes.compactMapValues { $0 },
+                changes: changes.compactMapValues { $0 }
         )
     }
 
