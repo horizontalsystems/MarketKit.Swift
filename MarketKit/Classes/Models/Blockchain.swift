@@ -26,7 +26,7 @@ extension Blockchain: Hashable {
 extension Blockchain: Equatable {
 
     public static func ==(lhs: Blockchain, rhs: Blockchain) -> Bool {
-        lhs.type == rhs.type && lhs.name == rhs.name && lhs.explorerUrl == rhs.explorerUrl
+        lhs.type == rhs.type
     }
 
 }

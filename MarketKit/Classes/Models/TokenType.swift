@@ -82,13 +82,10 @@ public enum TokenType {
 extension TokenType: Equatable {
 
     public static func ==(lhs: TokenType, rhs: TokenType) -> Bool {
-        switch (lhs, rhs) {
-        case (.native, .native): return true
-        case (.eip20(let lhsAddress), .eip20(let rhsAddress)): return lhsAddress == rhsAddress
-        case (.bep2(let lhsSymbol), .bep2(let rhsSymbol)): return lhsSymbol == rhsSymbol
-        case (.unsupported(let lhsType, let lhsReference), .unsupported(let rhsType, let rhsReference)): return lhsType == rhsType && lhsReference == rhsReference
-        default: return false
-        }
+        let (lhsType, lhsReference) = lhs.values
+        let (rhsType, rhsReference) = lhs.values
+
+        return lhsType == rhsType && lhsReference == rhsReference
     }
 
 }
