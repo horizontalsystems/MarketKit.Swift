@@ -31,6 +31,7 @@ extension Token: Hashable {
         hasher.combine(coin)
         hasher.combine(blockchain)
         hasher.combine(type)
+        hasher.combine(decimals)
     }
 
 }
