@@ -22,6 +22,7 @@ extension HsProvider {
 
     func marketOverviewSingle(currencyCode: String) -> Single<MarketOverviewResponse> {
         let parameters: Parameters = [
+            "simplified": true,
             "currency": currencyCode.lowercased()
         ]
 

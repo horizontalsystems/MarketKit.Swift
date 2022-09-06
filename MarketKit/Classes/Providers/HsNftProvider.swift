@@ -22,12 +22,16 @@ class HsNftProvider {
 extension HsNftProvider {
 
     func collectionStatChartPointsSingle(providerUid: String) -> Single<[CollectionStatChartPointResponse]> {
-        let request = networkManager.session.request("\(baseUrl)/v1/nft/collection-stats/\(providerUid)", encoding: encoding, headers: headers)
+        let request = networkManager.session.request("\(baseUrl)/v1/nft/collection/\(providerUid)/chart", encoding: encoding, headers: headers)
         return networkManager.single(request: request)
     }
 
     func topCollectionsSingle() -> Single<[NftTopCollectionResponse]> {
-        let request = networkManager.session.request("\(baseUrl)/v1/nft/top-collections", encoding: encoding, headers: headers)
+        let parameters: Parameters = [
+            "simplified": true
+        ]
+
+        let request = networkManager.session.request("\(baseUrl)/v1/nft/collections", parameters: parameters, encoding: encoding, headers: headers)
         return networkManager.single(request: request)
     }
 
@@ -48,9 +52,9 @@ struct NftTopCollectionResponse: ImmutableMappable {
 
     init(map: Map) throws {
         blockchainUid = try map.value("blockchain_uid")
-        providerUid = try map.value("provider_uid")
+        providerUid = try map.value("opensea_uid")
         name = try map.value("name")
-        thumbnailImageUrl = try? map.value("thumbnail_image_url")
+        thumbnailImageUrl = try? map.value("thumbnail_url")
         floorPrice = try? map.value("floor_price", using: Transform.doubleToDecimalTransform)
         volume1d = try? map.value("volume_1d", using: Transform.doubleToDecimalTransform)
         change1d = try? map.value("change_1d", using: Transform.doubleToDecimalTransform)
