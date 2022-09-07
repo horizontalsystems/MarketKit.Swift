@@ -40,6 +40,7 @@ class TokenRecord: Record, Decodable, ImmutableMappable {
         switch type {
         case "eip20": reference = try? map.value("address")
         case "bep2": reference = try? map.value("symbol")
+        case "spl": reference = try? map.value("address")
         default: reference = try? map.value("address")
         }
 
@@ -55,6 +56,7 @@ class TokenRecord: Record, Decodable, ImmutableMappable {
         switch type {
         case "eip20": reference >>> map["address"]
         case "bep2": reference >>> map["symbol"]
+        case "spl": reference >>> map["address"]
         case "unsupported":
             if let reference = reference {
                 reference >>> map["address"]

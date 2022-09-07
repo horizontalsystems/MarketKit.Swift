@@ -11,6 +11,7 @@ public enum BlockchainType {
     case avalanche
     case optimism
     case arbitrumOne
+    case solana
     case unsupported(uid: String)
 
     public init(uid: String) {
@@ -27,6 +28,7 @@ public enum BlockchainType {
         case "avalanche": self = .avalanche
         case "optimistic-ethereum": self = .optimism
         case "arbitrum-one": self = .arbitrumOne
+        case "solana": self = .solana
         default: self = .unsupported(uid: uid)
         }
     }
@@ -45,6 +47,7 @@ public enum BlockchainType {
         case .avalanche: return "avalanche"
         case .optimism: return "optimistic-ethereum"
         case .arbitrumOne: return "arbitrum-one"
+        case .solana: return "solana"
         case .unsupported(let uid): return uid
         }
     }

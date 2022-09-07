@@ -2,6 +2,7 @@ public enum TokenType {
     case native
     case eip20(address: String)
     case bep2(symbol: String)
+    case spl(address: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -17,6 +18,11 @@ public enum TokenType {
         case "bep2":
             if let reference = reference {
                 self = .bep2(symbol: reference)
+                return
+            }
+        case "spl":
+            if let reference = reference {
+                self = .spl(address: reference)
                 return
             }
         default: ()
@@ -38,6 +44,7 @@ public enum TokenType {
             switch chunks[0] {
             case "eip20": self = .eip20(address: chunks[1])
             case "bep2": self = .bep2(symbol: chunks[1])
+            case "spl": self = .spl(address: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -59,6 +66,8 @@ public enum TokenType {
             return ["eip20", address].joined(separator: ":")
         case .bep2(let symbol):
             return ["bep2", symbol].joined(separator: ":")
+        case .spl(let address):
+            return ["spl", address].joined(separator: ":")
         case .unsupported(let type, let reference):
             if let reference = reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -73,6 +82,7 @@ public enum TokenType {
         case .native: return (type: "native", reference: nil)
         case .eip20(let address): return (type: "eip20", reference: address)
         case .bep2(let symbol): return (type: "bep2", reference: symbol)
+        case .spl(let address): return (type: "spl", reference: address)
         case .unsupported(let type, let reference): return (type: type, reference: reference)
         }
     }
