@@ -18,34 +18,6 @@ class NftManager {
         return NftPrice(token: token, value: value)
     }
 
-    private func statCharts(blockchainType: BlockchainType, responses: [CollectionStatChartPointResponse]) -> NftCollectionStatCharts? {
-        guard !responses.isEmpty else {
-            return nil
-        }
-
-        let baseToken = try? coinManager.token(query: TokenQuery(blockchainType: blockchainType, tokenType: .native))
-
-        let oneDayVolumePoints = responses.compactMap { point in
-            point.oneDayVolume.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: baseToken) }
-        }
-        let averagePricePoints = responses.compactMap { point in
-            point.averagePrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: baseToken) }
-        }
-        let floorPricePoints = responses.compactMap { point in
-            point.floorPrice.map { NftCollectionStatCharts.PricePoint(timestamp: point.timestamp, value: $0, token: baseToken) }
-        }
-        let oneDaySalesPoints = responses.compactMap { point in
-            point.oneDaySales.map { NftCollectionStatCharts.Point(timestamp: point.timestamp, value: $0) }
-        }
-
-        return NftCollectionStatCharts(
-                oneDayVolumePoints: oneDayVolumePoints,
-                averagePricePoints: averagePricePoints,
-                floorPricePoints: floorPricePoints,
-                oneDaySalesPoints: oneDaySalesPoints
-        )
-    }
-
     private func baseTokenMap(blockchainTypes: [BlockchainType]) -> [BlockchainType: Token] {
         do {
             var map = [BlockchainType: Token]()
@@ -91,17 +63,6 @@ class NftManager {
 }
 
 extension NftManager {
-
-    func collectionStatChartsSingle(blockchainType: BlockchainType, providerUid: String) -> Single<NftCollectionStatCharts?> {
-        provider.collectionStatChartPointsSingle(providerUid: providerUid)
-                .map { [weak self] responses in
-                    guard let strongSelf = self else {
-                        throw Kit.KitError.weakReference
-                    }
-
-                    return strongSelf.statCharts(blockchainType: blockchainType, responses: responses)
-                }
-    }
 
     func topCollections(responses: [NftTopCollectionResponse]) -> [NftTopCollection] {
         let blockchainUids = Array(Set(responses.map { $0.blockchainUid }))

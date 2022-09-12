@@ -282,10 +282,6 @@ extension Kit {
 
     // NFT
 
-    public func nftCollectionStatChartsSingle(blockchainType: BlockchainType, providerUid: String) -> Single<NftCollectionStatCharts?> {
-        nftManager.collectionStatChartsSingle(blockchainType: blockchainType, providerUid: providerUid)
-    }
-
     public func nftTopCollectionsSingle() -> Single<[NftTopCollection]> {
         nftManager.topCollectionsSingle()
     }
