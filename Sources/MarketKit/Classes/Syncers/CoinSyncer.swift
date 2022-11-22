@@ -31,7 +31,27 @@ class CoinSyncer {
 
     func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
         do {
-            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+            var newCoins = coins
+            newCoins.append(
+                Coin(
+                    uid: "cvl-civilization",
+                    name: "Civilization",
+                    code: "CVL",
+                    marketCapRank: -1,
+                    coinGeckoId: nil
+                )
+            )
+            var newTokens = tokenRecords
+            newTokens.append(
+                TokenRecord(
+                    coinUid: "cvl-civilization",
+                    blockchainUid: "binance-smart-chain",
+                    type: "eip20",
+                    decimals: 18,
+                    reference: "0x9Ae0290cD677dc69A5f2a1E435EF002400Da70F5"
+                )
+            )
+            try storage.update(coins: newCoins, blockchainRecords: blockchainRecords, tokenRecords: newTokens)
             fullCoinsUpdatedRelay.accept(())
         } catch {
             print("Fetched data error: \(error)")
