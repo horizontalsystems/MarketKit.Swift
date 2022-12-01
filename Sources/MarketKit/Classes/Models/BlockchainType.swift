@@ -12,6 +12,7 @@ public enum BlockchainType {
     case optimism
     case arbitrumOne
     case solana
+    case ethereumGoerli
     case unsupported(uid: String)
 
     public init(uid: String) {
@@ -29,6 +30,7 @@ public enum BlockchainType {
         case "optimistic-ethereum": self = .optimism
         case "arbitrum-one": self = .arbitrumOne
         case "solana": self = .solana
+        case "ethereum-goerli": self = .ethereumGoerli
         default: self = .unsupported(uid: uid)
         }
     }
@@ -48,6 +50,7 @@ public enum BlockchainType {
         case .optimism: return "optimistic-ethereum"
         case .arbitrumOne: return "arbitrum-one"
         case .solana: return "solana"
+        case .ethereumGoerli: return "ethereum-goerli"
         case .unsupported(let uid): return uid
         }
     }
