@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 public class CoinPrice: Record {
-    static let expirationInterval: TimeInterval = 180
+    static let expirationInterval: TimeInterval = 240
 
     public let coinUid: String
     public let currencyCode: String
