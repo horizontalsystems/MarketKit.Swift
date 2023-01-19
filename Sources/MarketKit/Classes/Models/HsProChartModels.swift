@@ -6,6 +6,7 @@ enum HsProChartResource: String {
     case dexVolume = "transactions/dex-volumes"
     case dexLiquidity = "transactions/dex-liquidity"
     case txCountVolume = "transactions"
+    case activeAddresses = "addresses"
 }
 
 protocol IHsProChartResource {
@@ -79,6 +80,13 @@ public class DexVolumeResponse: ProDataResponse, ImmutableMappable, IHsProChartR
     static public var empty = DexVolumeResponse(platforms: [], data: [])
 
     override class func dataField() -> String { "volumes" }
+}
+
+public class ActiveAddressesResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
+    static let source = HsProChartResource.activeAddresses.rawValue
+    static public var empty = ActiveAddressesResponse(platforms: [], data: [])
+
+    override class func dataField() -> String { "addresses" }
 }
 
 public class TransactionDataResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
