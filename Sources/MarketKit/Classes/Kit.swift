@@ -206,16 +206,20 @@ extension Kit {
 
     // Chart Info
 
-    public func chartInfo(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> ChartInfo? {
-        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
+    public func chartPriceStart(coinUid: String) -> Single<TimeInterval> {
+        chartManager.chartPriceStart(coinUid: coinUid)
     }
 
-    public func chartInfoSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<ChartInfo> {
-        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
+    public func chartInfo(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> ChartInfo? {
+        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
     }
 
-    public func chartInfoObservable(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Observable<ChartInfo> {
-        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, interval: interval)
+    public func chartInfoSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<ChartInfo> {
+        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
+    }
+
+    public func chartInfoObservable(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Observable<ChartInfo> {
+        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
     }
 
     // Posts

@@ -39,7 +39,7 @@ extension ChartStorage {
     func chartPoints(key: ChartInfoKey) -> [ChartPoint] {
         try! dbPool.read { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.interval.rawValue)
+                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
                     .order(ChartPointRecord.Columns.timestamp).fetchAll(db)
                     .map { ChartPoint(timestamp: $0.timestamp, value: $0.value)
                             .added(field: ChartPoint.volume, value: $0.volume)
@@ -58,7 +58,7 @@ extension ChartStorage {
     func deleteChartPoints(key: ChartInfoKey) {
         _ = try! dbPool.write { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.interval.rawValue)
+                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
                     .deleteAll(db)
         }
     }

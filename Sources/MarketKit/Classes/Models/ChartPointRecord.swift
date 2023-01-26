@@ -4,15 +4,15 @@ import GRDB
 public class ChartPointRecord: Record {
     public let coinUid: String
     public let currencyCode: String
-    public let interval: HsTimePeriod
+    public let periodType: HsPeriodType
     public let timestamp: TimeInterval
     public let value: Decimal
     public let volume: Decimal?
 
-    public init(coinUid: String, currencyCode: String, interval: HsTimePeriod, timestamp: TimeInterval, value: Decimal, volume: Decimal?) {
+    public init(coinUid: String, currencyCode: String, periodType: HsPeriodType, timestamp: TimeInterval, value: Decimal, volume: Decimal?) {
         self.coinUid = coinUid
         self.currencyCode = currencyCode
-        self.interval = interval
+        self.periodType = periodType
         self.timestamp = timestamp
         self.value = value
         self.volume = volume
@@ -31,7 +31,7 @@ public class ChartPointRecord: Record {
     required init(row: Row) {
         coinUid = row[Columns.coinUid]
         currencyCode = row[Columns.currencyCode]
-        interval = HsTimePeriod(rawValue: row[Columns.chartType]) ?? .day1
+        periodType = HsPeriodType(rawValue: row[Columns.chartType]) ?? .day1
         timestamp = row[Columns.timestamp]
         value = row[Columns.value]
         volume = row[Columns.volume]
@@ -42,7 +42,7 @@ public class ChartPointRecord: Record {
     override open func encode(to container: inout PersistenceContainer) {
         container[Columns.coinUid] = coinUid
         container[Columns.currencyCode] = currencyCode
-        container[Columns.chartType] = interval.rawValue
+        container[Columns.chartType] = periodType.rawValue
         container[Columns.timestamp] = timestamp
         container[Columns.value] = value
         container[Columns.volume] = volume

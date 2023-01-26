@@ -42,11 +42,11 @@ extension ChartSchedulerProvider: ISchedulerProvider {
     }
 
     var expirationInterval: TimeInterval {
-        key.interval.expiration
+        key.periodType.expiration
     }
 
     var syncSingle: Single<Void> {
-        hsProvider.coinPriceChartSingle(coinUid: key.coin.uid, currencyCode: key.currencyCode, interval: key.interval, indicatorPoints: indicatorPoints)
+        hsProvider.coinPriceChartSingle(coinUid: key.coin.uid, currencyCode: key.currencyCode, periodType: key.periodType, indicatorPoints: indicatorPoints)
                 .do(onSuccess: { [weak self] response in
                     self?.handleUpdated(chartCoinPriceResponse: response)
                 }, onError: { [weak self] error in

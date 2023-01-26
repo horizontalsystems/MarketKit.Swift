@@ -8,6 +8,7 @@ public enum HsTimePeriod: String, CaseIterable {
     case month3 = "3m"
     case month6 = "6m"
     case year1 = "1y"
+    case year2 = "2y"
 
     var expiration: TimeInterval {
         switch self {
@@ -15,6 +16,7 @@ public enum HsTimePeriod: String, CaseIterable {
         case .week1: return .hours(4)
         case .week2: return .hours(8)
         case .month1, .month3, .month6, .year1: return .days(1)
+        case .year2: return .days(7)
         }
     }
 
@@ -27,6 +29,7 @@ public enum HsTimePeriod: String, CaseIterable {
         case .month3: return  .days(90)
         case .month6: return  .days(180)
         case .year1: return  .days(365)
+        case .year2: return  2 * .days(365)
         }
     }
 
