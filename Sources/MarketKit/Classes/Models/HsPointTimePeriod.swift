@@ -6,6 +6,7 @@ enum HsPointTimePeriod: String {
     case hour4 = "4h"
     case hour8 = "8h"
     case day1 = "1d"
+    case week1 = "1w"
 
     var interval: TimeInterval {
         switch self {
@@ -14,6 +15,7 @@ enum HsPointTimePeriod: String {
         case .hour4: return .hours(4)
         case .hour8: return .hours(8)
         case .day1: return .days(1)
+        case .week1: return .days(7)
         }
     }
 

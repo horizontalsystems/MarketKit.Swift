@@ -28,8 +28,8 @@ class ChartManager {
         return calendar.startOfDay(for: Date())
     }
 
-    private static func chartInfo(points: [ChartPoint], interval: HsTimePeriod) -> ChartInfo? {
-        guard let lastPoint = points.last else {
+    private static func chartInfo(points: [ChartPoint], periodType: HsPeriodType) -> ChartInfo? {
+        guard let lastPoint = points.last, let firstPoint = points.first else {
             return nil
         }
 
@@ -40,18 +40,22 @@ class ChartManager {
         let currentTimestamp = Date().timeIntervalSince1970
 
         let lastPointGap = currentTimestamp - lastPointTimestamp
-        startTimestamp = lastPointTimestamp - interval.range
-
-        // if points not in visible window (too early) just return nil
-        guard lastPointGap < interval.range else {
-            return nil
+        switch periodType {
+        case .byPeriod(let interval):
+            startTimestamp = lastPointTimestamp - interval.range
+            // if points not in visible window (too early) just return nil
+            if lastPointGap > interval.range {
+                return nil
+            }
+        case .byStartTime: startTimestamp = firstPoint.timestamp
         }
+
 
         return ChartInfo(
                 points: points,
                 startTimestamp: startTimestamp,
                 endTimestamp: currentTimestamp,
-                expired: lastPointGap > interval.expiration
+                expired: lastPointGap > periodType.expiration
         )
     }
 
@@ -67,28 +71,32 @@ extension ChartManager {
         storedChartPoints(key: key).last?.timestamp
     }
 
-    func chartInfo(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> ChartInfo? {
+    func chartPriceStart(coinUid: String) -> Single<TimeInterval> {
+        hsProvider.coinPriceChartStart(coinUid: coinUid).map { $0.timestamp }
+    }
+
+    func chartInfo(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> ChartInfo? {
         guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
             return nil
         }
 
-        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, interval: interval)
-        return Self.chartInfo(points: storedChartPoints(key: key), interval: interval)
+        let key = ChartInfoKey(coin: fullCoin.coin, currencyCode: currencyCode, periodType: periodType)
+        return Self.chartInfo(points: storedChartPoints(key: key), periodType: periodType)
     }
 
-    func chartInfoSingle(coinUid: String, currencyCode: String, interval: HsTimePeriod) -> Single<ChartInfo> {
+    func chartInfoSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<ChartInfo> {
         guard let fullCoin = try? coinManager.fullCoins(coinUids: [coinUid]).first else {
             return Single.error(Kit.KitError.noChartData)
         }
 
         return hsProvider
-                .coinPriceChartSingle(coinUid: fullCoin.coin.uid, currencyCode: currencyCode, interval: interval, indicatorPoints: indicatorPoints)
+                .coinPriceChartSingle(coinUid: fullCoin.coin.uid, currencyCode: currencyCode, periodType: periodType, indicatorPoints: indicatorPoints)
                 .flatMap { chartCoinPriceResponse in
                     let points = chartCoinPriceResponse.map {
                         $0.chartPoint
                     }
 
-                    if let chartInfo = Self.chartInfo(points: points, interval: interval) {
+                    if let chartInfo = Self.chartInfo(points: points, periodType: periodType) {
                         return Single.just(chartInfo)
                     }
 
@@ -101,7 +109,7 @@ extension ChartManager {
             ChartPointRecord(
                     coinUid: key.coin.uid,
                     currencyCode: key.currencyCode,
-                    interval: key.interval,
+                    periodType: key.periodType,
                     timestamp: point.timestamp,
                     value: point.value,
                     volume: point.extra[ChartPoint.volume]
@@ -111,7 +119,7 @@ extension ChartManager {
         storage.deleteChartPoints(key: key)
         storage.save(chartPoints: records)
 
-        if let chartInfo = Self.chartInfo(points: chartPoints, interval: key.interval) {
+        if let chartInfo = Self.chartInfo(points: chartPoints, periodType: key.periodType) {
             delegate?.didUpdate(chartInfo: chartInfo, key: key)
         } else {
             delegate?.didFoundNoChartInfo(key: key)
