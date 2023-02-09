@@ -60,8 +60,18 @@ public struct HsChartHelper {
     }
 
     static func intervalForAll(genesisTime: TimeInterval) -> HsPointTimePeriod {
-        if let yearCount = Calendar.current.dateComponents([.year], from: Date(timeIntervalSince1970: genesisTime), to: Date()).year {
-            return yearCount == 0 ? .day1 : .week1
+        let seconds = Date().timeIntervalSince1970 - genesisTime
+        if seconds <= .days(1) {
+            return .minute30
+        }
+        if seconds <= .days(7) {
+            return .hour4
+        }
+        if seconds <= .days(14) {
+            return .hour8
+        }
+        if seconds <= .days(2 * 365) {
+            return .day1
         }
         return .week1
     }
