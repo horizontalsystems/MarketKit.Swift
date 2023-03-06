@@ -125,8 +125,8 @@ extension Kit {
         coinManager.marketTickerSingle(coinUid: coinUid)
     }
 
-    public func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
-        coinManager.topHoldersSingle(coinUid: coinUid)
+    public func tokenHoldersSingle(coinUid: String, blockchainUid: String) -> Single<TokenHolders> {
+        hsProvider.tokenHoldersSingle(coinUid: coinUid, blockchainUid: blockchainUid)
     }
 
     public func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
@@ -249,6 +249,14 @@ extension Kit {
     }
 
     // Pro Charts
+
+    public func analyticsSingle(coinUid: String, currencyCode: String) -> Single<Analytics> {
+        hsProvider.analyticsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    }
+
+    public func analyticsPreviewSingle(coinUid: String) -> Single<AnalyticsPreview> {
+        hsProvider.analyticsPreviewSingle(coinUid: coinUid)
+    }
 
     public func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexLiquidityResponse> {
         coinManager.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
