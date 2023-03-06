@@ -236,12 +236,12 @@ extension HsProvider {
 
     // Holders
 
-    func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
+    func tokenHoldersSingle(coinUid: String, blockchainUid: String) -> Single<TokenHolders> {
         let parameters: Parameters = [
-            "coin_uid": coinUid
+            "blockchain_uid": blockchainUid
         ]
 
-        return networkManager.single(url: "\(baseUrl)/v1/addresses/holders", method: .get, parameters: parameters, headers: headers)
+        return networkManager.single(url: "\(baseUrl)/v1/analytics/\(coinUid)/holders", method: .get, parameters: parameters, headers: headers)
     }
 
     // Funds
@@ -328,6 +328,18 @@ extension HsProvider {
         proHeaders.add(.authorization(bearerToken: sessionKey))
 
         return proHeaders
+    }
+
+    func analyticsSingle(coinUid: String, currencyCode: String) -> Single<Analytics> {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased()
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/analytics/\(coinUid)", method: .get, parameters: parameters, headers: headers)
+    }
+
+    func analyticsPreviewSingle(coinUid: String) -> Single<AnalyticsPreview> {
+        networkManager.single(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, headers: headers)
     }
 
     func proDataSingle<T: IHsProChartResource & ImmutableMappable>(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<T> {

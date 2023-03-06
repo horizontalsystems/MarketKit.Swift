@@ -164,10 +164,6 @@ extension CoinManager {
         hsProvider.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func topHoldersSingle(coinUid: String) -> Single<[TokenHolder]> {
-        hsProvider.topHoldersSingle(coinUid: coinUid)
-    }
-
     func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
         defiYieldProvider.auditReportsSingle(addresses: addresses)
     }
