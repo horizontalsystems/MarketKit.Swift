@@ -6,20 +6,20 @@ class BlockchainRecord: Record, Decodable, ImmutableMappable {
 
     let uid: String
     let name: String
-    let explorerUrl: String?
+    let eip3091url: String?
 
     override class var databaseTableName: String {
         "blockchain"
     }
 
     enum Columns: String, ColumnExpression {
-        case uid, name, explorerUrl
+        case uid, name, eip3091url
     }
 
     required init(map: Map) throws {
         uid = try map.value("uid")
         name = try map.value("name")
-        explorerUrl = try? map.value("url")
+        eip3091url = try? map.value("eip3091_url")
 
         super.init()
     }
@@ -27,13 +27,13 @@ class BlockchainRecord: Record, Decodable, ImmutableMappable {
     func mapping(map: Map) {
         uid >>> map["uid"]
         name >>> map["name"]
-        explorerUrl >>> map["url"]
+        eip3091url >>> map["eip3091_url"]
     }
 
     required init(row: Row) {
         uid = row[Columns.uid]
         name = row[Columns.name]
-        explorerUrl = row[Columns.explorerUrl]
+        eip3091url = row[Columns.eip3091url]
 
         super.init(row: row)
     }
@@ -41,14 +41,14 @@ class BlockchainRecord: Record, Decodable, ImmutableMappable {
     override func encode(to container: inout PersistenceContainer) {
         container[Columns.uid] = uid
         container[Columns.name] = name
-        container[Columns.explorerUrl] = explorerUrl
+        container[Columns.eip3091url] = eip3091url
     }
 
     var blockchain: Blockchain {
         Blockchain(
                 type: BlockchainType(uid: uid),
                 name: name,
-                explorerUrl: explorerUrl
+                eip3091url: eip3091url
         )
     }
 
