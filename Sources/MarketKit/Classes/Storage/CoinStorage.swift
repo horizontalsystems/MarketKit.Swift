@@ -46,8 +46,16 @@ class CoinStorage {
 
         migrator.registerMigration("Add 'explorerUrl' column to Blockchains") { db in
             try db.alter(table: BlockchainRecord.databaseTableName) { t in
-                t.add(column: BlockchainRecord.Columns.explorerUrl.name, .text)
+                t.add(column: "explorerUrl", .text)
             }
+        }
+
+        migrator.registerMigration("Rename 'explorerUrl' column to 'eip3091url' in Blockchains") { db in
+            try db.alter(table: BlockchainRecord.databaseTableName) { t in
+                t.rename(column: "explorerUrl", to: BlockchainRecord.Columns.eip3091url.name)
+            }
+
+            try BlockchainRecord.updateAll(db, BlockchainRecord.Columns.eip3091url.set(to: nil))
         }
 
         return migrator
