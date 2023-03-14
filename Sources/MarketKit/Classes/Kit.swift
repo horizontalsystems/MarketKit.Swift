@@ -59,6 +59,10 @@ extension Kit {
         try coinManager.fullCoins(coinUids: coinUids)
     }
 
+    public func allCoins() throws -> [Coin] {
+        try coinManager.allCoins()
+    }
+
     public func coinsDump() throws -> String? {
         try coinSyncer.coinsDump()
     }
@@ -244,7 +248,7 @@ extension Kit {
         hsProvider.topPlatformMarketCapChartSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    // Pro Charts
+    // Pro Data
 
     public func analyticsSingle(coinUid: String, currencyCode: String) -> Single<Analytics> {
         hsProvider.analyticsSingle(coinUid: coinUid, currencyCode: currencyCode)
@@ -256,6 +260,30 @@ extension Kit {
 
     public func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
         coinManager.cexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
+    public func cexVolumeRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        hsProvider.cexVolumeRanksSingle(currencyCode: currencyCode)
+    }
+
+    public func dexVolumeRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        hsProvider.dexVolumeRanksSingle(currencyCode: currencyCode)
+    }
+
+    public func dexLiquidityRanksSingle() -> Single<[RankValue]> {
+        hsProvider.dexLiquidityRanksSingle()
+    }
+
+    public func activeAddressRanksSingle() -> Single<[RankMultiValue]> {
+        hsProvider.activeAddressRanksSingle()
+    }
+
+    public func transactionCountRanksSingle() -> Single<[RankMultiValue]> {
+        hsProvider.transactionCountRanksSingle()
+    }
+
+    public func revenueRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        hsProvider.revenueRanksSingle(currencyCode: currencyCode)
     }
 
     public func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {

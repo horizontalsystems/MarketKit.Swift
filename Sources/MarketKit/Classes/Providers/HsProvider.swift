@@ -349,6 +349,18 @@ extension HsProvider {
         return networkManager.single(url: "\(baseUrl)/v1/\(path)", method: .get, parameters: parameters, headers: headers)
     }
 
+    func rankDataSingle<T: ImmutableMappable>(type: String, currencyCode: String? = nil) -> Single<[T]> {
+        var parameters: Parameters = [
+            "type": type
+        ]
+
+        if let currencyCode {
+            parameters["currency"] = currencyCode.lowercased()
+        }
+
+        return networkManager.single(url: "\(baseUrl)/v1/analytics/ranks", method: .get, parameters: parameters, headers: headers)
+    }
+
     func analyticsSingle(coinUid: String, currencyCode: String) -> Single<Analytics> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased()
@@ -375,6 +387,30 @@ extension HsProvider {
 
     func transactionsSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<TransactionsResponse> {
         proDataSingle(path: "transactions", coinUid: coinUid, timePeriod: timePeriod)
+    }
+
+    func cexVolumeRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        rankDataSingle(type: "cex_volume", currencyCode: currencyCode)
+    }
+
+    func dexVolumeRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        rankDataSingle(type: "dex_volume", currencyCode: currencyCode)
+    }
+
+    func dexLiquidityRanksSingle() -> Single<[RankValue]> {
+        rankDataSingle(type: "dex_liquidity")
+    }
+
+    func activeAddressRanksSingle() -> Single<[RankMultiValue]> {
+        rankDataSingle(type: "address")
+    }
+
+    func transactionCountRanksSingle() -> Single<[RankMultiValue]> {
+        rankDataSingle(type: "tx_count")
+    }
+
+    func revenueRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {
+        rankDataSingle(type: "revenue", currencyCode: currencyCode)
     }
 
 }
