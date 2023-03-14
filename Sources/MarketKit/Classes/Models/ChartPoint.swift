@@ -34,3 +34,13 @@ extension ChartPoint: Equatable {
     }
 
 }
+
+public struct AggregatedChartPoints {
+    public let points: [ChartPoint]
+    public let aggregatedValue: Decimal?
+
+    public init(points: [ChartPoint], aggregatedValue: Decimal?) {
+        self.points = points
+        self.aggregatedValue = aggregatedValue
+    }
+}

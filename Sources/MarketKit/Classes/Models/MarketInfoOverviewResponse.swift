@@ -8,7 +8,6 @@ class MarketInfoOverviewResponse: ImmutableMappable {
     let circulatingSupply: Decimal?
     let volume24h: Decimal?
     let dilutedMarketCap: Decimal?
-    let tvl: Decimal?
     let performance: [String: [String: String?]]
     let genesisDate: Date?
     let categories: [CoinCategory]
@@ -22,7 +21,6 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         circulatingSupply = try? map.value("market_data.circulating_supply", using: Transform.stringToDecimalTransform)
         volume24h = try? map.value("market_data.total_volume", using: Transform.stringToDecimalTransform)
         dilutedMarketCap = try? map.value("market_data.fully_diluted_valuation", using: Transform.stringToDecimalTransform)
-        tvl = try? map.value("market_data.total_value_locked", using: Transform.stringToDecimalTransform)
         performance = try map.value("performance")
         genesisDate = try? map.value("genesis_date", using: Transform.stringToDateTransform)
         categories = try map.value("categories")
@@ -68,7 +66,6 @@ class MarketInfoOverviewResponse: ImmutableMappable {
                 circulatingSupply: circulatingSupply,
                 volume24h: volume24h,
                 dilutedMarketCap: dilutedMarketCap,
-                tvl: tvl,
                 performance: convertedPerformance,
                 genesisDate: genesisDate,
                 categories: categories,

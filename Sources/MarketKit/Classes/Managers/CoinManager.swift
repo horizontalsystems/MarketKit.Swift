@@ -180,10 +180,6 @@ extension CoinManager {
         hsProvider.coinReportsSingle(coinUid: coinUid)
     }
 
-    func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
-        hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
     func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         hsProvider.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
@@ -214,24 +210,6 @@ extension CoinManager {
                 }
     }
 
-    //Pro charts
-
-    func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexLiquidityResponse> {
-        hsProvider.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
-    func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexVolumeResponse> {
-        hsProvider.dexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
-    func transactionDataSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<TransactionDataResponse> {
-        hsProvider.transactionDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
-    }
-
-    func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<ActiveAddressesResponse> {
-        hsProvider.activeAddressesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
-    }
-
     // Top Movers
 
     func topMoversSingle(currencyCode: String) -> Single<TopMovers> {
@@ -246,6 +224,10 @@ extension CoinManager {
                             losers300: self?.marketInfos(rawMarketInfos: raw.losers300) ?? []
                     )
                 }
+    }
+
+    func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+        coinGeckoProvider.cexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
 }

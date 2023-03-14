@@ -145,10 +145,6 @@ extension Kit {
         coinManager.coinReportsSingle(coinUid: coinUid)
     }
 
-    public func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
-        coinManager.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
     public func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         coinManager.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
@@ -258,21 +254,47 @@ extension Kit {
         hsProvider.analyticsPreviewSingle(coinUid: coinUid)
     }
 
-    public func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexLiquidityResponse> {
-        coinManager.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+    public func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+        coinManager.cexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    public func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexVolumeResponse> {
-        coinManager.dexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+    public func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+        hsProvider.dexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+                .map {
+                    AggregatedChartPoints(
+                            points: $0.points.map { $0.chartPoint },
+                            aggregatedValue: $0.points.map { $0.volume }.reduce(0, +)
+                    )
+                }
     }
 
-    public func transactionDataSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<TransactionDataResponse> {
-        coinManager.transactionDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
+    public func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
+        hsProvider.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+                .map { $0.points.map { $0.chartPoint } }
     }
 
+    public func activeAddressesSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+        hsProvider.activeAddressesSingle(coinUid: coinUid, timePeriod: timePeriod)
+                .map {
+                    AggregatedChartPoints(
+                            points: $0.points.map { $0.chartPoint },
+                            aggregatedValue: nil
+                    )
+                }
+    }
 
-    public func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<ActiveAddressesResponse> {
-        coinManager.activeAddressesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
+    public func transactionsSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+        hsProvider.transactionsSingle(coinUid: coinUid, timePeriod: timePeriod)
+                .map {
+                    AggregatedChartPoints(
+                            points: $0.points.map { $0.chartPoint },
+                            aggregatedValue: $0.points.map { Decimal($0.count) }.reduce(0, +)
+                    )
+                }
+    }
+
+    public func marketInfoTvlSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
+        hsProvider.marketInfoTvlSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
     // Overview
