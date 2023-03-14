@@ -271,3 +271,29 @@ public struct CountVolumePoint: ImmutableMappable {
         ChartPoint(timestamp: timestamp, value: Decimal(count), extra: [ChartPoint.volume: volume])
     }
 }
+
+public struct RankMultiValue: ImmutableMappable {
+    public let uid: String
+    public let value1d: Decimal?
+    public let value7d: Decimal?
+    public let value30d: Decimal?
+
+    public init(map: Map) throws {
+        uid = try map.value("uid")
+        value1d = try? map.value("value_1d", using: Transform.stringToDecimalTransform)
+        value7d = try? map.value("value_7d", using: Transform.stringToDecimalTransform)
+        value30d = try? map.value("value_30d", using: Transform.stringToDecimalTransform)
+    }
+
+}
+
+public struct RankValue: ImmutableMappable {
+    public let uid: String
+    public let value: Decimal?
+
+    public init(map: Map) throws {
+        uid = try map.value("uid")
+        value = try? map.value("value", using: Transform.stringToDecimalTransform)
+    }
+
+}

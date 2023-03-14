@@ -75,6 +75,10 @@ extension CoinManager {
                 .map { $0.fullCoin }
     }
 
+    func allCoins() throws -> [Coin] {
+        try storage.allCoins()
+    }
+
     func token(query: TokenQuery) throws -> Token? {
         try storage.tokenInfoRecord(query: query)
                 .map { $0.token }
