@@ -17,7 +17,7 @@ extension Kit {
 
         let syncerStateStorage = try SyncerStateStorage(dbPool: dbPool)
 
-        let coinGeckoProvider = CoinGeckoProvider(baseUrl: "https://api.coingecko.com/api/v3", networkManager: networkManager)
+        let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager)
         let exchangeStorage = try ExchangeStorage(dbPool: dbPool)
         let exchangeManager = ExchangeManager(storage: exchangeStorage)
         let exchangeSyncer = ExchangeSyncer(exchangeManager: exchangeManager, coinGeckoProvider: coinGeckoProvider, syncerStateStorage: syncerStateStorage)

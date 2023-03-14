@@ -330,6 +330,25 @@ extension HsProvider {
         return proHeaders
     }
 
+    func proDataSingle<T: ImmutableMappable>(path: String, coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<T> {
+        let parameters: Parameters = [
+            "coin_uid": coinUid,
+            "currency": currencyCode.lowercased(),
+            "interval": timePeriod.rawValue
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/\(path)", method: .get, parameters: parameters, headers: headers)
+    }
+
+    func proDataSingle<T: ImmutableMappable>(path: String, coinUid: String, timePeriod: HsTimePeriod) -> Single<T> {
+        let parameters: Parameters = [
+            "coin_uid": coinUid,
+            "interval": timePeriod.rawValue
+        ]
+
+        return networkManager.single(url: "\(baseUrl)/v1/\(path)", method: .get, parameters: parameters, headers: headers)
+    }
+
     func analyticsSingle(coinUid: String, currencyCode: String) -> Single<Analytics> {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased()
@@ -342,34 +361,20 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, headers: headers)
     }
 
-    func proDataSingle<T: IHsProChartResource & ImmutableMappable>(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<T> {
-        var parameters: Parameters = [
-            "coin_uid": coinUid,
-//            "currency": currencyCode.lowercased(),
-            "interval": timePeriod.rawValue
-        ]
-
-        if let platform = platform {
-            parameters["platform"] = platform
-        }
-
-        return networkManager.single(url: "\(baseUrl)/v1/\(T.source)", method: .get, parameters: parameters, headers: headers)
+    func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexVolumesResponse> {
+        proDataSingle(path: "transactions/dex-volumes", coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
     func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexLiquidityResponse> {
-        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: nil)
+        proDataSingle(path: "transactions/dex-liquidity", coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<DexVolumeResponse> {
-        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: nil)
+    func activeAddressesSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<AddressesResponse> {
+        proDataSingle(path: "addresses", coinUid: coinUid, timePeriod: timePeriod)
     }
 
-    func transactionDataSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<TransactionDataResponse> {
-        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
-    }
-
-    func activeAddressesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod, platform: String?) -> Single<ActiveAddressesResponse> {
-        proDataSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod, platform: platform)
+    func transactionsSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<TransactionsResponse> {
+        proDataSingle(path: "transactions", coinUid: coinUid, timePeriod: timePeriod)
     }
 
 }

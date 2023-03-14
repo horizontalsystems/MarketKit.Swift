@@ -8,7 +8,6 @@ public struct MarketInfoOverview {
     public let circulatingSupply: Decimal?
     public let volume24h: Decimal?
     public let dilutedMarketCap: Decimal?
-    public let tvl: Decimal?
     public let performance: [PerformanceRow]
     public let genesisDate: Date?
     public let categories: [CoinCategory]

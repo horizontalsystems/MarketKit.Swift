@@ -1,100 +1,5 @@
 import Foundation
-import Alamofire
 import ObjectMapper
-
-enum HsProChartResource: String {
-    case dexVolume = "transactions/dex-volumes"
-    case dexLiquidity = "transactions/dex-liquidity"
-    case txCountVolume = "transactions"
-    case activeAddresses = "addresses"
-}
-
-protocol IHsProChartResource {
-    static var source: String { get }
-}
-
-public class ProChartPointDataResponse: ImmutableMappable {
-    let timestamp: TimeInterval
-    let count: Int?
-    let volume: Decimal?
-
-    required public init(map: Map) throws {
-        timestamp = try map.value("timestamp")
-        count = try? map.value("count")
-        volume = try? map.value("volume", using: Transform.stringToDecimalTransform)
-    }
-
-}
-
-extension Collection where Element: ProChartPointDataResponse {
-
-    public var volumePoints: [ChartPoint] {
-        self.compactMap { item in
-            item.volume.map { ChartPoint(timestamp: item.timestamp, value: $0) }
-        }
-    }
-
-    public var countPoints: [ChartPoint] {
-        self.compactMap { item in
-            item.count.map { ChartPoint(timestamp: item.timestamp, value: Decimal($0)) }
-        }
-    }
-
-}
-
-public class ProDataResponse {
-    class func dataField() -> String { "" }
-
-    let platforms: [String]
-    let data: [ProChartPointDataResponse]
-
-    required public init(map: Map) throws {
-        platforms = try map.value("platforms")
-        data = try map.value(Self.dataField())
-    }
-
-    init(platforms: [String], data: [ProChartPointDataResponse]) {
-        self.platforms = platforms
-        self.data = data
-    }
-
-    public var volumePoints: [ChartPoint] {
-        data.volumePoints
-    }
-
-    public var countPoints: [ChartPoint] {
-        data.countPoints
-    }
-
-}
-
-public class DexLiquidityResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
-    static let source = HsProChartResource.dexLiquidity.rawValue
-    static public var empty = DexLiquidityResponse(platforms: [], data: [])
-
-    override class func dataField() -> String { "liquidity" }
-}
-
-public class DexVolumeResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
-    static let source = HsProChartResource.dexVolume.rawValue
-    static public var empty = DexVolumeResponse(platforms: [], data: [])
-
-    override class func dataField() -> String { "volumes" }
-}
-
-public class ActiveAddressesResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
-    static let source = HsProChartResource.activeAddresses.rawValue
-    static public var empty = ActiveAddressesResponse(platforms: [], data: [])
-
-    override class func dataField() -> String { "addresses" }
-}
-
-public class TransactionDataResponse: ProDataResponse, ImmutableMappable, IHsProChartResource {
-    static let source = HsProChartResource.txCountVolume.rawValue
-    static public var empty = TransactionDataResponse(platforms: [], data: [])
-
-    override class func dataField() -> String { "transactions" }
-}
 
 public struct Analytics: ImmutableMappable {
     public let cexVolume: ExVolume?
@@ -132,8 +37,11 @@ public struct Analytics: ImmutableMappable {
             rank30d = try? map.value("rank_30d")
         }
 
-        public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+        public var aggregatedChartPoints: AggregatedChartPoints {
+            AggregatedChartPoints(
+                    points: points.map { $0.chartPoint },
+                    aggregatedValue: points.map { $0.volume }.reduce(0, +)
+            )
         }
     }
 
@@ -162,8 +70,11 @@ public struct Analytics: ImmutableMappable {
             count30d = try? map.value("count_30d")
         }
 
-        public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+        public var aggregatedChartPoints: AggregatedChartPoints {
+            AggregatedChartPoints(
+                    points: points.map { $0.chartPoint },
+                    aggregatedValue: count30d.map { Decimal($0) }
+            )
         }
     }
 
@@ -178,8 +89,11 @@ public struct Analytics: ImmutableMappable {
             volume30d = try? map.value("volume_30d", using: Transform.stringToDecimalTransform)
         }
 
-        public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+        public var aggregatedChartPoints: AggregatedChartPoints {
+            AggregatedChartPoints(
+                    points: points.map { $0.chartPoint },
+                    aggregatedValue: points.map { Decimal($0.count) }.reduce(0, +)
+            )
         }
     }
 
@@ -216,34 +130,6 @@ public struct Analytics: ImmutableMappable {
         public init(map: Map) throws {
             value30d = try? map.value("value_30d", using: Transform.stringToDecimalTransform)
             rank30d = try? map.value("rank_30d")
-        }
-    }
-
-    public struct VolumePoint: ImmutableMappable {
-        public let timestamp: TimeInterval
-        public let volume: Decimal
-
-        public init(map: Map) throws {
-            timestamp = try map.value("timestamp")
-            volume = try map.value("volume", using: Transform.stringToDecimalTransform)
-        }
-
-        public var chartPoint: ChartPoint {
-            ChartPoint(timestamp: timestamp, value: volume)
-        }
-    }
-
-    public struct CountPoint: ImmutableMappable {
-        public let timestamp: TimeInterval
-        public let count: Decimal
-
-        public init(map: Map) throws {
-            timestamp = try map.value("timestamp")
-            count = try map.value("count", using: Transform.stringToDecimalTransform)
-        }
-
-        public var chartPoint: ChartPoint {
-            ChartPoint(timestamp: timestamp, value: count)
         }
     }
 
@@ -308,4 +194,80 @@ public struct AnalyticsPreview: ImmutableMappable {
         treasuries = (try? map.value("treasuries")) ?? false
     }
 
+}
+
+public struct DexVolumesResponse: ImmutableMappable {
+    public let points: [VolumePoint]
+
+    public init(map: Map) throws {
+        points = try map.value("volumes")
+    }
+}
+
+public struct DexLiquidityResponse: ImmutableMappable {
+    public let points: [VolumePoint]
+
+    public init(map: Map) throws {
+        points = try map.value("liquidity")
+    }
+}
+
+public struct TransactionsResponse: ImmutableMappable {
+    public let points: [CountVolumePoint]
+
+    public init(map: Map) throws {
+        points = try map.value("transactions")
+    }
+}
+
+public struct AddressesResponse: ImmutableMappable {
+    public let points: [CountPoint]
+
+    public init(map: Map) throws {
+        points = try map.value("addresses")
+    }
+}
+
+public struct VolumePoint: ImmutableMappable {
+    public let timestamp: TimeInterval
+    public let volume: Decimal
+
+    public init(map: Map) throws {
+        timestamp = try map.value("timestamp")
+        volume = try map.value("volume", using: Transform.stringToDecimalTransform)
+    }
+
+    public var chartPoint: ChartPoint {
+        ChartPoint(timestamp: timestamp, value: volume)
+    }
+}
+
+public struct CountPoint: ImmutableMappable {
+    public let timestamp: TimeInterval
+    public let count: Int
+
+    public init(map: Map) throws {
+        timestamp = try map.value("timestamp")
+        count = try map.value("count")
+    }
+
+    public var chartPoint: ChartPoint {
+        ChartPoint(timestamp: timestamp, value: Decimal(count))
+    }
+}
+
+public struct CountVolumePoint: ImmutableMappable {
+    public let timestamp: TimeInterval
+    public let count: Int
+    public let volume: Decimal
+
+    public init(map: Map) throws {
+        timestamp = try map.value("timestamp")
+        count = try map.value("count")
+        volume = try map.value("volume", using: Transform.stringToDecimalTransform)
+    }
+
+    public var chartPoint: ChartPoint {
+        ChartPoint(timestamp: timestamp, value: Decimal(count), extra: [ChartPoint.volume: volume])
+    }
 }
