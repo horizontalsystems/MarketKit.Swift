@@ -7,14 +7,14 @@ public class CoinPrice: Record {
     public let coinUid: String
     public let currencyCode: String
     public let value: Decimal
-    public let diff: Decimal
+    public let diff: Decimal?
     public let timestamp: TimeInterval
 
     enum Columns: String, ColumnExpression, CaseIterable {
         case coinUid, currencyCode, value, diff, timestamp
     }
 
-    init(coinUid: String, currencyCode: String, value: Decimal, diff: Decimal, timestamp: TimeInterval) {
+    init(coinUid: String, currencyCode: String, value: Decimal, diff: Decimal?, timestamp: TimeInterval) {
         self.coinUid = coinUid
         self.currencyCode = currencyCode
         self.value = value
@@ -55,7 +55,7 @@ public class CoinPrice: Record {
 extension CoinPrice: CustomStringConvertible {
 
     public var description: String {
-        "CoinPrice [coinUid: \(coinUid); currencyCode: \(currencyCode); value: \(value); diff: \(diff); timestamp: \(timestamp)]"
+        "CoinPrice [coinUid: \(coinUid); currencyCode: \(currencyCode); value: \(value); diff: \(diff.map { "\($0)" } ?? "nil"); timestamp: \(timestamp)]"
     }
 
 }

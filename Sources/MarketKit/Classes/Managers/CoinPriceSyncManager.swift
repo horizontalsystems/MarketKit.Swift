@@ -131,7 +131,7 @@ extension CoinPriceSyncManager {
         queue.sync {
             let coinPriceKey = CoinPriceKey(coinUids: [coinUid], currencyCode: currencyCode)
 
-            return self.subject(key: coinPriceKey)
+            return subject(key: coinPriceKey)
                     .flatMap { dictionary -> Observable<CoinPrice> in
                         if let coinPrice = dictionary[coinUid] {
                             return Observable.just(coinPrice)
