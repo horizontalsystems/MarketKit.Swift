@@ -3,10 +3,12 @@ import Foundation
 
 public struct TokenHolders: ImmutableMappable {
     public let count: Decimal
+    public let holdersUrl: String?
     public let topHolders: [Holder]
 
     public init(map: Map) throws {
         count = try map.value("count", using: Transform.stringToDecimalTransform)
+        holdersUrl = try? map.value("holders_url")
         topHolders = try map.value("top_holders")
     }
 

@@ -37,6 +37,59 @@ class CoinGeckoProvider {
 
 extension CoinGeckoProvider {
 
+    func coinPricesSingle(coinUids: [String], currencyCode: String) -> Single<[CoinPrice]> {
+        let currency = currencyCode.lowercased()
+
+        let parameters: Parameters = [
+            "ids": coinUids.joined(separator: ","),
+            "vs_currencies": currency,
+            "include_24hr_change": "true",
+            "include_last_updated_at": "true"
+        ]
+
+        let context = Context(currency: currency)
+
+        return networkManager.single(url: "\(baseUrl)/simple/price", method: .get, parameters: parameters, context: context)
+                .map { (priceMap: [String: PriceResponse]) -> [CoinPrice] in
+                    priceMap.compactMap { coinUid, response in
+                        response.coinPrice(coinUid: coinUid, currencyCode: currencyCode)
+                    }
+                }
+    }
+
+    func coinPriceChartSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartPoint]> {
+        var parameters: Parameters = [
+            "vs_currency": currencyCode.lowercased()
+        ]
+
+        let pointInterval: HsPointTimePeriod
+
+        switch periodType {
+        case .byPeriod(let timePeriod):
+            parameters["days"] = days(timePeriod: timePeriod)
+            parameters["interval"] = interval(timePeriod: timePeriod)
+
+            pointInterval = HsChartHelper.pointInterval(timePeriod)
+        case .byStartTime(let startTime):
+            parameters["days"] = "max"
+
+            pointInterval = HsChartHelper.intervalForAll(genesisTime: startTime)
+        }
+
+        return networkManager.single(url: "\(baseUrl)/coins/\(coinUid)/market_chart", method: .get, parameters: parameters)
+                .map { (response: MarketChartResponse) -> [ChartPoint] in
+                    let points = response.normalized(interval: pointInterval.interval)
+
+                    return points.map { point in
+                        ChartPoint(
+                                timestamp: point.timestamp,
+                                value: Decimal(point.price),
+                                extra: [ChartPoint.volume: Decimal(point.volume)]
+                        )
+                    }
+                }
+    }
+
     func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
         let parameters: Parameters = [
             "vs_currency": currencyCode.lowercased(),
@@ -92,6 +145,47 @@ extension CoinGeckoProvider {
 }
 
 extension CoinGeckoProvider {
+
+    private struct Context: MapContext {
+        let currency: String
+    }
+
+    public struct PriceResponse: ImmutableMappable {
+        public let price: Double?
+        public let change24h: Double?
+        public let lastUpdatedAt: Double?
+
+        public init(map: Map) throws {
+            let currency = (map.context as? Context)?.currency ?? "usd"
+
+            price = try? map.value(currency)
+            change24h = try? map.value("\(currency)_24h_change")
+            lastUpdatedAt = try? map.value("last_updated_at")
+        }
+
+        func coinPrice(coinUid: String, currencyCode: String) -> CoinPrice? {
+            guard let price, let lastUpdatedAt else {
+                return nil
+            }
+
+            let currentTimestamp = Date().timeIntervalSince1970
+            let timestamp: TimeInterval
+
+            if currentTimestamp - lastUpdatedAt < 10 * 60 {
+                timestamp = currentTimestamp
+            } else {
+                timestamp = lastUpdatedAt
+            }
+
+            return CoinPrice(
+                    coinUid: coinUid,
+                    currencyCode: currencyCode,
+                    value: Decimal(price),
+                    diff: change24h.map { Decimal($0) },
+                    timestamp: timestamp
+            )
+        }
+    }
 
     public struct MarketChartResponse: ImmutableMappable {
         public let prices: [[Double]]

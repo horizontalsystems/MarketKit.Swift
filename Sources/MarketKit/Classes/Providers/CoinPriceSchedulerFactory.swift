@@ -3,13 +3,13 @@ import HsToolKit
 
 class CoinPriceSchedulerFactory {
     private let manager: CoinPriceManager
-    private let hsProvider: HsProvider
+    private let provider: CoinGeckoProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
 
-    init(manager: CoinPriceManager, hsProvider: HsProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(manager: CoinPriceManager, provider: CoinGeckoProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
         self.manager = manager
-        self.hsProvider = hsProvider
+        self.provider = provider
         self.reachabilityManager = reachabilityManager
         self.logger = logger
     }
@@ -17,7 +17,7 @@ class CoinPriceSchedulerFactory {
     func scheduler(currencyCode: String, coinUidDataSource: ICoinPriceCoinUidDataSource) -> Scheduler {
         let schedulerProvider = CoinPriceSchedulerProvider(
                 manager: manager,
-                hsProvider: hsProvider,
+                provider: provider,
                 currencyCode: currencyCode
         )
 

@@ -37,7 +37,7 @@ extension Kit {
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
         let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
-        let coinPriceSchedulerFactory = CoinPriceSchedulerFactory(manager: coinPriceManager, hsProvider: hsProvider, reachabilityManager: reachabilityManager, logger: logger)
+        let coinPriceSchedulerFactory = CoinPriceSchedulerFactory(manager: coinPriceManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, logger: logger)
         let coinPriceSyncManager = CoinPriceSyncManager(schedulerFactory: coinPriceSchedulerFactory)
         coinPriceManager.delegate = coinPriceSyncManager
 

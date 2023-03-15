@@ -8,13 +8,13 @@ protocol ICoinPriceCoinUidDataSource: AnyObject {
 class CoinPriceSchedulerProvider {
     private let currencyCode: String
     private let manager: CoinPriceManager
-    private let hsProvider: HsProvider
+    private let provider: CoinGeckoProvider
 
     weak var dataSource: ICoinPriceCoinUidDataSource?
 
-    init(manager: CoinPriceManager, hsProvider: HsProvider, currencyCode: String) {
+    init(manager: CoinPriceManager, provider: CoinGeckoProvider, currencyCode: String) {
         self.manager = manager
-        self.hsProvider = hsProvider
+        self.provider = provider
         self.currencyCode = currencyCode
     }
 
@@ -43,7 +43,7 @@ extension CoinPriceSchedulerProvider: ISchedulerProvider {
     }
 
     var syncSingle: Single<Void> {
-        hsProvider.coinPricesSingle(coinUids: coinUids, currencyCode: currencyCode)
+        provider.coinPricesSingle(coinUids: coinUids, currencyCode: currencyCode)
                 .do(onSuccess: { [weak self] coinPrices in
                     self?.handle(updatedCoinPrices: coinPrices)
                 })
