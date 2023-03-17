@@ -12,12 +12,11 @@ public class Kit {
     private let coinPriceSyncManager: CoinPriceSyncManager
     private let coinHistoricalPriceManager: CoinHistoricalPriceManager
     private let chartManager: ChartManager
-    private let chartSyncManager: ChartSyncManager
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, chartSyncManager: ChartSyncManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
+    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
         self.coinManager = coinManager
         self.nftManager = nftManager
         self.marketOverviewManager = marketOverviewManager
@@ -28,7 +27,6 @@ public class Kit {
         self.coinPriceSyncManager = coinPriceSyncManager
         self.coinHistoricalPriceManager = coinHistoricalPriceManager
         self.chartManager = chartManager
-        self.chartSyncManager = chartSyncManager
         self.postManager = postManager
         self.globalMarketInfoManager = globalMarketInfoManager
         self.hsProvider = hsProvider
@@ -216,10 +214,6 @@ extension Kit {
 
     public func chartInfoSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<ChartInfo> {
         chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
-    }
-
-    public func chartInfoObservable(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Observable<ChartInfo> {
-        chartSyncManager.chartInfoObservable(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
     }
 
     // Posts

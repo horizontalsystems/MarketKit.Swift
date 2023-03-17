@@ -1,7 +1,7 @@
 import Foundation
 
 struct ChartInfoKey {
-    let coin: Coin
+    let coinUid: String
     let currencyCode: String
     let periodType: HsPeriodType
 }
@@ -9,13 +9,13 @@ struct ChartInfoKey {
 extension ChartInfoKey: Hashable {
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(coin.uid)
+        hasher.combine(coinUid)
         hasher.combine(currencyCode)
         hasher.combine(periodType)
     }
 
     public static func ==(lhs: ChartInfoKey, rhs: ChartInfoKey) -> Bool {
-        lhs.coin.uid == rhs.coin.uid && lhs.currencyCode == rhs.currencyCode && lhs.periodType == rhs.periodType
+        lhs.coinUid == rhs.coinUid && lhs.currencyCode == rhs.currencyCode && lhs.periodType == rhs.periodType
     }
 
 }
@@ -23,7 +23,7 @@ extension ChartInfoKey: Hashable {
 extension ChartInfoKey: CustomStringConvertible {
 
     public var description: String {
-        "[\(coin.uid); \(currencyCode); \(periodType)]"
+        "[\(coinUid); \(currencyCode); \(periodType)]"
     }
 
 }

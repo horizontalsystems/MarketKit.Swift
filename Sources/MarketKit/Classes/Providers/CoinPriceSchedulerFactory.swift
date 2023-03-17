@@ -3,11 +3,11 @@ import HsToolKit
 
 class CoinPriceSchedulerFactory {
     private let manager: CoinPriceManager
-    private let provider: CoinGeckoProvider
+    private let provider: HsProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
 
-    init(manager: CoinPriceManager, provider: CoinGeckoProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(manager: CoinPriceManager, provider: HsProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
         self.manager = manager
         self.provider = provider
         self.reachabilityManager = reachabilityManager

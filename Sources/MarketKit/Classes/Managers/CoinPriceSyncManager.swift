@@ -158,8 +158,8 @@ extension CoinPriceSyncManager: ICoinPriceManagerDelegate {
             self.subjects.forEach { key, subject in
                 // send new rates for all subject which has at least one coinType in key
                 if key.currencyCode == currencyCode {
-                    let coinPrices = coinPriceMap.filter { coinPriceKey, _ in
-                        key.coinUids.contains(coinPriceKey)
+                    let coinPrices = coinPriceMap.filter { coinUid, _ in
+                        key.coinUids.contains(coinUid)
                     }
 
                     if !coinPrices.isEmpty {

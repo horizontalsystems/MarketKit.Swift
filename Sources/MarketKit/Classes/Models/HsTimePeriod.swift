@@ -12,7 +12,7 @@ public enum HsTimePeriod: String, CaseIterable {
 
     var expiration: TimeInterval {
         switch self {
-        case .day1: return .minutes(30)
+        case .day1: return .hours(1)
         case .week1: return .hours(4)
         case .week2: return .hours(8)
         case .month1, .month3, .month6, .year1: return .days(1)

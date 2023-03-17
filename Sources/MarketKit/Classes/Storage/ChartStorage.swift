@@ -36,10 +36,10 @@ class ChartStorage {
 
 extension ChartStorage {
 
-    func chartPoints(key: ChartInfoKey) -> [ChartPoint] {
-        try! dbPool.read { db in
+    func chartPoints(key: ChartInfoKey) throws -> [ChartPoint] {
+        try dbPool.read { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
+                    .filter(ChartPointRecord.Columns.coinUid == key.coinUid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
                     .order(ChartPointRecord.Columns.timestamp).fetchAll(db)
                     .map { ChartPoint(timestamp: $0.timestamp, value: $0.value)
                             .added(field: ChartPoint.volume, value: $0.volume)
@@ -47,18 +47,18 @@ extension ChartStorage {
         }
     }
 
-    func save(chartPoints: [ChartPointRecord]) {
-        _ = try! dbPool.write { db in
+    func save(chartPoints: [ChartPointRecord]) throws {
+        _ = try dbPool.write { db in
             for point in chartPoints {
                 try point.insert(db)
             }
         }
     }
 
-    func deleteChartPoints(key: ChartInfoKey) {
-        _ = try! dbPool.write { db in
+    func deleteChartPoints(key: ChartInfoKey) throws {
+        _ = try dbPool.write { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinUid == key.coin.uid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
+                    .filter(ChartPointRecord.Columns.coinUid == key.coinUid && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == (key.periodType.rawValue))
                     .deleteAll(db)
         }
     }

@@ -47,8 +47,6 @@ class Scheduler {
     }
 
     private func sync() {
-        notifyExpiration()
-
         // check if sync process is already running
         guard !syncInProgress else {
             logger?.debug("Scheduler \(provider.id): Sync already running")
@@ -79,6 +77,8 @@ class Scheduler {
 
     private func onSyncError(error: Error) {
         logger?.error("Scheduler \(provider.id): Sync error: \(error)")
+
+        notifyExpiration()
 
         syncInProgress = false
         schedule(delay: Self.retryInterval)
