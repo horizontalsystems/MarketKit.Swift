@@ -12,14 +12,6 @@ public struct HsChartHelper {
         }
     }
 
-    static func fromTimestamp(_ timestamp: TimeInterval, interval: HsTimePeriod, indicatorPoints: Int) -> TimeInterval {
-        // time needed for build indicators
-        let pointInterval = Self.pointInterval(interval)
-        let additionalTime = TimeInterval(indicatorPoints) * pointInterval.interval
-
-        return timestamp - interval.range - additionalTime
-    }
-
     public static func validIntervals(startTime: TimeInterval?) -> [HsTimePeriod] {
         guard let startTime else { return HsTimePeriod.allCases }
         let genesisDate = Date(timeIntervalSince1970: startTime)

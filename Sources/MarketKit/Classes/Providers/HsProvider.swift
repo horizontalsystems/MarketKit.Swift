@@ -217,21 +217,25 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart_start", method: .get, headers: headers)
     }
 
-    func coinPriceChartSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType, indicatorPoints: Int) -> Single<[ChartCoinPriceResponse]> {
+    func coinPriceChartSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartPoint]> {
         var parameters: Parameters = [
             "currency": currencyCode.lowercased()
         ]
 
         switch periodType {
-        case .byPeriod(let interval):
-            let currentTime = Date().timeIntervalSince1970
-            parameters["from_timestamp"] = Int(HsChartHelper.fromTimestamp(currentTime, interval: interval, indicatorPoints: indicatorPoints))
-            parameters["interval"] = HsChartHelper.pointInterval(interval).rawValue
+        case .byPeriod(let timePeriod):
+            let pointInterval = HsChartHelper.pointInterval(timePeriod)
+            let lastTimestamp = Double(Int(Date().timeIntervalSince1970 / pointInterval.interval)) * pointInterval.interval
+            parameters["from_timestamp"] = Int(lastTimestamp - timePeriod.range)
+            parameters["interval"] = pointInterval.rawValue
         case .byStartTime(let startTime):
             parameters["interval"] = HsChartHelper.intervalForAll(genesisTime: startTime).rawValue
         }
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart", method: .get, parameters: parameters, headers: headers)
+                .map { (responses: [ChartCoinPriceResponse]) -> [ChartPoint] in
+                    responses.map { $0.chartPoint }
+                }
     }
 
     // Holders
