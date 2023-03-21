@@ -59,7 +59,9 @@ extension ChartManager {
 
     func chartInfoSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<ChartInfo> {
         hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
-                .flatMap { points in
+                .flatMap { responses in
+                    let points = responses.map { $0.chartPoint }
+
 //                    let key = ChartInfoKey(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
 //                    self.handleFetched(chartPoints: points, key: key)
 

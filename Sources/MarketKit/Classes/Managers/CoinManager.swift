@@ -230,8 +230,4 @@ extension CoinManager {
                 }
     }
 
-    func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
-        coinGeckoProvider.cexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
 }

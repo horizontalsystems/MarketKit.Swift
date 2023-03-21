@@ -253,7 +253,15 @@ extension Kit {
     }
 
     public func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
-        coinManager.cexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
+        hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: .byPeriod(timePeriod))
+                .map { responses in
+                    let points = responses.compactMap { $0.volumeChartPoint }
+
+                    return AggregatedChartPoints(
+                            points: points,
+                            aggregatedValue: points.map { $0.value }.reduce(0, +)
+                    )
+                }
     }
 
     public func cexVolumeRanksSingle(currencyCode: String) -> Single<[RankMultiValue]> {

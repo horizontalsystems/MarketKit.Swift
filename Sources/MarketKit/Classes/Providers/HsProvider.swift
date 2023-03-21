@@ -217,25 +217,20 @@ extension HsProvider {
         networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart_start", method: .get, headers: headers)
     }
 
-    func coinPriceChartSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartPoint]> {
+    func coinPriceChartSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartCoinPriceResponse]> {
         var parameters: Parameters = [
             "currency": currencyCode.lowercased()
         ]
 
         switch periodType {
         case .byPeriod(let timePeriod):
-            let pointInterval = HsChartHelper.pointInterval(timePeriod)
-            let lastTimestamp = Double(Int(Date().timeIntervalSince1970 / pointInterval.interval)) * pointInterval.interval
-            parameters["from_timestamp"] = Int(lastTimestamp - timePeriod.range)
-            parameters["interval"] = pointInterval.rawValue
+            parameters["from_timestamp"] = Int(Date().timeIntervalSince1970 - timePeriod.range)
+            parameters["interval"] = HsChartHelper.pointInterval(timePeriod).rawValue
         case .byStartTime(let startTime):
             parameters["interval"] = HsChartHelper.intervalForAll(genesisTime: startTime).rawValue
         }
 
         return networkManager.single(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart", method: .get, parameters: parameters, headers: headers)
-                .map { (responses: [ChartCoinPriceResponse]) -> [ChartPoint] in
-                    responses.map { $0.chartPoint }
-                }
     }
 
     // Holders
@@ -450,6 +445,14 @@ extension HsProvider {
                         [ChartPoint.volume: volume]
                     } ?? [:]
             )
+        }
+
+        var volumeChartPoint: ChartPoint? {
+            guard let totalVolume else {
+                return nil
+            }
+
+            return ChartPoint(timestamp: TimeInterval(timestamp), value: totalVolume)
         }
 
     }
