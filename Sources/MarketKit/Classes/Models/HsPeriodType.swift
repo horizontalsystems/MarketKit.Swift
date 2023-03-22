@@ -31,13 +31,6 @@ public enum HsPeriodType: Hashable {
         }
     }
 
-    public var expiration: TimeInterval {
-        switch self {
-        case .byPeriod(let period): return period.expiration
-        case .byStartTime: return .days(7)  //todo: expiration == timeinterval from request
-        }
-    }
-
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .byPeriod(let period): hasher.combine(period)
