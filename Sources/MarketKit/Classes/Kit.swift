@@ -11,12 +11,11 @@ public class Kit {
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
     private let coinHistoricalPriceManager: CoinHistoricalPriceManager
-    private let chartManager: ChartManager
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let hsProvider: HsProvider
 
-    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, chartManager: ChartManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
+    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
         self.coinManager = coinManager
         self.nftManager = nftManager
         self.marketOverviewManager = marketOverviewManager
@@ -26,7 +25,6 @@ public class Kit {
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
         self.coinHistoricalPriceManager = coinHistoricalPriceManager
-        self.chartManager = chartManager
         self.postManager = postManager
         self.globalMarketInfoManager = globalMarketInfoManager
         self.hsProvider = hsProvider
@@ -205,15 +203,12 @@ extension Kit {
     // Chart Info
 
     public func chartPriceStart(coinUid: String) -> Single<TimeInterval> {
-        chartManager.chartPriceStart(coinUid: coinUid)
+        hsProvider.coinPriceChartStart(coinUid: coinUid).map { $0.timestamp }
     }
 
-    public func chartInfo(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> ChartInfo? {
-        chartManager.chartInfo(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
-    }
-
-    public func chartInfoSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<ChartInfo> {
-        chartManager.chartInfoSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
+    public func chartPointsSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartPoint]> {
+        hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
+                .map { $0.map { $0.chartPoint } }
     }
 
     // Posts

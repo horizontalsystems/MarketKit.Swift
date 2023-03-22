@@ -44,9 +44,6 @@ extension Kit {
         let coinHistoricalPriceStorage = try CoinHistoricalPriceStorage(dbPool: dbPool)
         let coinHistoricalPriceManager = CoinHistoricalPriceManager(storage: coinHistoricalPriceStorage, hsProvider: hsProvider)
 
-        let chartStorage = try ChartStorage(dbPool: dbPool)
-        let chartManager = ChartManager(storage: chartStorage, hsProvider: hsProvider)
-
         let postManager = PostManager(provider: cryptoCompareProvider)
 
         let globalMarketInfoStorage = try GlobalMarketInfoStorage(dbPool: dbPool)
@@ -62,7 +59,6 @@ extension Kit {
                 coinPriceManager: coinPriceManager,
                 coinPriceSyncManager: coinPriceSyncManager,
                 coinHistoricalPriceManager: coinHistoricalPriceManager,
-                chartManager: chartManager,
                 postManager: postManager,
                 globalMarketInfoManager: globalMarketInfoManager,
                 hsProvider: hsProvider

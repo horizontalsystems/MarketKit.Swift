@@ -268,7 +268,7 @@ public struct CountVolumePoint: ImmutableMappable {
     }
 
     public var chartPoint: ChartPoint {
-        ChartPoint(timestamp: timestamp, value: Decimal(count), extra: [ChartPoint.volume: volume])
+        ChartPoint(timestamp: timestamp, value: Decimal(count), volume: volume)
     }
 }
 
