@@ -252,9 +252,19 @@ extension Kit {
                 .map { responses in
                     let points = responses.compactMap { $0.volumeChartPoint }
 
+                    var aggregatedValue: Decimal = 0
+
+                    if let lastPoint = points.last {
+                        for point in points {
+                            if (lastPoint.timestamp - point.timestamp).remainder(dividingBy: 24 * 60 * 60) == 0 {
+                                aggregatedValue += point.value
+                            }
+                        }
+                    }
+
                     return AggregatedChartPoints(
                             points: points,
-                            aggregatedValue: points.map { $0.value }.reduce(0, +)
+                            aggregatedValue: aggregatedValue
                     )
                 }
     }
