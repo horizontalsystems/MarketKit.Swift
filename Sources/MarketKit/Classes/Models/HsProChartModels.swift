@@ -70,11 +70,8 @@ public struct Analytics: ImmutableMappable {
             count30d = try? map.value("count_30d")
         }
 
-        public var aggregatedChartPoints: AggregatedChartPoints {
-            AggregatedChartPoints(
-                    points: points.map { $0.chartPoint },
-                    aggregatedValue: count30d.map { Decimal($0) }
-            )
+        public var chartPoints: [ChartPoint] {
+            points.map { $0.chartPoint }
         }
     }
 
@@ -92,7 +89,7 @@ public struct Analytics: ImmutableMappable {
         public var aggregatedChartPoints: AggregatedChartPoints {
             AggregatedChartPoints(
                     points: points.map { $0.chartPoint },
-                    aggregatedValue: points.map { Decimal($0.count) }.reduce(0, +)
+                    aggregatedValue: points.map { $0.count }.reduce(0, +)
             )
         }
     }
@@ -157,6 +154,7 @@ public struct AnalyticsPreview: ImmutableMappable {
     public let dexLiquidity: Bool
     public let dexLiquidityRank: Bool
     public let addresses: Bool
+    public let addressesCount30d: Bool
     public let addressesRank30d: Bool
     public let transactions: Bool
     public let transactionsVolume30d: Bool
@@ -180,6 +178,7 @@ public struct AnalyticsPreview: ImmutableMappable {
         dexLiquidityRank = (try? map.value("dex_liquidity.rank")) ?? false
         addresses = (try? map.value("addresses.points")) ?? false
         addressesRank30d = (try? map.value("addresses.rank_30d")) ?? false
+        addressesCount30d = (try? map.value("addresses.count_30d")) ?? false
         transactions = (try? map.value("transactions.points")) ?? false
         transactionsVolume30d = (try? map.value("transactions.volume_30d")) ?? false
         transactionsRank30d = (try? map.value("transactions.rank_30d")) ?? false
@@ -194,38 +193,6 @@ public struct AnalyticsPreview: ImmutableMappable {
         treasuries = (try? map.value("treasuries")) ?? false
     }
 
-}
-
-public struct DexVolumesResponse: ImmutableMappable {
-    public let points: [VolumePoint]
-
-    public init(map: Map) throws {
-        points = try map.value("volumes")
-    }
-}
-
-public struct DexLiquidityResponse: ImmutableMappable {
-    public let points: [VolumePoint]
-
-    public init(map: Map) throws {
-        points = try map.value("liquidity")
-    }
-}
-
-public struct TransactionsResponse: ImmutableMappable {
-    public let points: [CountVolumePoint]
-
-    public init(map: Map) throws {
-        points = try map.value("transactions")
-    }
-}
-
-public struct AddressesResponse: ImmutableMappable {
-    public let points: [CountPoint]
-
-    public init(map: Map) throws {
-        points = try map.value("addresses")
-    }
 }
 
 public struct VolumePoint: ImmutableMappable {
@@ -244,31 +211,31 @@ public struct VolumePoint: ImmutableMappable {
 
 public struct CountPoint: ImmutableMappable {
     public let timestamp: TimeInterval
-    public let count: Int
+    public let count: Decimal
 
     public init(map: Map) throws {
         timestamp = try map.value("timestamp")
-        count = try map.value("count")
+        count = try map.value("count", using: Transform.stringToDecimalTransform)
     }
 
     public var chartPoint: ChartPoint {
-        ChartPoint(timestamp: timestamp, value: Decimal(count))
+        ChartPoint(timestamp: timestamp, value: count)
     }
 }
 
 public struct CountVolumePoint: ImmutableMappable {
     public let timestamp: TimeInterval
-    public let count: Int
+    public let count: Decimal
     public let volume: Decimal
 
     public init(map: Map) throws {
         timestamp = try map.value("timestamp")
-        count = try map.value("count")
+        count = try map.value("count", using: Transform.stringToDecimalTransform)
         volume = try map.value("volume", using: Transform.stringToDecimalTransform)
     }
 
     public var chartPoint: ChartPoint {
-        ChartPoint(timestamp: timestamp, value: Decimal(count), volume: volume)
+        ChartPoint(timestamp: timestamp, value: count, volume: volume)
     }
 }
 

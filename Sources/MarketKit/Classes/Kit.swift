@@ -207,7 +207,18 @@ extension Kit {
     }
 
     public func chartPointsSingle(coinUid: String, currencyCode: String, periodType: HsPeriodType) -> Single<[ChartPoint]> {
-        hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: periodType)
+        let interval: HsPointTimePeriod
+        var fromTimestamp: TimeInterval?
+
+        switch periodType {
+        case .byPeriod(let timePeriod):
+            fromTimestamp = Date().timeIntervalSince1970 - timePeriod.range
+            interval = HsChartHelper.pointInterval(timePeriod)
+        case .byStartTime(let startTime):
+            interval = HsChartHelper.intervalForAll(genesisTime: startTime)
+        }
+
+        return hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
                 .map { $0.map { $0.chartPoint } }
     }
 
@@ -248,23 +259,20 @@ extension Kit {
     }
 
     public func cexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
-        hsProvider.coinPriceChartSingle(coinUid: coinUid, currencyCode: currencyCode, periodType: .byPeriod(timePeriod))
+        hsProvider.coinPriceChartSingle(
+                        coinUid: coinUid,
+                        currencyCode: currencyCode,
+                        interval: .day1,
+                        fromTimestamp: Date().timeIntervalSince1970 - timePeriod.range
+                )
                 .map { responses in
-                    let points = responses.compactMap { $0.volumeChartPoint }
-
-                    var aggregatedValue: Decimal = 0
-
-                    if let lastPoint = points.last {
-                        for point in points {
-                            if (lastPoint.timestamp - point.timestamp).remainder(dividingBy: 24 * 60 * 60) == 0 {
-                                aggregatedValue += point.value
-                            }
-                        }
+                    let points = responses.compactMap {
+                        $0.volumeChartPoint
                     }
 
                     return AggregatedChartPoints(
                             points: points,
-                            aggregatedValue: aggregatedValue
+                            aggregatedValue: points.map { $0.value }.reduce(0, +)
                     )
                 }
     }
@@ -295,35 +303,30 @@ extension Kit {
 
     public func dexVolumesSingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
         hsProvider.dexVolumesSingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-                .map {
+                .map { points in
                     AggregatedChartPoints(
-                            points: $0.points.map { $0.chartPoint },
-                            aggregatedValue: $0.points.map { $0.volume }.reduce(0, +)
+                            points: points.map { $0.chartPoint },
+                            aggregatedValue: points.map { $0.volume }.reduce(0, +)
                     )
                 }
     }
 
     public func dexLiquiditySingle(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         hsProvider.dexLiquiditySingle(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-                .map { $0.points.map { $0.chartPoint } }
+                .map { $0.map { $0.chartPoint } }
     }
 
-    public func activeAddressesSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
+    public func activeAddressesSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
         hsProvider.activeAddressesSingle(coinUid: coinUid, timePeriod: timePeriod)
-                .map {
-                    AggregatedChartPoints(
-                            points: $0.points.map { $0.chartPoint },
-                            aggregatedValue: nil
-                    )
-                }
+                .map { $0.map { $0.chartPoint } }
     }
 
     public func transactionsSingle(coinUid: String, timePeriod: HsTimePeriod) -> Single<AggregatedChartPoints> {
         hsProvider.transactionsSingle(coinUid: coinUid, timePeriod: timePeriod)
-                .map {
+                .map { points in
                     AggregatedChartPoints(
-                            points: $0.points.map { $0.chartPoint },
-                            aggregatedValue: $0.points.map { Decimal($0.count) }.reduce(0, +)
+                            points: points.map { $0.chartPoint },
+                            aggregatedValue: points.map { $0.count }.reduce(0, +)
                     )
                 }
     }
