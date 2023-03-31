@@ -1,6 +1,7 @@
 public enum BlockchainType {
     case bitcoin
     case bitcoinCash
+    case ecash
     case litecoin
     case dash
     case zcash
@@ -21,6 +22,7 @@ public enum BlockchainType {
         switch uid {
         case "bitcoin": self = .bitcoin
         case "bitcoin-cash": self = .bitcoinCash
+        case "ecash": self = .ecash
         case "litecoin": self = .litecoin
         case "dash": self = .dash
         case "zcash": self = .zcash
@@ -43,6 +45,7 @@ public enum BlockchainType {
         switch self {
         case .bitcoin: return "bitcoin"
         case .bitcoinCash: return "bitcoin-cash"
+        case .ecash: return "ecash"
         case .litecoin: return "litecoin"
         case .dash: return "dash"
         case .zcash: return "zcash"
