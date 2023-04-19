@@ -33,27 +33,3 @@ struct CoinPriceResponse: ImmutableMappable {
     }
 
 }
-
-class CoinPriceMapper: IApiMapper {
-    typealias T = [CoinPriceResponse]
-
-    func map(statusCode: Int, data: Any?) throws -> T {
-        guard let data = data as? [Any] else {
-            return []
-        }
-        return data.compactMap { coin -> CoinPriceResponse? in
-            guard let coin = coin as? [String: Any],
-                  let uid = coin["uid"] as? String,
-                  let priceString = coin["price"] as? String,
-                  let price = Decimal(string: priceString),
-                  let timestampInt = coin["last_updated"] as? Int,
-                  let priceChangeString = coin["price_change_24h"] as? String,
-                  let priceChange = Decimal(string: priceChangeString) else {
-                return nil
-            }
-
-            return CoinPriceResponse(uid: uid, price: price, priceChange: priceChange, lastUpdated: TimeInterval(timestampInt))
-        }
-    }
-
-}

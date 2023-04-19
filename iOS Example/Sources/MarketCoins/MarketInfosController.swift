@@ -1,13 +1,11 @@
 import UIKit
 import SnapKit
-import RxSwift
 import MarketKit
 
 class MarketInfosController: UIViewController {
     private let tableView = UITableView()
 
     private var marketInfos = [MarketInfo]()
-    private let disposeBag = DisposeBag()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -36,17 +34,10 @@ class MarketInfosController: UIViewController {
     }
 
     private func syncCoins() {
-        Singleton.instance.kit.marketInfosSingle(top: 250, currencyCode: "USD")
-//        Singleton.instance.kit.advancedMarketInfosSingle(top: 250, currencyCode: "USD")
-//        Singleton.instance.kit.marketInfosSingle(categoryUid: "blockchains", currencyCode: "USD")
-//        Singleton.instance.kit.marketInfosSingle(coinUids: ["bitcoin", "tether"], currencyCode: "USD")
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { [weak self] marketInfos in
-                    self?.marketInfos = marketInfos
-                    self?.tableView.reloadData()
-                })
-                .disposed(by: disposeBag)
+        Task { [weak self] in
+            self?.marketInfos = try await Singleton.instance.kit.marketInfos(top: 250, currencyCode: "USD")
+            self?.tableView.reloadData()
+        }
     }
 
 }

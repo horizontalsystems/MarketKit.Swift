@@ -1,6 +1,6 @@
 import Foundation
-import RxSwift
-import RxRelay
+import Combine
+import HsExtensions
 
 class CoinSyncer {
     private let keyCoinsLastSyncTimestamp = "coin-syncer-coins-last-sync-timestamp"
@@ -13,9 +13,9 @@ class CoinSyncer {
     private let storage: CoinStorage
     private let hsProvider: HsProvider
     private let syncerStateStorage: SyncerStateStorage
-    private let disposeBag = DisposeBag()
+    private var tasks = Set<AnyTask>()
 
-    private let fullCoinsUpdatedRelay = PublishRelay<Void>()
+    private let fullCoinsUpdatedSubject = PassthroughSubject<Void, Never>()
 
     init(storage: CoinStorage, hsProvider: HsProvider, syncerStateStorage: SyncerStateStorage) {
         self.storage = storage
@@ -32,7 +32,7 @@ class CoinSyncer {
     func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
         do {
             try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
-            fullCoinsUpdatedRelay.accept(())
+            fullCoinsUpdatedSubject.send()
         } catch {
             print("Fetched data error: \(error)")
         }
@@ -42,8 +42,8 @@ class CoinSyncer {
 
 extension CoinSyncer {
 
-    var fullCoinsUpdatedObservable: Observable<Void> {
-        fullCoinsUpdatedRelay.asObservable()
+    var fullCoinsUpdatedPublisher: AnyPublisher<Void, Never> {
+        fullCoinsUpdatedSubject.eraseToAnyPublisher()
     }
 
     func initialSync() {
@@ -117,15 +117,18 @@ extension CoinSyncer {
             return
         }
 
-        Single.zip(hsProvider.allCoinsSingle(), hsProvider.allBlockchainRecordsSingle(), hsProvider.allTokenRecordsSingle())
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .subscribe(onSuccess: { [weak self] coins, blockchainRecords, tokenRecords in
-                    self?.handleFetched(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
-                    self?.saveLastSyncTimestamps(coins: coinsTimestamp, blockchains: blockchainsTimestamp, tokens: tokensTimestamp)
-                }, onError: { error in
-                    print("Market data fetch error: \(error)")
-                })
-                .disposed(by: disposeBag)
+        Task { [weak self, hsProvider] in
+            do {
+                async let coins = try hsProvider.allCoins()
+                async let blockchainRecords = try hsProvider.allBlockchainRecords()
+                async let tokenRecords = try hsProvider.allTokenRecords()
+
+                try await self?.handleFetched(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+                self?.saveLastSyncTimestamps(coins: coinsTimestamp, blockchains: blockchainsTimestamp, tokens: tokensTimestamp)
+            } catch {
+                print("Market data fetch error: \(error)")
+            }
+        }.store(in: &tasks)
     }
 
     func syncInfo() -> Kit.SyncInfo {

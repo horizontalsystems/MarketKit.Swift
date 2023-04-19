@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 protocol ICoinPriceCoinUidDataSource: AnyObject {
     func coinUids(currencyCode: String) -> [String]
@@ -42,12 +41,9 @@ extension CoinPriceSchedulerProvider: ISchedulerProvider {
         CoinPrice.expirationInterval
     }
 
-    var syncSingle: Single<Void> {
-        provider.coinPricesSingle(coinUids: coinUids, currencyCode: currencyCode)
-                .do(onSuccess: { [weak self] coinPrices in
-                    self?.handle(updatedCoinPrices: coinPrices)
-                })
-                .map { _ in () }
+    func sync() async throws {
+        let coinPrices = try await provider.coinPrices(coinUids: coinUids, currencyCode: currencyCode)
+        handle(updatedCoinPrices: coinPrices)
     }
 
     func notifyExpired() {

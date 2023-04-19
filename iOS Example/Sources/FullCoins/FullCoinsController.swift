@@ -1,6 +1,6 @@
+import Combine
 import UIKit
 import SnapKit
-import RxSwift
 import MarketKit
 
 class FullCoinsController: UIViewController {
@@ -10,7 +10,7 @@ class FullCoinsController: UIViewController {
     private var currentFilter: String = ""
 
     private var fullCoins = [FullCoin]()
-    private let disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -43,13 +43,12 @@ class FullCoinsController: UIViewController {
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
 
-        Singleton.instance.kit.fullCoinsUpdatedObservable
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] in
+        Singleton.instance.kit.fullCoinsUpdatedPublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] in
                     self?.syncCoins()
-                })
-                .disposed(by: disposeBag)
+                }
+                .store(in: &cancellables)
 
         syncCoins()
     }

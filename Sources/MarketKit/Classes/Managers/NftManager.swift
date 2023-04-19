@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 class NftManager {
     private let coinManager: CoinManager
@@ -74,15 +73,9 @@ extension NftManager {
         }
     }
 
-    func topCollectionsSingle() -> Single<[NftTopCollection]> {
-        provider.topCollectionsSingle()
-                .map { [weak self] responses in
-                    guard let strongSelf = self else {
-                        throw Kit.KitError.weakReference
-                    }
-
-                    return strongSelf.topCollections(responses: responses)
-                }
+    func topCollections() async throws -> [NftTopCollection] {
+        let responses = try await provider.topCollections()
+        return topCollections(responses: responses)
     }
 
 }

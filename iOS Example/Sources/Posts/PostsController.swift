@@ -1,13 +1,11 @@
 import UIKit
 import SnapKit
-import RxSwift
 import MarketKit
 
 class PostsController: UIViewController {
     private let tableView = UITableView()
 
     private var posts = [Post]()
-    private let disposeBag = DisposeBag()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -36,14 +34,10 @@ class PostsController: UIViewController {
     }
 
     private func syncPosts() {
-        Singleton.instance.kit.postsSingle()
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { [weak self] posts in
-                    self?.posts = posts
-                    self?.tableView.reloadData()
-                })
-                .disposed(by: disposeBag)
+        Task { [weak self] in
+            self?.posts = try await Singleton.instance.kit.posts()
+            self?.tableView.reloadData()
+        }
     }
 
 }

@@ -1,10 +1,10 @@
+import Combine
 import UIKit
 import SnapKit
-import RxSwift
 import MarketKit
 
 class MiscController: UIViewController {
-    private let disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -106,13 +106,12 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapCoinPrices() {
-        Singleton.instance.kit.coinPriceMapObservable(coinUids: ["bitcoin", "ethereum"], currencyCode: "USD")
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { coinPriceMap in
-                    print("ON NEXT: \(coinPriceMap)")
-                })
-                .disposed(by: disposeBag)
+        Singleton.instance.kit.coinPriceMapPublisher(coinUids: ["bitcoin", "ethereum"], currencyCode: "USD")
+                .receive(on: DispatchQueue.main)
+                .sink { coinPriceMap in
+                    print("COIN PRICE MAP FETCHED: \(coinPriceMap)")
+                }
+                .store(in: &cancellables)
     }
 
     @objc private func onTapCoinHistoricalPrice() {
@@ -122,23 +121,17 @@ class MiscController: UIViewController {
             return
         }
 
-        Singleton.instance.kit.coinHistoricalPriceValueSingle(coinUid: "bitcoin", currencyCode: "USD", timestamp: date.timeIntervalSince1970)
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { value in
-                    print("Historical Price: \(value)")
-                })
-                .disposed(by: disposeBag)
+        Task {
+            let value = try await Singleton.instance.kit.coinHistoricalPriceValue(coinUid: "bitcoin", currencyCode: "USD", timestamp: date.timeIntervalSince1970)
+            print("Historical Price: \(value)")
+        }
     }
 
     @objc private func onTapGlobalMarketInfo() {
-        Singleton.instance.kit.globalMarketPointsSingle(currencyCode: "USD", timePeriod: .day1)
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { points in
-                    print("SUCCESS: count: \(points.count)\n\(points.map { "\($0)" }.joined(separator: "\n"))")
-                })
-                .disposed(by: disposeBag)
+        Task {
+            let points = try await Singleton.instance.kit.globalMarketPoints(currencyCode: "USD", timePeriod: .day1)
+            print("SUCCESS: count: \(points.count)\n\(points.map { "\($0)" }.joined(separator: "\n"))")
+        }
     }
 
     @objc private func onTapDumpCoins() {
@@ -154,13 +147,10 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapPlatforms() {
-        Singleton.instance.kit.topPlatformsSingle(currencyCode: "USD")
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { topPlatforms in
-                    print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
-                })
-                .disposed(by: disposeBag)
+        Task {
+            let topPlatforms = try await Singleton.instance.kit.topPlatforms(currencyCode: "USD")
+            print("SUCCESS: count: \(topPlatforms.count)\n\(topPlatforms.map { "\($0)" }.joined(separator: "\n"))")
+        }
     }
 
     private func dump(dumpBlock: () throws -> String?) {
