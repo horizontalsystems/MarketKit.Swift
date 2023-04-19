@@ -1,5 +1,3 @@
-import RxSwift
-
 class PostManager {
     private let provider: CryptoCompareProvider
 
@@ -11,8 +9,8 @@ class PostManager {
 
 extension PostManager {
 
-    func postsSingle() -> Single<[Post]> {
-        provider.postsSingle()
+    func posts() async throws -> [Post] {
+        try await provider.posts()
     }
 
 }

@@ -1,13 +1,11 @@
 import UIKit
 import SnapKit
-import RxSwift
 import MarketKit
 
 class CoinCategoryController: UIViewController {
     private let tableView = UITableView()
 
     private var coinCategories = [CoinCategory]()
-    private let disposeBag = DisposeBag()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -31,14 +29,10 @@ class CoinCategoryController: UIViewController {
         tableView.delegate = self
         tableView.keyboardDismissMode = .onDrag
 
-        Singleton.instance.kit.coinCategoriesSingle(currencyCode: "usd")
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { [weak self] coinCategories in
-                    self?.coinCategories = coinCategories
-                    self?.tableView.reloadData()
-                })
-                .disposed(by: disposeBag)
+        Task { [weak self] in
+            self?.coinCategories = try await Singleton.instance.kit.coinCategories(currencyCode: "usd")
+            self?.tableView.reloadData()
+        }
     }
 
 }

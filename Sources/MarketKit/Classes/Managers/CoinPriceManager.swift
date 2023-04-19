@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 protocol ICoinPriceManagerDelegate: AnyObject {
     func didUpdate(coinPriceMap: [String: CoinPrice], currencyCode: String)

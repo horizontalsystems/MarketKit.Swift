@@ -1,19 +1,15 @@
 import Foundation
-import RxSwift
-import RxRelay
 
 class CoinManager {
     private let storage: CoinStorage
     private let hsProvider: HsProvider
     private let coinGeckoProvider: CoinGeckoProvider
-    private let defiYieldProvider: DefiYieldProvider
     private let exchangeManager: ExchangeManager
 
-    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, defiYieldProvider: DefiYieldProvider, exchangeManager: ExchangeManager) {
+    init(storage: CoinStorage, hsProvider: HsProvider, coinGeckoProvider: CoinGeckoProvider, exchangeManager: ExchangeManager) {
         self.storage = storage
         self.hsProvider = hsProvider
         self.coinGeckoProvider = coinGeckoProvider
-        self.defiYieldProvider = defiYieldProvider
         self.exchangeManager = exchangeManager
     }
 
@@ -111,123 +107,78 @@ extension CoinManager {
 
     // Market Info
 
-    func marketInfosSingle(top: Int, currencyCode: String, defi: Bool) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(top: top, currencyCode: currencyCode, defi: defi)
-                .map { [weak self] rawMarketInfos -> [MarketInfo] in
-                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
-                }
+    func marketInfos(top: Int, currencyCode: String, defi: Bool) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(top: top, currencyCode: currencyCode, defi: defi)
+        return marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func advancedMarketInfosSingle(top: Int, currencyCode: String) -> Single<[MarketInfo]> {
-        hsProvider.advancedMarketInfosSingle(top: top, currencyCode: currencyCode)
-                .map { [weak self] rawMarketInfos -> [MarketInfo] in
-                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
-                }
+    func advancedMarketInfos(top: Int, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.advancedMarketInfos(top: top, currencyCode: currencyCode)
+        return marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfosSingle(coinUids: [String], currencyCode: String) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(coinUids: coinUids, currencyCode: currencyCode)
-                .map { [weak self] rawMarketInfos -> [MarketInfo] in
-                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
-                }
+    func marketInfos(coinUids: [String], currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(coinUids: coinUids, currencyCode: currencyCode)
+        return marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfosSingle(categoryUid: String, currencyCode: String) -> Single<[MarketInfo]> {
-        hsProvider.marketInfosSingle(categoryUid: categoryUid, currencyCode: currencyCode)
-                .map { [weak self] rawMarketInfos -> [MarketInfo] in
-                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
-                }
+    func marketInfos(categoryUid: String, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(categoryUid: categoryUid, currencyCode: currencyCode)
+        return marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfoOverviewSingle(coinUid: String, currencyCode: String, languageCode: String) -> Single<MarketInfoOverview> {
-        hsProvider.marketInfoOverviewSingle(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
-                .flatMap { [weak self] response in
-                    if let fullCoin = try? self?.fullCoin(uid: coinUid) {
-                        return Single.just(response.marketInfoOverview(fullCoin: fullCoin))
-                    } else {
-                        return Single.error(Kit.KitError.noFullCoin)
-                    }
-                }
+    func marketInfoOverview(coinUid: String, currencyCode: String, languageCode: String) async throws -> MarketInfoOverview {
+        let response = try await hsProvider.marketInfoOverview(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+
+        guard let fullCoin = try? fullCoin(uid: coinUid) else {
+            throw Kit.KitError.noFullCoin
+        }
+
+        return response.marketInfoOverview(fullCoin: fullCoin)
     }
 
-    func marketTickerSingle(coinUid: String) -> Single<[MarketTicker]> {
+    func marketTicker(coinUid: String) async throws -> [MarketTicker] {
         guard let coin = try? storage.coin(uid: coinUid), let coinGeckoId = coin.coinGeckoId else {
-            return Single.just([])
+            return []
         }
 
-        return coinGeckoProvider.marketTickersSingle(coinId: coinGeckoId)
-                .map { [weak self] response in
-                    let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap({ $0 }).compactMap { $0 }
-                    let coins = (try? self?.storage.coins(uids: coinUids)) ?? []
+        let response = try await coinGeckoProvider.marketTickers(coinId: coinGeckoId)
 
-                    return response.marketTickers(imageUrls: self?.exchangeManager.imageUrlsMap(ids: response.exchangeIds) ?? [:], coins: coins)
-                }
+        let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap({ $0 }).compactMap { $0 }
+        let coins = (try? storage.coins(uids: coinUids)) ?? []
+
+        return response.marketTickers(imageUrls: exchangeManager.imageUrlsMap(ids: response.exchangeIds), coins: coins)
     }
 
-    func marketInfoDetailsSingle(coinUid: String, currencyCode: String) -> Single<MarketInfoDetails> {
-        hsProvider.marketInfoDetailsSingle(coinUid: coinUid, currencyCode: currencyCode)
+    func defiCoins(currencyCode: String) async throws -> [DefiCoin] {
+        let rawDefiCoins = try await hsProvider.defiCoins(currencyCode: currencyCode)
+        return defiCoins(rawDefiCoins: rawDefiCoins)
     }
-
-    func auditReportsSingle(addresses: [String]) -> Single<[Auditor]> {
-        defiYieldProvider.auditReportsSingle(addresses: addresses)
-    }
-
-    func investmentsSingle(coinUid: String) -> Single<[CoinInvestment]> {
-        hsProvider.coinInvestmentsSingle(coinUid: coinUid)
-    }
-
-    func treasuriesSingle(coinUid: String, currencyCode: String) -> Single<[CoinTreasury]> {
-        hsProvider.coinTreasuriesSingle(coinUid: coinUid, currencyCode: currencyCode)
-    }
-
-    func coinReportsSingle(coinUid: String) -> Single<[CoinReport]> {
-        hsProvider.coinReportsSingle(coinUid: coinUid)
-    }
-
-    func marketInfoGlobalTvlSingle(platform: String, currencyCode: String, timePeriod: HsTimePeriod) -> Single<[ChartPoint]> {
-        hsProvider.marketInfoGlobalTvlSingle(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
-    }
-
-    func defiCoinsSingle(currencyCode: String) -> Single<[DefiCoin]> {
-        hsProvider.defiCoinsSingle(currencyCode: currencyCode).map { [weak self] rawDefiCoins in
-            self?.defiCoins(rawDefiCoins: rawDefiCoins) ?? []
-        }
-    }
-
-    func twitterUsername(coinUid: String) -> Single<String?> {
-        hsProvider.twitterUsername(coinUid: coinUid)
-    }
-
 
     //Top Platforms
 
-    func topPlatformsSingle(currencyCode: String) -> Single<[TopPlatform]> {
-        hsProvider.topPlatformsSingle(currencyCode: currencyCode).map { responses in
-            responses.map { $0.topPlatform }
-        }
+    func topPlatforms(currencyCode: String) async throws -> [TopPlatform] {
+        let responses = try await hsProvider.topPlatforms(currencyCode: currencyCode)
+        return responses.map { $0.topPlatform }
     }
 
-    func topPlatformsCoinsListSingle(blockchain: String, currencyCode: String) -> Single<[MarketInfo]> {
-        hsProvider.topPlatformCoinsListSingle(blockchain: blockchain, currencyCode: currencyCode)
-                .map { [weak self] rawMarketInfos in
-                    self?.marketInfos(rawMarketInfos: rawMarketInfos) ?? []
-                }
+    func topPlatformsCoinsList(blockchain: String, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.topPlatformCoinsList(blockchain: blockchain, currencyCode: currencyCode)
+        return marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
     // Top Movers
 
-    func topMoversSingle(currencyCode: String) -> Single<TopMovers> {
-        hsProvider.topMoversRawSingle(currencyCode: currencyCode)
-                .map { [weak self] raw in
-                    TopMovers(
-                            gainers100: self?.marketInfos(rawMarketInfos: raw.gainers100) ?? [],
-                            gainers200: self?.marketInfos(rawMarketInfos: raw.gainers200) ?? [],
-                            gainers300: self?.marketInfos(rawMarketInfos: raw.gainers300) ?? [],
-                            losers100: self?.marketInfos(rawMarketInfos: raw.losers100) ?? [],
-                            losers200: self?.marketInfos(rawMarketInfos: raw.losers200) ?? [],
-                            losers300: self?.marketInfos(rawMarketInfos: raw.losers300) ?? []
-                    )
-                }
+    func topMovers(currencyCode: String) async throws -> TopMovers {
+        let raw = try await hsProvider.topMoversRaw(currencyCode: currencyCode)
+        return TopMovers(
+                gainers100: marketInfos(rawMarketInfos: raw.gainers100),
+                gainers200: marketInfos(rawMarketInfos: raw.gainers200),
+                gainers300: marketInfos(rawMarketInfos: raw.gainers300),
+                losers100: marketInfos(rawMarketInfos: raw.losers100),
+                losers200: marketInfos(rawMarketInfos: raw.losers200),
+                losers300: marketInfos(rawMarketInfos: raw.losers300)
+        )
     }
 
 }

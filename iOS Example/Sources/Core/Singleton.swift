@@ -9,7 +9,7 @@ class Singleton {
         kit = try! Kit.instance(
                 hsApiBaseUrl: "https://api-dev.blocksdecoded.com",
                 hsProviderApiKey: nil,
-                minLogLevel: .debug
+                minLogLevel: .error
         )
 
         kit.sync()
