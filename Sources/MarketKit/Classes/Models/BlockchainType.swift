@@ -15,7 +15,6 @@ public enum BlockchainType {
     case gnosis
     case fantom
     case solana
-    case ethereumGoerli
     case unsupported(uid: String)
 
     public init(uid: String) {
@@ -36,7 +35,6 @@ public enum BlockchainType {
         case "gnosis": self = .gnosis
         case "fantom": self = .fantom
         case "solana": self = .solana
-        case "ethereum-goerli": self = .ethereumGoerli
         default: self = .unsupported(uid: uid)
         }
     }
@@ -59,7 +57,6 @@ public enum BlockchainType {
         case .gnosis: return "gnosis"
         case .fantom: return "fantom"
         case .solana: return "solana"
-        case .ethereumGoerli: return "ethereum-goerli"
         case .unsupported(let uid): return uid
         }
     }

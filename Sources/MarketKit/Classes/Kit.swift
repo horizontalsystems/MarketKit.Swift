@@ -252,12 +252,12 @@ extension Kit {
 
     // Pro Data
 
-    public func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
-        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode)
+    public func analytics(coinUid: String, currencyCode: String, authToken: String) async throws -> Analytics {
+        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode, authToken: authToken)
     }
 
-    public func analyticsPreview(coinUid: String) async throws -> AnalyticsPreview {
-        try await hsProvider.analyticsPreview(coinUid: coinUid)
+    public func analyticsPreview(coinUid: String, addresses: [String]) async throws -> AnalyticsPreview {
+        try await hsProvider.analyticsPreview(coinUid: coinUid, addresses: addresses)
     }
 
     public func cexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> AggregatedChartPoints {
@@ -346,6 +346,16 @@ extension Kit {
 
     public func nftTopCollections() async throws -> [NftTopCollection] {
         try await nftManager.topCollections()
+    }
+
+    // Auth
+
+    public func authKey(address: String) async throws -> String {
+        try await hsProvider.authKey(address: address)
+    }
+
+    public func authenticate(signature: String, address: String) async throws -> String {
+        try await hsProvider.authenticate(signature: signature, address: address)
     }
 
     // Misc
