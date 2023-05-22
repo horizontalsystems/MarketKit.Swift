@@ -147,6 +147,7 @@ public struct Analytics: ImmutableMappable {
 }
 
 public struct AnalyticsPreview: ImmutableMappable {
+    public let subscriptions: [SubscriptionResponse]
     public let cexVolume: Bool
     public let cexVolumeRank30d: Bool
     public let dexVolume: Bool
@@ -170,6 +171,7 @@ public struct AnalyticsPreview: ImmutableMappable {
     public let treasuries: Bool
 
     public init(map: Map) throws {
+        subscriptions = (try? map.value("subscriptions")) ?? []
         cexVolume = (try? map.value("cex_volume.points")) ?? false
         cexVolumeRank30d = (try? map.value("cex_volume.rank_30d")) ?? false
         dexVolume = (try? map.value("dex_volume.points")) ?? false
@@ -191,6 +193,16 @@ public struct AnalyticsPreview: ImmutableMappable {
         reports = (try? map.value("reports")) ?? false
         fundsInvested = (try? map.value("funds_invested")) ?? false
         treasuries = (try? map.value("treasuries")) ?? false
+    }
+
+    public struct SubscriptionResponse: ImmutableMappable {
+        public let address: String
+        public let deadline: TimeInterval
+
+        public init(map: Map) throws {
+            address = try map.value("address")
+            deadline = try map.value("deadline")
+        }
     }
 
 }

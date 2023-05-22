@@ -338,16 +338,25 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/ranks", method: .get, parameters: parameters, headers: headers)
     }
 
-    func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
+    func analytics(coinUid: String, currencyCode: String, authToken: String) async throws -> Analytics {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased()
         ]
 
+        var headers = headers
+        headers?.add(.authorization(authToken))
+
         return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)", method: .get, parameters: parameters, headers: headers)
     }
 
-    func analyticsPreview(coinUid: String) async throws -> AnalyticsPreview {
-        try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, headers: headers)
+    func analyticsPreview(coinUid: String, addresses: [String]) async throws -> AnalyticsPreview {
+        var parameters = Parameters()
+
+        if !addresses.isEmpty {
+            parameters["address"] = addresses.joined(separator: ",")
+        }
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, parameters: parameters, headers: headers)
     }
 
     func dexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [VolumePoint] {
@@ -388,6 +397,29 @@ extension HsProvider {
 
     func revenueRanks(currencyCode: String) async throws -> [RankMultiValue] {
         try await rankData(type: "revenue", currencyCode: currencyCode)
+    }
+
+    // Authentication
+
+    func authKey(address: String) async throws -> String {
+        let parameters: Parameters = [
+            "address": address
+        ]
+
+        let response: AuthKeyResponse = try await networkManager.fetch(url: "\(baseUrl)/v1/auth/get-key", method: .get, parameters: parameters, headers: headers)
+
+        return response.key
+    }
+
+    func authenticate(signature: String, address: String) async throws -> String {
+        let parameters: Parameters = [
+            "signature": signature,
+            "address": address
+        ]
+
+        let response: AuthenticateResponse = try await networkManager.fetch(url: "\(baseUrl)/v1/auth/authenticate", method: .post, parameters: parameters, headers: headers)
+
+        return response.token
     }
 
 }
@@ -431,6 +463,22 @@ extension HsProvider {
             return ChartPoint(timestamp: TimeInterval(timestamp), value: totalVolume)
         }
 
+    }
+
+    struct AuthKeyResponse: ImmutableMappable {
+        let key: String
+
+        init(map: Map) throws {
+            key = try map.value("key")
+        }
+    }
+
+    struct AuthenticateResponse: ImmutableMappable {
+        let token: String
+
+        init(map: Map) throws {
+            token = try map.value("token")
+        }
     }
 
 }
