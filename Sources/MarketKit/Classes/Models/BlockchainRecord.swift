@@ -30,15 +30,15 @@ class BlockchainRecord: Record, Decodable, ImmutableMappable {
         eip3091url >>> map["eip3091_url"]
     }
 
-    required init(row: Row) {
+    required init(row: Row) throws {
         uid = row[Columns.uid]
         name = row[Columns.name]
         eip3091url = row[Columns.eip3091url]
 
-        super.init(row: row)
+        try super.init(row: row)
     }
 
-    override func encode(to container: inout PersistenceContainer) {
+    override func encode(to container: inout PersistenceContainer) throws {
         container[Columns.uid] = uid
         container[Columns.name] = name
         container[Columns.eip3091url] = eip3091url
