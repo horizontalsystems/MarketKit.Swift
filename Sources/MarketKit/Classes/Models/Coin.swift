@@ -47,17 +47,17 @@ public class Coin: Record, Decodable, ImmutableMappable {
         coinGeckoId >>> map["coingecko_id"]
     }
 
-    required init(row: Row) {
+    required init(row: Row) throws {
         uid = row[Columns.uid]
         name = row[Columns.name]
         code = row[Columns.code]
         marketCapRank = row[Columns.marketCapRank]
         coinGeckoId = row[Columns.coinGeckoId]
 
-        super.init(row: row)
+        try super.init(row: row)
     }
 
-    override open func encode(to container: inout PersistenceContainer) {
+    override open func encode(to container: inout PersistenceContainer) throws {
         container[Columns.uid] = uid
         container[Columns.name] = name
         container[Columns.code] = code

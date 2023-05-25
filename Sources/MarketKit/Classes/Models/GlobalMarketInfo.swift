@@ -25,16 +25,16 @@ public class GlobalMarketInfo: Record {
         super.init()
     }
 
-    required init(row: Row) {
+    required init(row: Row) throws {
         currencyCode = row[Columns.currencyCode]
         timePeriod = HsTimePeriod(rawValue: row[Columns.timePeriod]) ?? .day1
         points = [GlobalMarketPoint](JSONString: row[Columns.points]) ?? []
         timestamp = row[Columns.timestamp]
 
-        super.init(row: row)
+        try super.init(row: row)
     }
 
-    override open func encode(to container: inout PersistenceContainer) {
+    override open func encode(to container: inout PersistenceContainer) throws {
         container[Columns.currencyCode] = currencyCode
         container[Columns.timePeriod] = timePeriod.rawValue
         container[Columns.points] = points.toJSONString()
