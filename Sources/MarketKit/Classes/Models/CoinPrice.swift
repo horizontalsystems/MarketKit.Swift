@@ -28,17 +28,17 @@ public class CoinPrice: Record {
         "coinPrice"
     }
 
-    required init(row: Row) {
+    required init(row: Row) throws {
         coinUid = row[Columns.coinUid]
         currencyCode = row[Columns.currencyCode]
         value = row[Columns.value]
         diff = row[Columns.diff]
         timestamp = row[Columns.timestamp]
 
-        super.init(row: row)
+        try super.init(row: row)
     }
 
-    override open func encode(to container: inout PersistenceContainer) {
+    override open func encode(to container: inout PersistenceContainer) throws {
         container[Columns.coinUid] = coinUid
         container[Columns.currencyCode] = currencyCode
         container[Columns.value] = value
