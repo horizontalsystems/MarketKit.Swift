@@ -8,6 +8,7 @@ public struct Analytics: ImmutableMappable {
     public let addresses: Addresses?
     public let transactions: Transactions?
     public let holders: [HolderBlockchain]?
+    public let holdersRank: Int?
     public let tvl: Tvl?
     public let revenue: Revenue?
     public let reports: Int?
@@ -21,6 +22,7 @@ public struct Analytics: ImmutableMappable {
         addresses = try? map.value("addresses")
         transactions = try? map.value("transactions")
         holders = try? map.value("holders")
+        holdersRank = try? map.value("holders_rank")
         tvl = try? map.value("tvl")
         revenue = try? map.value("revenue")
         reports = try? map.value("reports")
@@ -161,6 +163,7 @@ public struct AnalyticsPreview: ImmutableMappable {
     public let transactionsVolume30d: Bool
     public let transactionsRank30d: Bool
     public let holders: Bool
+    public let holdersRank: Bool
     public let tvl: Bool
     public let tvlRank: Bool
     public let tvlRatio: Bool
@@ -185,6 +188,7 @@ public struct AnalyticsPreview: ImmutableMappable {
         transactionsVolume30d = (try? map.value("transactions.volume_30d")) ?? false
         transactionsRank30d = (try? map.value("transactions.rank_30d")) ?? false
         holders = (try? map.value("holders")) ?? false
+        holdersRank = (try? map.value("holders_rank")) ?? false
         tvl = (try? map.value("tvl.points")) ?? false
         tvlRank = (try? map.value("tvl.rank")) ?? false
         tvlRatio = (try? map.value("tvl.ratio")) ?? false
