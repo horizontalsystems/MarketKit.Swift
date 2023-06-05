@@ -33,7 +33,7 @@ class CoinPriceSyncManager {
         self.schedulerFactory = schedulerFactory
     }
 
-    private func cleanUp(key: CoinPriceKey) {
+    private func _cleanUp(key: CoinPriceKey) {
         if let subject = subjects[key], subject.subscribersCount > 0 {
             return
         }
@@ -46,7 +46,7 @@ class CoinPriceSyncManager {
 
     private func onDisposed(key: CoinPriceKey) {
         queue.async {
-            self.cleanUp(key: key)
+            self._cleanUp(key: key)
         }
     }
 
@@ -79,7 +79,7 @@ class CoinPriceSyncManager {
         return !newCoinTypes.isEmpty
     }
 
-    private func subject(key: CoinPriceKey) -> AnyPublisher<[String: CoinPrice], Never> {
+    private func _subject(key: CoinPriceKey) -> AnyPublisher<[String: CoinPrice], Never> {
         let subject: CountedPassthroughSubject<[String: CoinPrice], Never>
         var forceUpdate: Bool = false
 
@@ -133,7 +133,7 @@ extension CoinPriceSyncManager {
         queue.sync {
             let coinPriceKey = CoinPriceKey(coinUids: [coinUid], currencyCode: currencyCode)
 
-            return subject(key: coinPriceKey)
+            return _subject(key: coinPriceKey)
                     .flatMap { dictionary in
                         if let coinPrice = dictionary[coinUid] {
                             return Just(coinPrice).eraseToAnyPublisher()
@@ -148,7 +148,7 @@ extension CoinPriceSyncManager {
         let key = CoinPriceKey(coinUids: coinUids, currencyCode: currencyCode)
 
         return queue.sync {
-            subject(key: key).eraseToAnyPublisher()
+            _subject(key: key).eraseToAnyPublisher()
         }
     }
 
