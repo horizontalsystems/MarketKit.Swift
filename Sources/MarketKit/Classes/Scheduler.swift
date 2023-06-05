@@ -134,20 +134,10 @@ class Scheduler {
 
 extension Scheduler {
 
-    func schedule() {
-        logger?.debug("Scheduler \(provider.id): Auto schedule")
-
-        DispatchQueue.global(qos: .utility).async {
-            self.autoSchedule()
-        }
-    }
-
     func forceSchedule() {
         logger?.debug("Scheduler \(provider.id): Force schedule")
 
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.schedule(delay: 0)
-        }
+        schedule(delay: 0)
     }
 
 }
