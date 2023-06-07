@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
+        Singleton.instance.kit.refreshCoinPrices(currencyCode: "USD")
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
