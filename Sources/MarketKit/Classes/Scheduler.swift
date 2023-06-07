@@ -27,6 +27,8 @@ class Scheduler {
     private var syncInProgress = false
     private var expirationNotified = false
 
+    private let queue = DispatchQueue(label: "io.horizontalsystems.market_kit.scheduler", qos: .utility)
+
     init(provider: ISchedulerProvider, reachabilityManager: ReachabilityManager, bufferInterval: TimeInterval = 5, logger: Logger? = nil) {
         self.provider = provider
         self.reachabilityManager = reachabilityManager
@@ -47,6 +49,12 @@ class Scheduler {
     }
 
     private func sync() {
+        queue.async {
+            self._sync()
+        }
+    }
+
+    private func _sync() {
         // check if sync process is already running
         guard !syncInProgress else {
             logger?.debug("Scheduler \(provider.id): Sync already running")
@@ -68,24 +76,28 @@ class Scheduler {
     }
 
     private func onSyncSuccess() {
-        logger?.debug("Scheduler \(provider.id): Sync success")
+        queue.async {
+            self.logger?.debug("Scheduler \(self.provider.id): Sync success")
 
-        expirationNotified = false
+            self.expirationNotified = false
 
-        syncInProgress = false
-        autoSchedule(minDelay: Self.retryInterval)
+            self.syncInProgress = false
+            self.autoSchedule(minDelay: Self.retryInterval)
+        }
     }
 
     private func onSyncError(error: Error) {
-        logger?.error("Scheduler \(provider.id): Sync error: \(error)")
+        queue.async {
+            self.logger?.error("Scheduler \(self.provider.id): Sync error: \(error)")
 
-        notifyExpiration()
+            self._notifyExpiration()
 
-        syncInProgress = false
-        schedule(delay: Self.retryInterval)
+            self.syncInProgress = false
+            self._schedule(delay: Self.retryInterval)
+        }
     }
 
-    private func schedule(delay: TimeInterval) {
+    private func _schedule(delay: TimeInterval) {
         let intDelay = Int(delay.rounded(.up))
 
         logger?.debug("Scheduler \(provider.id): schedule delay: \(intDelay) sec")
@@ -102,7 +114,7 @@ class Scheduler {
         scheduledTask?.store(in: &tasks)
     }
 
-    private func notifyExpiration() {
+    private func _notifyExpiration() {
         guard !expirationNotified else {
             return
         }
@@ -127,7 +139,9 @@ class Scheduler {
             delay = max(0, provider.expirationInterval - bufferInterval - diff)
         }
 
-        schedule(delay: max(minDelay, delay))
+        queue.async {
+            self._schedule(delay: max(minDelay, delay))
+        }
     }
 
 }
@@ -137,7 +151,9 @@ extension Scheduler {
     func forceSchedule() {
         logger?.debug("Scheduler \(provider.id): Force schedule")
 
-        schedule(delay: 0)
+        queue.async {
+            self._schedule(delay: 0)
+        }
     }
 
 }
