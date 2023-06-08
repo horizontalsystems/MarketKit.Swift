@@ -410,9 +410,9 @@ extension HsProvider {
             "address": address
         ]
 
-        let response: AuthKeyResponse = try await networkManager.fetch(url: "\(baseUrl)/v1/auth/get-key", method: .get, parameters: parameters, headers: headers)
+        let response: SignMessageResponse = try await networkManager.fetch(url: "\(baseUrl)/v1/auth/get-sign-message", method: .get, parameters: parameters, headers: headers)
 
-        return response.key
+        return response.message
     }
 
     func authenticate(signature: String, address: String) async throws -> String {
@@ -469,11 +469,11 @@ extension HsProvider {
 
     }
 
-    struct AuthKeyResponse: ImmutableMappable {
-        let key: String
+    struct SignMessageResponse: ImmutableMappable {
+        let message: String
 
         init(map: Map) throws {
-            key = try map.value("key")
+            message = try map.value("message")
         }
     }
 
