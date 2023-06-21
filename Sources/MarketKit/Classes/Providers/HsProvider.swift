@@ -22,8 +22,8 @@ class HsProvider {
             return headers
         }
 
-        var proHeaders = headers
-        proHeaders?.add(.authorization(proAuthToken))
+        var proHeaders = headers ?? HTTPHeaders()
+        proHeaders.add(.authorization(proAuthToken))
         return proHeaders
     }
 
