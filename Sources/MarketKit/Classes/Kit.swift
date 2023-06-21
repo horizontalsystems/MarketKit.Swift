@@ -43,6 +43,10 @@ extension Kit {
         exchangeSyncer.sync()
     }
 
+    public func set(proAuthToken: String?) {
+        hsProvider.proAuthToken = proAuthToken
+    }
+
     // Coins
 
     public var fullCoinsUpdatedPublisher: AnyPublisher<Void, Never> {
@@ -252,8 +256,8 @@ extension Kit {
 
     // Pro Data
 
-    public func analytics(coinUid: String, currencyCode: String, authToken: String) async throws -> Analytics {
-        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode, authToken: authToken)
+    public func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
+        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode)
     }
 
     public func analyticsPreview(coinUid: String, addresses: [String]) async throws -> AnalyticsPreview {
