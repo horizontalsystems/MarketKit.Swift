@@ -216,20 +216,31 @@ extension Kit {
         try await hsProvider.coinPriceChartStart(coinUid: coinUid).timestamp
     }
 
-    public func chartPoints(coinUid: String, currencyCode: String, periodType: HsPeriodType) async throws -> [ChartPoint] {
+    public func chartPoints(coinUid: String, currencyCode: String, periodType: HsPeriodType) async throws -> (TimeInterval, [ChartPoint]) {
         let interval: HsPointTimePeriod
+
         var fromTimestamp: TimeInterval?
+        var visibleTimestamp: TimeInterval = 0      // start timestamp for visible part of chart. Will change only for .byCustomPoints
 
         switch periodType {
         case .byPeriod(let timePeriod):
-            fromTimestamp = Date().timeIntervalSince1970 - timePeriod.range
             interval = HsChartHelper.pointInterval(timePeriod)
+            visibleTimestamp = Date().timeIntervalSince1970 - timePeriod.range
+            fromTimestamp = visibleTimestamp
+        case .byCustomPoints(let timePeriod, let pointCount):       // custom points needed to build chart indicators
+            interval = HsChartHelper.pointInterval(timePeriod)
+            let customPointInterval = interval.interval * TimeInterval(pointCount)
+            visibleTimestamp = Date().timeIntervalSince1970 - timePeriod.range
+            fromTimestamp =  visibleTimestamp - customPointInterval
         case .byStartTime(let startTime):
             interval = HsChartHelper.intervalForAll(genesisTime: startTime)
+            visibleTimestamp = startTime
         }
 
-        return try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
+        let points = try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
                 .map { $0.chartPoint }
+
+        return (visibleTimestamp, points)
     }
 
     // Posts
