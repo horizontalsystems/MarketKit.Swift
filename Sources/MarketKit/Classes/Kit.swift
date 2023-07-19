@@ -216,6 +216,15 @@ extension Kit {
         try await hsProvider.coinPriceChartStart(coinUid: coinUid).timestamp
     }
 
+    public func chartPoints(coinUid: String, currencyCode: String, interval: HsPointTimePeriod, pointCount: Int) async throws -> [ChartPoint] {
+        let fromTimestamp = Date().timeIntervalSince1970 - interval.interval * TimeInterval(pointCount)
+
+        let points = try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
+                .map { $0.chartPoint }
+
+        return points
+    }
+
     public func chartPoints(coinUid: String, currencyCode: String, periodType: HsPeriodType) async throws -> (TimeInterval, [ChartPoint]) {
         let interval: HsPointTimePeriod
 
