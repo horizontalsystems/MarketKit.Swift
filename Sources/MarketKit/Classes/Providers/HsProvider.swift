@@ -427,6 +427,16 @@ extension HsProvider {
         return response.token
     }
 
+    // Personal Support
+
+    func requestPersonalSupport(telegramUsername: String) async throws {
+        let parameters: Parameters = [
+            "username": telegramUsername
+        ]
+
+        _ = try await networkManager.fetchJson(url: "\(baseUrl)/v1/support/start-chat", method: .post, parameters: parameters, headers: proHeaders)
+    }
+
 }
 
 extension HsProvider {

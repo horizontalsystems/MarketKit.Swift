@@ -394,6 +394,10 @@ extension Kit {
         try await hsProvider.authenticate(signature: signature, address: address)
     }
 
+    public func requestPersonalSupport(telegramUsername: String) async throws {
+        try await hsProvider.requestPersonalSupport(telegramUsername: telegramUsername)
+    }
+
     // Misc
 
     public func syncInfo() -> SyncInfo {
