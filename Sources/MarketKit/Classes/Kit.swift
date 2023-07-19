@@ -330,6 +330,10 @@ extension Kit {
         try await hsProvider.holdersRanks()
     }
 
+    public func feeRanks(currencyCode: String) async throws -> [RankMultiValue] {
+        try await hsProvider.feeRanks(currencyCode: currencyCode)
+    }
+
     public func revenueRanks(currencyCode: String) async throws -> [RankMultiValue] {
         try await hsProvider.revenueRanks(currencyCode: currencyCode)
     }

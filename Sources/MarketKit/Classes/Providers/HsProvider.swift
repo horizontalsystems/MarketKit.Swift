@@ -396,6 +396,10 @@ extension HsProvider {
         try await rankData(type: "holders")
     }
 
+    func feeRanks(currencyCode: String) async throws -> [RankMultiValue] {
+        try await rankData(type: "fee", currencyCode: currencyCode)
+    }
+
     func revenueRanks(currencyCode: String) async throws -> [RankMultiValue] {
         try await rankData(type: "revenue", currencyCode: currencyCode)
     }
