@@ -284,8 +284,8 @@ extension Kit {
         try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    public func analyticsPreview(coinUid: String, addresses: [String]) async throws -> AnalyticsPreview {
-        try await hsProvider.analyticsPreview(coinUid: coinUid, addresses: addresses)
+    public func analyticsPreview(coinUid: String) async throws -> AnalyticsPreview {
+        try await hsProvider.analyticsPreview(coinUid: coinUid)
     }
 
     public func cexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> AggregatedChartPoints {
@@ -385,6 +385,10 @@ extension Kit {
     }
 
     // Auth
+
+    public func subscriptions(addresses: [String]) async throws -> [ProSubscription] {
+        try await hsProvider.subscriptions(addresses: addresses)
+    }
 
     public func authKey(address: String) async throws -> String {
         try await hsProvider.authKey(address: address)
