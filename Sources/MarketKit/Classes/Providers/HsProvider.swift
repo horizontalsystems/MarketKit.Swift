@@ -346,14 +346,8 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)", method: .get, parameters: parameters, headers: proHeaders)
     }
 
-    func analyticsPreview(coinUid: String, addresses: [String]) async throws -> AnalyticsPreview {
-        var parameters = Parameters()
-
-        if !addresses.isEmpty {
-            parameters["address"] = addresses.joined(separator: ",")
-        }
-
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, parameters: parameters, headers: headers)
+    func analyticsPreview(coinUid: String) async throws -> AnalyticsPreview {
+        try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)/preview", method: .get, headers: headers)
     }
 
     func dexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [VolumePoint] {
@@ -405,6 +399,14 @@ extension HsProvider {
     }
 
     // Authentication
+
+    func subscriptions(addresses: [String]) async throws -> [ProSubscription] {
+        let parameters: Parameters = [
+            "address": addresses.joined(separator: ",")
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/subscriptions", method: .get, parameters: parameters, headers: headers)
+    }
 
     func authKey(address: String) async throws -> String {
         let parameters: Parameters = [
