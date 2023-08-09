@@ -62,6 +62,26 @@ class CoinStorage {
             }
         }
 
+        migrator.registerMigration("Transform token types for bitcoin, litecoin and bitcoin cash") { db in
+            for blockchainUid in ["bitcoin", "litecoin"] {
+                if let record = try TokenRecord.filter(TokenRecord.Columns.blockchainUid == blockchainUid && TokenRecord.Columns.type == "native").fetchOne(db) {
+                    try TokenRecord.filter(TokenRecord.Columns.blockchainUid == blockchainUid && TokenRecord.Columns.type == "native").deleteAll(db)
+                    for derivation in ["bip44", "bip49", "bip84", "bip86"] {
+                        let newRecord = TokenRecord(coinUid: record.coinUid, blockchainUid: record.blockchainUid, type: "derived:\(derivation)", decimals: record.decimals)
+                        try newRecord.insert(db)
+                    }
+                }
+            }
+
+            if let record = try TokenRecord.filter(TokenRecord.Columns.blockchainUid == "bitcoin-cash" && TokenRecord.Columns.type == "native").fetchOne(db) {
+                try TokenRecord.filter(TokenRecord.Columns.blockchainUid == "bitcoin-cash" && TokenRecord.Columns.type == "native").deleteAll(db)
+                for type in ["type0", "type145"] {
+                    let newRecord = TokenRecord(coinUid: record.coinUid, blockchainUid: record.blockchainUid, type: "address_type:\(type)", decimals: record.decimals)
+                    try newRecord.insert(db)
+                }
+            }
+        }
+
         return migrator
     }
 
