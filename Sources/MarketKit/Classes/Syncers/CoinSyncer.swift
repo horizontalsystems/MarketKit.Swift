@@ -29,13 +29,44 @@ class CoinSyncer {
         try? syncerStateStorage.save(value: String(tokens), key: keyTokensLastSyncTimestamp)
     }
 
-    func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
+    private func handleFetched(coins: [Coin], blockchainRecords: [BlockchainRecord], tokenRecords: [TokenRecord]) {
         do {
-            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: transform(tokenRecords: tokenRecords))
             fullCoinsUpdatedSubject.send()
         } catch {
             print("Fetched data error: \(error)")
         }
+    }
+
+    private func transform(tokenRecords: [TokenRecord], blockchainUid: String, types: [String]) -> [TokenRecord] {
+        var tokenRecords = tokenRecords
+
+        if let index = tokenRecords.firstIndex(where: { $0.blockchainUid == blockchainUid }) {
+            let record = tokenRecords[index]
+            tokenRecords.remove(at: index)
+
+            tokenRecords.append(
+                    types.map {
+                        TokenRecord(
+                                coinUid: record.coinUid,
+                                blockchainUid: record.blockchainUid,
+                                type: $0,
+                                decimals: record.decimals
+                        )
+                    }
+            )
+        }
+
+        return tokenRecords
+    }
+
+    private func transform(tokenRecords: [TokenRecord]) -> [TokenRecord] {
+        let derivationTypes = TokenType.Derivation.allCases.map { "derived:\($0.rawValue)" }
+        let addressTypes = TokenType.AddressType.allCases.map { "address_type:\($0.rawValue)" }
+
+        var tokenRecords = transform(tokenRecords: tokenRecords, blockchainUid: BlockchainType.bitcoin.uid, types: derivationTypes)
+        tokenRecords = transform(tokenRecords: tokenRecords, blockchainUid: BlockchainType.litecoin.uid, types: derivationTypes)
+        return transform(tokenRecords: tokenRecords, blockchainUid: BlockchainType.bitcoinCash.uid, types: addressTypes)
     }
 
 }
@@ -72,7 +103,7 @@ extension CoinSyncer {
                 return
             }
 
-            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: tokenRecords)
+            try storage.update(coins: coins, blockchainRecords: blockchainRecords, tokenRecords: transform(tokenRecords: tokenRecords))
 
             try syncerStateStorage.save(value: "\(currentVersion)", key: keyInitialSyncVersion)
             try syncerStateStorage.delete(key: keyCoinsLastSyncTimestamp)
