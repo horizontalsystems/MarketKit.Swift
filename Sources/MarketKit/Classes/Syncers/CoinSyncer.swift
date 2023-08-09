@@ -45,7 +45,7 @@ class CoinSyncer {
             let record = tokenRecords[index]
             tokenRecords.remove(at: index)
 
-            tokenRecords.append(
+            tokenRecords.append(contentsOf:
                     types.map {
                         TokenRecord(
                                 coinUid: record.coinUid,
