@@ -41,7 +41,7 @@ class CoinSyncer {
     private func transform(tokenRecords: [TokenRecord], blockchainUid: String, types: [String]) -> [TokenRecord] {
         var tokenRecords = tokenRecords
 
-        if let index = tokenRecords.firstIndex(where: { $0.blockchainUid == blockchainUid }) {
+        if let index = tokenRecords.firstIndex(where: { $0.blockchainUid == blockchainUid && $0.type == "native" }) {
             let record = tokenRecords[index]
             tokenRecords.remove(at: index)
 
