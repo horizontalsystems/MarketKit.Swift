@@ -6,15 +6,27 @@ import HsToolKit
 class HsProvider {
     private let baseUrl: String
     private let networkManager: NetworkManager
-    private let headers: HTTPHeaders?
+    private let headers: HTTPHeaders
 
     var proAuthToken: String?
 
-    init(baseUrl: String, networkManager: NetworkManager, apiKey: String?) {
+    init(baseUrl: String, networkManager: NetworkManager, appVersion: String, appId: String?, apiKey: String?) {
         self.baseUrl = baseUrl
         self.networkManager = networkManager
 
-        headers = apiKey.flatMap { HTTPHeaders([HTTPHeader(name: "apikey", value: $0)]) }
+        var headers = HTTPHeaders()
+        headers.add(name: "app_platform", value: "ios")
+        headers.add(name: "app_version", value: appVersion)
+
+        if let appId {
+            headers.add(name: "app_id", value: appId)
+        }
+
+        if let apiKey {
+            headers.add(name: "apikey", value: apiKey)
+        }
+
+        self.headers = headers
     }
 
     private var proHeaders: HTTPHeaders? {
@@ -22,7 +34,7 @@ class HsProvider {
             return headers
         }
 
-        var proHeaders = headers ?? HTTPHeaders()
+        var proHeaders = headers
         proHeaders.add(.authorization(proAuthToken))
         return proHeaders
     }
@@ -191,9 +203,10 @@ extension HsProvider {
 
     // Coin Prices
 
-    func coinPrices(coinUids: [String], currencyCode: String) async throws -> [CoinPrice] {
+    func coinPrices(coinUids: [String], walletCoinUids: [String], currencyCode: String) async throws -> [CoinPrice] {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
+            "enabled_uids": walletCoinUids.joined(separator: ","),
             "currency": currencyCode.lowercased(),
             "fields": "price,price_change_24h,last_updated"
         ]
