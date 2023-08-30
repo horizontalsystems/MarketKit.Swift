@@ -192,12 +192,12 @@ extension Kit {
         coinPriceManager.coinPriceMap(coinUids: coinUids, currencyCode: currencyCode)
     }
 
-    public func coinPricePublisher(coinUid: String, currencyCode: String) -> AnyPublisher<CoinPrice, Never> {
-        coinPriceSyncManager.coinPricePublisher(coinUid: coinUid, currencyCode: currencyCode)
+    public func coinPricePublisher(tag: String, coinUid: String, currencyCode: String) -> AnyPublisher<CoinPrice, Never> {
+        coinPriceSyncManager.coinPricePublisher(tag: tag, coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    public func coinPriceMapPublisher(coinUids: [String], currencyCode: String) -> AnyPublisher<[String: CoinPrice], Never> {
-        coinPriceSyncManager.coinPriceMapPublisher(coinUids: coinUids, currencyCode: currencyCode)
+    public func coinPriceMapPublisher(tag: String, coinUids: [String], currencyCode: String) -> AnyPublisher<[String: CoinPrice], Never> {
+        coinPriceSyncManager.coinPriceMapPublisher(tag: tag, coinUids: coinUids, currencyCode: currencyCode)
     }
 
     // Coin Historical Prices
