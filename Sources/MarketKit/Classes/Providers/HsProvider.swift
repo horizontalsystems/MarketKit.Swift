@@ -204,12 +204,15 @@ extension HsProvider {
     // Coin Prices
 
     func coinPrices(coinUids: [String], walletCoinUids: [String], currencyCode: String) async throws -> [CoinPrice] {
-        let parameters: Parameters = [
+        var parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "enabled_uids": walletCoinUids.joined(separator: ","),
             "currency": currencyCode.lowercased(),
             "fields": "price,price_change_24h,last_updated"
         ]
+
+        if !walletCoinUids.isEmpty {
+            parameters["enabled_uids"] = walletCoinUids.joined(separator: ",")
+        }
 
         let responses: [CoinPriceResponse] = try await networkManager.fetch(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
         return responses.map { $0.coinPrice(currencyCode: currencyCode) }
