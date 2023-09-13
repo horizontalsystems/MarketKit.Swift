@@ -106,7 +106,7 @@ class MiscController: UIViewController {
     }
 
     @objc private func onTapCoinPrices() {
-        Singleton.instance.kit.coinPriceMapPublisher(coinUids: ["bitcoin", "ethereum"], currencyCode: "USD")
+        Singleton.instance.kit.coinPriceMapPublisher(tag: "iOS-example", coinUids: ["bitcoin", "ethereum"], currencyCode: "USD")
                 .receive(on: DispatchQueue.main)
                 .sink { coinPriceMap in
                     print("COIN PRICE MAP FETCHED: \(coinPriceMap)")
