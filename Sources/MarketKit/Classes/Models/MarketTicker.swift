@@ -8,4 +8,5 @@ public struct MarketTicker {
     public let rate: Decimal
     public let volume: Decimal
     public let tradeUrl: String?
+    public let verified: Bool
 }

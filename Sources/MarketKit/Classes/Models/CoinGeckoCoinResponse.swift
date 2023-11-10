@@ -31,8 +31,8 @@ class CoinGeckoCoinResponse: ImmutableMappable {
         return smartContractRegex.firstMatch(in: symbolUnwrapped, options: [], range: NSRange(location: 0, length: symbolUnwrapped.count)) != nil
     }
 
-    func marketTickers(imageUrls: [String: String], coins: [Coin]) -> [MarketTicker] {
-        let contractAddresses = platforms.compactMap { (platformName, contractAddress) -> String? in
+    func marketTickers(verifiedExchangeUids: [String], imageUrls: [String: String], coins: [Coin]) -> [MarketTicker] {
+        let contractAddresses = platforms.compactMap { platformName, contractAddress -> String? in
             smartContractPlatforms.contains(platformName) ? contractAddress.lowercased() : nil
         }
 
@@ -82,13 +82,14 @@ class CoinGeckoCoinResponse: ImmutableMappable {
 
             let imageUrl = imageUrls[raw.marketId]
             return MarketTicker(
-                    base: base,
-                    target: target,
-                    marketName: raw.marketName,
-                    marketImageUrl: imageUrl,
-                    rate: lastRate,
-                    volume: volume,
-                    tradeUrl: raw.tradeUrl
+                base: base,
+                target: target,
+                marketName: raw.marketName,
+                marketImageUrl: imageUrl,
+                rate: lastRate,
+                volume: volume,
+                tradeUrl: raw.tradeUrl,
+                verified: verifiedExchangeUids.contains(raw.marketId)
             )
         }
     }
@@ -96,11 +97,9 @@ class CoinGeckoCoinResponse: ImmutableMappable {
     private func coinCode(coins: [Coin], coinId: String) -> String? {
         coins.first { $0.uid == coinId }?.code
     }
-
 }
 
 extension CoinGeckoCoinResponse {
-
     struct MarketTickerRaw: ImmutableMappable {
         let base: String
         let target: String
@@ -124,5 +123,4 @@ extension CoinGeckoCoinResponse {
             tradeUrl = try? map.value("trade_url")
         }
     }
-
 }
