@@ -42,11 +42,9 @@ class CoinManager {
             return []
         }
     }
-
 }
 
 extension CoinManager {
-
     // Coins
 
     func coinsCount() throws -> Int {
@@ -59,7 +57,7 @@ extension CoinManager {
 
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try storage.coinTokenRecords(filter: filter, limit: limit)
-                .map { $0.fullCoin }
+            .map { $0.fullCoin }
     }
 
     func fullCoin(uid: String) throws -> FullCoin? {
@@ -68,7 +66,7 @@ extension CoinManager {
 
     func fullCoins(coinUids: [String]) throws -> [FullCoin] {
         try storage.coinTokenRecords(coinUids: coinUids)
-                .map { $0.fullCoin }
+            .map { $0.fullCoin }
     }
 
     func allCoins() throws -> [Coin] {
@@ -77,37 +75,37 @@ extension CoinManager {
 
     func token(query: TokenQuery) throws -> Token? {
         try storage.tokenInfoRecord(query: query)
-                .map { $0.token }
+            .map { $0.token }
     }
 
     func tokens(queries: [TokenQuery]) throws -> [Token] {
         try storage.tokenInfoRecords(queries: queries)
-                .map { $0.token }
+            .map { $0.token }
     }
 
     func tokens(reference: String) throws -> [Token] {
         try storage.tokenInfoRecords(reference: reference)
-                .map { $0.token }
+            .map { $0.token }
     }
 
     func tokens(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [Token] {
         try storage.tokenInfoRecords(blockchainType: blockchainType, filter: filter, limit: limit)
-                .map { $0.token }
+            .map { $0.token }
     }
 
     func allBlockchains() throws -> [Blockchain] {
         try storage.allBlockchainRecords()
-                .map { $0.blockchain }
+            .map { $0.blockchain }
     }
 
     func blockchain(uid: String) throws -> Blockchain? {
         try storage.blockchain(uid: uid)
-                .map { $0.blockchain }
+            .map { $0.blockchain }
     }
 
     func blockchains(uids: [String]) throws -> [Blockchain] {
         try storage.blockchains(uids: uids)
-                .map { $0.blockchain }
+            .map { $0.blockchain }
     }
 
     // Market Info
@@ -142,17 +140,17 @@ extension CoinManager {
         return response.marketInfoOverview(fullCoin: fullCoin)
     }
 
-    func marketTicker(coinUid: String) async throws -> [MarketTicker] {
+    func marketTickers(coinUid: String) async throws -> [MarketTicker] {
         guard let coin = try? storage.coin(uid: coinUid), let coinGeckoId = coin.coinGeckoId else {
             return []
         }
 
         let response = try await coinGeckoProvider.marketTickers(coinId: coinGeckoId)
 
-        let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap({ $0 }).compactMap { $0 }
+        let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap { $0 }.compactMap { $0 }
         let coins = (try? storage.coins(uids: coinUids)) ?? []
 
-        return response.marketTickers(imageUrls: exchangeManager.imageUrlsMap(ids: response.exchangeIds), coins: coins)
+        return response.marketTickers(verifiedExchangeUids: exchangeManager.verifiedExchangeUids(), imageUrls: exchangeManager.imageUrlsMap(ids: response.exchangeIds), coins: coins)
     }
 
     func defiCoins(currencyCode: String) async throws -> [DefiCoin] {
@@ -160,7 +158,7 @@ extension CoinManager {
         return defiCoins(rawDefiCoins: rawDefiCoins)
     }
 
-    //Top Platforms
+    // Top Platforms
 
     func topPlatforms(currencyCode: String) async throws -> [TopPlatform] {
         let responses = try await hsProvider.topPlatforms(currencyCode: currencyCode)
@@ -177,13 +175,12 @@ extension CoinManager {
     func topMovers(currencyCode: String) async throws -> TopMovers {
         let raw = try await hsProvider.topMoversRaw(currencyCode: currencyCode)
         return TopMovers(
-                gainers100: marketInfos(rawMarketInfos: raw.gainers100),
-                gainers200: marketInfos(rawMarketInfos: raw.gainers200),
-                gainers300: marketInfos(rawMarketInfos: raw.gainers300),
-                losers100: marketInfos(rawMarketInfos: raw.losers100),
-                losers200: marketInfos(rawMarketInfos: raw.losers200),
-                losers300: marketInfos(rawMarketInfos: raw.losers300)
+            gainers100: marketInfos(rawMarketInfos: raw.gainers100),
+            gainers200: marketInfos(rawMarketInfos: raw.gainers200),
+            gainers300: marketInfos(rawMarketInfos: raw.gainers300),
+            losers100: marketInfos(rawMarketInfos: raw.losers100),
+            losers200: marketInfos(rawMarketInfos: raw.losers200),
+            losers300: marketInfos(rawMarketInfos: raw.losers300)
         )
     }
-
 }

@@ -20,13 +20,17 @@ class ExchangeStorage {
             }
         }
 
+        migrator.registerMigration("Create Verified Exchange") { db in
+            try db.create(table: VerifiedExchange.databaseTableName) { t in
+                t.column(VerifiedExchange.Columns.uid.name, .text).notNull().primaryKey(onConflict: .replace)
+            }
+        }
+
         return migrator
     }
-
 }
 
 extension ExchangeStorage {
-
     func exchanges(ids: [String]) throws -> [Exchange] {
         try dbPool.read { db in
             try Exchange.filter(ids.contains(Exchange.Columns.id)).fetchAll(db)
@@ -43,4 +47,19 @@ extension ExchangeStorage {
         }
     }
 
+    func verifiedExchanges() throws -> [VerifiedExchange] {
+        try dbPool.read { db in
+            try VerifiedExchange.fetchAll(db)
+        }
+    }
+
+    func update(verifiedExchanges: [VerifiedExchange]) throws {
+        _ = try dbPool.write { db in
+            try VerifiedExchange.deleteAll(db)
+
+            for verifiedExchange in verifiedExchanges {
+                try verifiedExchange.insert(db)
+            }
+        }
+    }
 }

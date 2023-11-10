@@ -4,11 +4,9 @@ class ExchangeManager {
     init(storage: ExchangeStorage) {
         self.storage = storage
     }
-
 }
 
 extension ExchangeManager {
-
     func imageUrlsMap(ids: [String]) -> [String: String] {
         do {
             let exchanges = try storage.exchanges(ids: ids)
@@ -24,6 +22,15 @@ extension ExchangeManager {
         }
     }
 
+    func verifiedExchangeUids() -> [String] {
+        do {
+            let verifiedExchanges = try storage.verifiedExchanges()
+            return verifiedExchanges.map { $0.uid }
+        } catch {
+            return []
+        }
+    }
+
     func handleFetched(exchanges: [Exchange]) {
         do {
             try storage.update(exchanges: exchanges)
@@ -32,4 +39,11 @@ extension ExchangeManager {
         }
     }
 
+    func handleFetched(verifiedExchanges: [VerifiedExchange]) {
+        do {
+            try storage.update(verifiedExchanges: verifiedExchanges)
+        } catch {
+            // todo
+        }
+    }
 }
