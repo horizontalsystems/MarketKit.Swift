@@ -25,11 +25,9 @@ class CoinPriceSchedulerProvider {
     private func handle(updatedCoinPrices: [CoinPrice]) {
         manager.handleUpdated(coinPrices: updatedCoinPrices, currencyCode: currencyCode)
     }
-
 }
 
 extension CoinPriceSchedulerProvider: ISchedulerProvider {
-
     var id: String {
         "CoinPriceProvider"
     }
@@ -54,5 +52,4 @@ extension CoinPriceSchedulerProvider: ISchedulerProvider {
     func notifyExpired() {
         manager.notifyExpired(coinUids: allCoinUids, currencyCode: currencyCode)
     }
-
 }

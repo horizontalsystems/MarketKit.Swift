@@ -8,11 +8,9 @@ class CoinHistoricalPriceManager {
         self.storage = storage
         self.hsProvider = hsProvider
     }
-
 }
 
 extension CoinHistoricalPriceManager {
-
     func cachedCoinHistoricalPriceValue(coinUid: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
         try? storage.coinHistoricalPrice(coinUid: coinUid, currencyCode: currencyCode, timestamp: timestamp)?.value
     }
@@ -28,13 +26,10 @@ extension CoinHistoricalPriceManager {
 
         return response.price
     }
-
 }
 
 extension CoinHistoricalPriceManager {
-
     enum ResponseError: Error {
         case returnedTimestampIsTooInaccurate
     }
-
 }

@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class CoinCategoryController: UIViewController {
     private let tableView = UITableView()
@@ -11,7 +11,8 @@ class CoinCategoryController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -34,31 +35,26 @@ class CoinCategoryController: UIViewController {
             self?.tableView.reloadData()
         }
     }
-
 }
 
 extension CoinCategoryController: UITableViewDataSource {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         coinCategories.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         tableView.dequeueReusableCell(withIdentifier: String(describing: CoinCategoryCell.self), for: indexPath)
     }
-
 }
 
 extension CoinCategoryController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         60
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? CoinCategoryCell {
             cell.bind(coinCategory: coinCategories[indexPath.row])
         }
     }
-
 }

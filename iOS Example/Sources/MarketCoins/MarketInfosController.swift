@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class MarketInfosController: UIViewController {
     private let tableView = UITableView()
@@ -11,7 +11,8 @@ class MarketInfosController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -35,35 +36,30 @@ class MarketInfosController: UIViewController {
 
     private func syncCoins() {
         Task { [weak self] in
-            self?.marketInfos = try await Singleton.instance.kit.marketInfos(top: 250, currencyCode: "USD")
+            self?.marketInfos = try await Singleton.instance.kit.marketInfos(top: 250, currencyCode: "USD", apiTag: "demo-app")
             self?.tableView.reloadData()
         }
     }
-
 }
 
 extension MarketInfosController: UITableViewDataSource {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         marketInfos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         tableView.dequeueReusableCell(withIdentifier: String(describing: MarketInfoCell.self), for: indexPath)
     }
-
 }
 
 extension MarketInfosController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         60
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? MarketInfoCell {
             cell.bind(marketInfo: marketInfos[indexPath.row])
         }
     }
-
 }
