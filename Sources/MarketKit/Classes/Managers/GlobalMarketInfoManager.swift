@@ -10,11 +10,9 @@ class GlobalMarketInfoManager {
         self.provider = provider
         self.storage = storage
     }
-
 }
 
 extension GlobalMarketInfoManager {
-
     func globalMarketPoints(currencyCode: String, timePeriod: HsTimePeriod) async throws -> [GlobalMarketPoint] {
         let currentTimestamp = Date().timeIntervalSince1970
 
@@ -29,5 +27,4 @@ extension GlobalMarketInfoManager {
 
         return points
     }
-
 }

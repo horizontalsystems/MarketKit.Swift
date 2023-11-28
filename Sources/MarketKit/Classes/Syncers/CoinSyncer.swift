@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 import HsExtensions
 
 class CoinSyncer {
@@ -46,14 +46,14 @@ class CoinSyncer {
             tokenRecords.remove(at: index)
 
             tokenRecords.append(contentsOf:
-                    types.map {
-                        TokenRecord(
-                                coinUid: record.coinUid,
-                                blockchainUid: record.blockchainUid,
-                                type: $0,
-                                decimals: record.decimals
-                        )
-                    }
+                types.map {
+                    TokenRecord(
+                        coinUid: record.coinUid,
+                        blockchainUid: record.blockchainUid,
+                        type: $0,
+                        decimals: record.decimals
+                    )
+                }
             )
         }
 
@@ -68,11 +68,9 @@ class CoinSyncer {
         tokenRecords = transform(tokenRecords: tokenRecords, blockchainUid: BlockchainType.litecoin.uid, types: derivationTypes)
         return transform(tokenRecords: tokenRecords, blockchainUid: BlockchainType.bitcoinCash.uid, types: addressTypes)
     }
-
 }
 
 extension CoinSyncer {
-
     var fullCoinsUpdatedPublisher: AnyPublisher<Void, Never> {
         fullCoinsUpdatedSubject.eraseToAnyPublisher()
     }
@@ -93,13 +91,13 @@ extension CoinSyncer {
                 return
             }
 
-            guard let coins = [Coin](JSONString: try String(contentsOf: coinsPath, encoding: .utf8)) else {
+            guard let coins = try [Coin](JSONString: String(contentsOf: coinsPath, encoding: .utf8)) else {
                 return
             }
-            guard let blockchainRecords = [BlockchainRecord](JSONString: try String(contentsOf: blockchainsPath, encoding: .utf8)) else {
+            guard let blockchainRecords = try [BlockchainRecord](JSONString: String(contentsOf: blockchainsPath, encoding: .utf8)) else {
                 return
             }
-            guard let tokenRecords = [TokenRecord](JSONString: try String(contentsOf: tokensPath, encoding: .utf8)) else {
+            guard let tokenRecords = try [TokenRecord](JSONString: String(contentsOf: tokensPath, encoding: .utf8)) else {
                 return
             }
 
@@ -164,10 +162,9 @@ extension CoinSyncer {
 
     func syncInfo() -> Kit.SyncInfo {
         Kit.SyncInfo(
-                coinsTimestamp: try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp),
-                blockchainsTimestamp: try? syncerStateStorage.value(key: keyBlockchainsLastSyncTimestamp),
-                tokensTimestamp: try? syncerStateStorage.value(key: keyTokensLastSyncTimestamp)
+            coinsTimestamp: try? syncerStateStorage.value(key: keyCoinsLastSyncTimestamp),
+            blockchainsTimestamp: try? syncerStateStorage.value(key: keyBlockchainsLastSyncTimestamp),
+            tokensTimestamp: try? syncerStateStorage.value(key: keyTokensLastSyncTimestamp)
         )
     }
-
 }

@@ -27,7 +27,7 @@ extension Kit {
         let hsNftProvider = HsNftProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, apiKey: hsProviderApiKey)
         let defiYieldProvider = DefiYieldProvider(networkManager: networkManager, apiKey: defiYieldApiKey)
 
-        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider, coinGeckoProvider: coinGeckoProvider, exchangeManager: exchangeManager)
+        let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
         let nftManager = NftManager(coinManager: coinManager, provider: hsNftProvider)
         let marketOverviewManager = MarketOverviewManager(nftManager: nftManager, hsProvider: hsProvider)
 
@@ -63,7 +63,9 @@ extension Kit {
             postManager: postManager,
             globalMarketInfoManager: globalMarketInfoManager,
             hsProvider: hsProvider,
-            defiYieldProvider: defiYieldProvider
+            defiYieldProvider: defiYieldProvider,
+            coinGeckoProvider: coinGeckoProvider,
+            exchangeManager: exchangeManager
         )
     }
 

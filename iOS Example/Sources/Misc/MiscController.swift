@@ -1,7 +1,7 @@
 import Combine
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class MiscController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
@@ -10,7 +10,8 @@ class MiscController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -107,11 +108,11 @@ class MiscController: UIViewController {
 
     @objc private func onTapCoinPrices() {
         Singleton.instance.kit.coinPriceMapPublisher(tag: "iOS-example", coinUids: ["bitcoin", "ethereum"], currencyCode: "USD")
-                .receive(on: DispatchQueue.main)
-                .sink { coinPriceMap in
-                    print("COIN PRICE MAP FETCHED: \(coinPriceMap)")
-                }
-                .store(in: &cancellables)
+            .receive(on: DispatchQueue.main)
+            .sink { coinPriceMap in
+                print("COIN PRICE MAP FETCHED: \(coinPriceMap)")
+            }
+            .store(in: &cancellables)
     }
 
     @objc private func onTapCoinHistoricalPrice() {
@@ -172,5 +173,4 @@ class MiscController: UIViewController {
 
         present(alert, animated: true)
     }
-
 }
