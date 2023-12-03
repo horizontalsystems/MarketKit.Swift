@@ -133,6 +133,21 @@ extension CoinStorage {
         }
     }
 
+    func topCoinTokenRecords(limit: Int) throws -> [CoinTokensRecord] {
+        try dbPool.read { db in
+            let request = Coin
+                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .order(literal: SQL(sql: """
+                    CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
+                    \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) ASC
+                    """
+                ))
+                .limit(limit)
+
+            return try CoinTokensRecord.fetchAll(db, request)
+        }
+    }
+
     func coinTokenRecords(filter: String, limit: Int) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
             let request = Coin
