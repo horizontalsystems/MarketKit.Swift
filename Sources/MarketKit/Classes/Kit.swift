@@ -55,6 +55,10 @@ public extension Kit {
         coinSyncer.fullCoinsUpdatedPublisher
     }
 
+    func topFullCoins(limit: Int = 20) throws -> [FullCoin] {
+        try coinManager.topFullCoins(limit: limit)
+    }
+
     func fullCoins(filter: String, limit: Int = 20) throws -> [FullCoin] {
         try coinManager.fullCoins(filter: filter, limit: limit)
     }

@@ -23,6 +23,11 @@ extension CoinManager {
         try storage.coins(uids: uids)
     }
 
+    func topFullCoins(limit: Int) throws -> [FullCoin] {
+        try storage.topCoinTokenRecords(limit: limit)
+            .map { $0.fullCoin }
+    }
+
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try storage.coinTokenRecords(filter: filter, limit: limit)
             .map(\.fullCoin)
