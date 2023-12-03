@@ -9,7 +9,7 @@ public class CoinTreasury: ImmutableMappable {
     public let amountInCurrency: Decimal
     public let country: String
 
-    required public init(map: Map) throws {
+    public required init(map: Map) throws {
         type = try map.value("type")
         fundUid = try map.value("fund_uid")
         fund = try map.value("fund")
@@ -23,5 +23,4 @@ public class CoinTreasury: ImmutableMappable {
         case `private`
         case etf
     }
-
 }

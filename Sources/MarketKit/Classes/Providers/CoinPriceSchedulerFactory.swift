@@ -16,14 +16,13 @@ class CoinPriceSchedulerFactory {
 
     func scheduler(currencyCode: String, coinUidDataSource: ICoinPriceCoinUidDataSource) -> Scheduler {
         let schedulerProvider = CoinPriceSchedulerProvider(
-                manager: manager,
-                provider: provider,
-                currencyCode: currencyCode
+            manager: manager,
+            provider: provider,
+            currencyCode: currencyCode
         )
 
         schedulerProvider.dataSource = coinUidDataSource
 
         return Scheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }
-
 }

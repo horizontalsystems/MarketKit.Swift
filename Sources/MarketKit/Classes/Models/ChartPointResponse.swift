@@ -11,5 +11,4 @@ public class ChartPointResponse {
         self.value = value
         self.volume = volume
     }
-
 }

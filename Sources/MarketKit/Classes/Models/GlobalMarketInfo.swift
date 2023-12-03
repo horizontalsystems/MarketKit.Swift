@@ -40,5 +40,4 @@ public class GlobalMarketInfo: Record {
         container[Columns.points] = points.toJSONString()
         container[Columns.timestamp] = timestamp
     }
-
 }

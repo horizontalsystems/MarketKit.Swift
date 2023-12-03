@@ -30,19 +30,17 @@ struct TopPlatformResponse: ImmutableMappable {
         changes[.month1] = stats.thirtyDaysChange
 
         return TopPlatform(
-                blockchain: Blockchain(type: BlockchainType(uid: uid), name: name, explorerUrl: nil),
-                rank: rank,
-                protocolsCount: protocolsCount,
-                marketCap: marketCap,
-                ranks: ranks,
-                changes: changes
+            blockchain: Blockchain(type: BlockchainType(uid: uid), name: name, explorerUrl: nil),
+            rank: rank,
+            protocolsCount: protocolsCount,
+            marketCap: marketCap,
+            ranks: ranks,
+            changes: changes
         )
     }
-
 }
 
 extension TopPlatformResponse {
-
     struct StatsResponse: ImmutableMappable {
         let oneDayRank: Int?
         let sevenDaysRank: Int?
@@ -59,8 +57,6 @@ extension TopPlatformResponse {
             oneDayChange = try? map.value("change_1d", using: Transform.stringToDecimalTransform)
             sevenDaysChange = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
             thirtyDaysChange = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
-
         }
     }
-
 }

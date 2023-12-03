@@ -237,7 +237,7 @@ public extension Kit {
         let fromTimestamp = Date().timeIntervalSince1970 - interval.interval * TimeInterval(pointCount)
 
         let points = try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
-            .map { $0.chartPoint }
+            .map(\.chartPoint)
 
         return points
     }
@@ -264,7 +264,7 @@ public extension Kit {
         }
 
         let points = try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
-            .map { $0.chartPoint }
+            .map(\.chartPoint)
 
         return (visibleTimestamp, points)
     }
@@ -285,7 +285,7 @@ public extension Kit {
 
     func topPlatforms(currencyCode: String) async throws -> [TopPlatform] {
         let responses = try await hsProvider.topPlatforms(currencyCode: currencyCode)
-        return responses.map { $0.topPlatform }
+        return responses.map(\.topPlatform)
     }
 
     func topPlatformMarketInfos(blockchain: String, currencyCode: String, apiTag: String) async throws -> [MarketInfo] {
@@ -315,13 +315,11 @@ public extension Kit {
             fromTimestamp: Date().timeIntervalSince1970 - timePeriod.range
         )
 
-        let points = responses.compactMap {
-            $0.volumeChartPoint
-        }
+        let points = responses.compactMap(\.volumeChartPoint)
 
         return AggregatedChartPoints(
             points: points,
-            aggregatedValue: points.map { $0.value }.reduce(0, +)
+            aggregatedValue: points.map(\.value).reduce(0, +)
         )
     }
 
@@ -360,26 +358,26 @@ public extension Kit {
     func dexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> AggregatedChartPoints {
         let points = try await hsProvider.dexVolumes(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
         return AggregatedChartPoints(
-            points: points.map { $0.chartPoint },
-            aggregatedValue: points.map { $0.volume }.reduce(0, +)
+            points: points.map(\.chartPoint),
+            aggregatedValue: points.map(\.volume).reduce(0, +)
         )
     }
 
     func dexLiquidity(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [ChartPoint] {
         try await hsProvider.dexLiquidity(coinUid: coinUid, currencyCode: currencyCode, timePeriod: timePeriod)
-            .map { $0.chartPoint }
+            .map(\.chartPoint)
     }
 
     func activeAddresses(coinUid: String, timePeriod: HsTimePeriod) async throws -> [ChartPoint] {
         try await hsProvider.activeAddresses(coinUid: coinUid, timePeriod: timePeriod)
-            .map { $0.chartPoint }
+            .map(\.chartPoint)
     }
 
     func transactions(coinUid: String, timePeriod: HsTimePeriod) async throws -> AggregatedChartPoints {
         let points = try await hsProvider.transactions(coinUid: coinUid, timePeriod: timePeriod)
         return AggregatedChartPoints(
-            points: points.map { $0.chartPoint },
-            aggregatedValue: points.map { $0.count }.reduce(0, +)
+            points: points.map(\.chartPoint),
+            aggregatedValue: points.map(\.count).reduce(0, +)
         )
     }
 

@@ -18,5 +18,4 @@ public enum HsPointTimePeriod: String, CaseIterable {
         case .week1: return .days(7)
         }
     }
-
 }

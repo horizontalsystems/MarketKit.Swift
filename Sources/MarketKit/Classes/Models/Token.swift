@@ -22,35 +22,28 @@ public struct Token {
     public var fullCoin: FullCoin {
         FullCoin(coin: coin, tokens: [self])
     }
-
 }
 
 extension Token: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         hasher.combine(coin)
         hasher.combine(blockchain)
         hasher.combine(type)
         hasher.combine(decimals)
     }
-
 }
 
 extension Token: Equatable {
-
-    public static func ==(lhs: Token, rhs: Token) -> Bool {
+    public static func == (lhs: Token, rhs: Token) -> Bool {
         lhs.coin == rhs.coin
-                && lhs.blockchain == rhs.blockchain
-                && lhs.type == rhs.type
-                && lhs.decimals == rhs.decimals
+            && lhs.blockchain == rhs.blockchain
+            && lhs.type == rhs.type
+            && lhs.decimals == rhs.decimals
     }
-
 }
 
 extension Token: CustomStringConvertible {
-
     public var description: String {
         "Token [coin: \(coin); blockchain: \(blockchain); type: \(type); decimals: \(decimals)]"
     }
-
 }

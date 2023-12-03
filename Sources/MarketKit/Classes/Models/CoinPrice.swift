@@ -49,13 +49,10 @@ public class CoinPrice: Record {
     public var expired: Bool {
         Date().timeIntervalSince1970 - timestamp > Self.expirationInterval
     }
-
 }
 
 extension CoinPrice: CustomStringConvertible {
-
     public var description: String {
         "CoinPrice [coinUid: \(coinUid); currencyCode: \(currencyCode); value: \(value); diff: \(diff.map { "\($0)" } ?? "nil"); timestamp: \(timestamp)]"
     }
-
 }

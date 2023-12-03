@@ -38,9 +38,7 @@ public class Exchange: Record, ImmutableMappable {
 }
 
 extension Exchange: CustomStringConvertible {
-
     public var description: String {
         "Exchange [id: \(id); name: \(name); imageUrl: \(imageUrl)]"
     }
-
 }

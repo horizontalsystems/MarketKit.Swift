@@ -8,12 +8,11 @@ public class CoinReport: ImmutableMappable {
     public let date: Date
     public let url: String
 
-    required public init(map: Map) throws {
+    public required init(map: Map) throws {
         author = try map.value("author")
         title = try map.value("title")
         body = try map.value("body")
         date = try map.value("date", using: Transform.stringToDateTransform)
         url = try map.value("url")
     }
-
 }

@@ -1,5 +1,4 @@
 public enum TokenType {
-
     public enum Derivation: String, CaseIterable {
         case bip44
         case bip49
@@ -29,17 +28,17 @@ public enum TokenType {
                 self = .native
                 return
             case "eip20":
-                if let reference = reference {
+                if let reference {
                     self = .eip20(address: reference)
                     return
                 }
             case "bep2":
-                if let reference = reference {
+                if let reference {
                     self = .bep2(symbol: reference)
                     return
                 }
             case "spl":
-                if let reference = reference {
+                if let reference {
                     self = .spl(address: reference)
                     return
                 }
@@ -105,18 +104,18 @@ public enum TokenType {
         switch self {
         case .native:
             return "native"
-        case .derived(let derivation):
+        case let .derived(derivation):
             return ["derived", derivation.rawValue].joined(separator: ":")
-        case .addressType(let type):
+        case let .addressType(type):
             return ["address_type", type.rawValue].joined(separator: ":")
-        case .eip20(let address):
+        case let .eip20(address):
             return ["eip20", address].joined(separator: ":")
-        case .bep2(let symbol):
+        case let .bep2(symbol):
             return ["bep2", symbol].joined(separator: ":")
-        case .spl(let address):
+        case let .spl(address):
             return ["spl", address].joined(separator: ":")
-        case .unsupported(let type, let reference):
-            if let reference = reference {
+        case let .unsupported(type, reference):
+            if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
             } else {
                 return ["unsupported", type].joined(separator: ":")
@@ -127,35 +126,30 @@ public enum TokenType {
     public var values: (type: String, reference: String?) {
         switch self {
         case .native: return (type: "native", reference: nil)
-        case .derived(let derivation): return (type: "derived:\(derivation.rawValue)", reference: nil)
-        case .addressType(let type): return (type: "address_type:\(type.rawValue)", reference: nil)
-        case .eip20(let address): return (type: "eip20", reference: address)
-        case .bep2(let symbol): return (type: "bep2", reference: symbol)
-        case .spl(let address): return (type: "spl", reference: address)
-        case .unsupported(let type, let reference): return (type: type, reference: reference)
+        case let .derived(derivation): return (type: "derived:\(derivation.rawValue)", reference: nil)
+        case let .addressType(type): return (type: "address_type:\(type.rawValue)", reference: nil)
+        case let .eip20(address): return (type: "eip20", reference: address)
+        case let .bep2(symbol): return (type: "bep2", reference: symbol)
+        case let .spl(address): return (type: "spl", reference: address)
+        case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }
-
 }
 
 extension TokenType: Equatable {
-
-    public static func ==(lhs: TokenType, rhs: TokenType) -> Bool {
+    public static func == (lhs: TokenType, rhs: TokenType) -> Bool {
         let (lhsType, lhsReference) = lhs.values
         let (rhsType, rhsReference) = rhs.values
 
         return lhsType == rhsType && lhsReference == rhsReference
     }
-
 }
 
 extension TokenType: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         let (type, reference) = values
 
         hasher.combine(type)
         hasher.combine(reference)
     }
-
 }

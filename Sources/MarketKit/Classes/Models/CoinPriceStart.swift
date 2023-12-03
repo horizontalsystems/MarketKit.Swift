@@ -12,5 +12,4 @@ class CoinPriceStart: ImmutableMappable {
         let timestampInt: Int = try map.value("timestamp")
         timestamp = TimeInterval(timestampInt)
     }
-
 }

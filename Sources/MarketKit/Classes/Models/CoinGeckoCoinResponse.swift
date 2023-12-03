@@ -12,7 +12,7 @@ class CoinGeckoCoinResponse: ImmutableMappable {
     private let smartContractPlatforms = ["tron", "ethereum", "eos", "binance-smart-chain", "binancecoin"]
 
     public var exchangeIds: [String] {
-        tickers.map { $0.marketId }
+        tickers.map(\.marketId)
     }
 
     required init(map: Map) throws {

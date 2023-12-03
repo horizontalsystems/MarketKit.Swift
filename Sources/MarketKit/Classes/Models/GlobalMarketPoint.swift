@@ -9,7 +9,7 @@ public class GlobalMarketPoint: ImmutableMappable {
     public let tvl: Decimal
     public let btcDominance: Decimal
 
-    required public init(map: Map) throws {
+    public required init(map: Map) throws {
         timestamp = try map.value("date")
         marketCap = try map.value("market_cap", using: Transform.stringToDecimalTransform)
         volume24h = try map.value("volume", using: Transform.stringToDecimalTransform)
@@ -26,13 +26,10 @@ public class GlobalMarketPoint: ImmutableMappable {
         tvl >>> (map["tvl"], Transform.stringToDecimalTransform)
         btcDominance >>> (map["btc_dominance"], Transform.stringToDecimalTransform)
     }
-
 }
 
 extension GlobalMarketPoint: CustomStringConvertible {
-
     public var description: String {
         "GlobalMarketInfo [timestamp: \(timestamp); marketCap: \(marketCap); volume24h: \(volume24h); defiMarketCap: \(defiMarketCap); tvl: \(tvl); btcDominance: \(btcDominance)]"
     }
-
 }

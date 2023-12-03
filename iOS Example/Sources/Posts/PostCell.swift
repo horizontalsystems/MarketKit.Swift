@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class PostCell: UITableViewCell {
     private let sourceLabel = UILabel()
@@ -59,5 +59,4 @@ class PostCell: UITableViewCell {
         let minutesAgo = Int((Date().timeIntervalSince1970 - post.timestamp) / 60)
         timestampLabel.text = "\(minutesAgo) minutes ago"
     }
-
 }

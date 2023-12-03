@@ -23,26 +23,23 @@ public enum HsTimePeriod: String, CaseIterable {
     var range: TimeInterval {
         switch self {
         case .day1: return .days(1)
-        case .week1: return  .days(7)
-        case .week2: return  .days(14)
-        case .month1: return  .days(30)
-        case .month3: return  .days(90)
-        case .month6: return  .days(180)
-        case .year1: return  .days(365)
-        case .year2: return  2 * .days(365)
+        case .week1: return .days(7)
+        case .week2: return .days(14)
+        case .month1: return .days(30)
+        case .month3: return .days(90)
+        case .month6: return .days(180)
+        case .year1: return .days(365)
+        case .year2: return 2 * .days(365)
         }
     }
-
 }
 
 extension HsTimePeriod: Comparable {
-
-    public static func <(lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
+    public static func < (lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
         lhs.range < rhs.range
     }
 
-    public static func ==(lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
+    public static func == (lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
         lhs.range == rhs.range
     }
-
 }

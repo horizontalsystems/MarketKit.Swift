@@ -37,26 +37,25 @@ class DefiCoinRaw: ImmutableMappable {
     func defiCoin(fullCoin: FullCoin?) -> DefiCoin {
         let type: DefiCoin.DefiCoinType
 
-        if let fullCoin = fullCoin {
+        if let fullCoin {
             type = .fullCoin(fullCoin: fullCoin)
         } else {
             type = .defiCoin(name: name, logo: logo)
         }
 
         return DefiCoin(
-                type: type,
-                tvl: tvl,
-                tvlRank: tvlRank,
-                tvlChange1d: tvlChange1d,
-                tvlChange1w: tvlChange1w,
-                tvlChange2w: tvlChange2w,
-                tvlChange1m: tvlChange1m,
-                tvlChange3m: tvlChange3m,
-                tvlChange6m: tvlChange6m,
-                tvlChange1y: tvlChange1y,
-                chains: chains,
-                chainTvls: chainTvls
+            type: type,
+            tvl: tvl,
+            tvlRank: tvlRank,
+            tvlChange1d: tvlChange1d,
+            tvlChange1w: tvlChange1w,
+            tvlChange2w: tvlChange2w,
+            tvlChange1m: tvlChange1m,
+            tvlChange3m: tvlChange3m,
+            tvlChange6m: tvlChange6m,
+            tvlChange1y: tvlChange1y,
+            chains: chains,
+            chainTvls: chainTvls
         )
     }
-
 }

@@ -15,5 +15,4 @@ public struct Post: ImmutableMappable {
         timestamp = try map.value("published_on")
         url = try map.value("url")
     }
-
 }

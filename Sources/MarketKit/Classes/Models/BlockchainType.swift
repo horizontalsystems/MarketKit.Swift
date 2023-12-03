@@ -63,23 +63,19 @@ public enum BlockchainType {
         case .tron: return "tron"
         case .solana: return "solana"
         case .ton: return "the-open-network"
-        case .unsupported(let uid): return uid
+        case let .unsupported(uid): return uid
         }
     }
 }
 
 extension BlockchainType: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         hasher.combine(uid)
     }
-
 }
 
 extension BlockchainType: Equatable {
-
-    public static func ==(lhs: BlockchainType, rhs: BlockchainType) -> Bool {
+    public static func == (lhs: BlockchainType, rhs: BlockchainType) -> Bool {
         lhs.uid == rhs.uid
     }
-
 }

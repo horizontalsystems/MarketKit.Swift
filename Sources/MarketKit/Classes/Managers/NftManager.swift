@@ -10,7 +10,7 @@ class NftManager {
     }
 
     private func nftPrice(token: Token?, value: Decimal?) -> NftPrice? {
-        guard let token = token, let value = value else {
+        guard let token, let value else {
             return nil
         }
 
@@ -39,32 +39,30 @@ class NftManager {
         let volumes: [HsTimePeriod: NftPrice?] = [
             .day1: nftPrice(token: baseToken, value: response.volume1d),
             .week1: nftPrice(token: baseToken, value: response.volume7d),
-            .month1: nftPrice(token: baseToken, value: response.volume30d)
+            .month1: nftPrice(token: baseToken, value: response.volume30d),
         ]
 
         let changes: [HsTimePeriod: Decimal?] = [
             .day1: response.change1d,
             .week1: response.change7d,
-            .month1: response.change30d
+            .month1: response.change30d,
         ]
 
         return NftTopCollection(
-                blockchainType: blockchainType,
-                providerUid: response.providerUid,
-                name: response.name,
-                thumbnailImageUrl: response.thumbnailImageUrl,
-                floorPrice: nftPrice(token: baseToken, value: response.floorPrice),
-                volumes: volumes.compactMapValues { $0 },
-                changes: changes.compactMapValues { $0 }
+            blockchainType: blockchainType,
+            providerUid: response.providerUid,
+            name: response.name,
+            thumbnailImageUrl: response.thumbnailImageUrl,
+            floorPrice: nftPrice(token: baseToken, value: response.floorPrice),
+            volumes: volumes.compactMapValues { $0 },
+            changes: changes.compactMapValues { $0 }
         )
     }
-
 }
 
 extension NftManager {
-
     func topCollections(responses: [NftTopCollectionResponse]) -> [NftTopCollection] {
-        let blockchainUids = Array(Set(responses.map { $0.blockchainUid }))
+        let blockchainUids = Array(Set(responses.map(\.blockchainUid)))
         let blockchainTypes = blockchainUids.map { BlockchainType(uid: $0) }
         let baseTokenMap = baseTokenMap(blockchainTypes: blockchainTypes)
 
@@ -77,5 +75,4 @@ extension NftManager {
         let responses = try await provider.topCollections()
         return topCollections(responses: responses)
     }
-
 }

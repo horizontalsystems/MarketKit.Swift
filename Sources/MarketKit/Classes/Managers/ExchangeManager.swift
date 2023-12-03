@@ -25,7 +25,7 @@ extension ExchangeManager {
     func verifiedExchangeUids() -> [String] {
         do {
             let verifiedExchanges = try storage.verifiedExchanges()
-            return verifiedExchanges.map { $0.uid }
+            return verifiedExchanges.map(\.uid)
         } catch {
             return []
         }

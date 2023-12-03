@@ -1,7 +1,7 @@
-import Foundation
 import Combine
-import HsToolKit
+import Foundation
 import HsExtensions
+import HsToolKit
 
 protocol ISchedulerProvider {
     var id: String { get }
@@ -36,12 +36,12 @@ class Scheduler {
         self.logger = logger
 
         reachabilityManager.$isReachable
-                .sink { [weak self] reachable in
-                    if reachable {
-                        self?.autoSchedule()
-                    }
+            .sink { [weak self] reachable in
+                if reachable {
+                    self?.autoSchedule()
                 }
-                .store(in: &cancellables)
+            }
+            .store(in: &cancellables)
     }
 
     deinit {
@@ -143,11 +143,9 @@ class Scheduler {
             self._schedule(delay: max(minDelay, delay))
         }
     }
-
 }
 
 extension Scheduler {
-
     func forceSchedule() {
         logger?.debug("Scheduler \(provider.id): Force schedule")
 
@@ -155,5 +153,4 @@ extension Scheduler {
             self._schedule(delay: 0)
         }
     }
-
 }

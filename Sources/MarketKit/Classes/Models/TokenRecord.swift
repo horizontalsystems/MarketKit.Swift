@@ -58,7 +58,7 @@ class TokenRecord: Record, Decodable, ImmutableMappable {
         case "bep2": reference >>> map["symbol"]
         case "spl": reference >>> map["address"]
         case "unsupported":
-            if let reference = reference {
+            if let reference {
                 reference >>> map["address"]
             }
         default: ()
@@ -82,5 +82,4 @@ class TokenRecord: Record, Decodable, ImmutableMappable {
         container[Columns.decimals] = decimals
         container[Columns.reference] = reference
     }
-
 }

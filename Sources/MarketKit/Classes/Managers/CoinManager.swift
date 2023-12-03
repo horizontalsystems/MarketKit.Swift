@@ -25,7 +25,7 @@ extension CoinManager {
 
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
         try storage.coinTokenRecords(filter: filter, limit: limit)
-            .map { $0.fullCoin }
+            .map(\.fullCoin)
     }
 
     func fullCoin(uid: String) throws -> FullCoin? {
@@ -34,7 +34,7 @@ extension CoinManager {
 
     func fullCoins(coinUids: [String]) throws -> [FullCoin] {
         try storage.coinTokenRecords(coinUids: coinUids)
-            .map { $0.fullCoin }
+            .map(\.fullCoin)
     }
 
     func allCoins() throws -> [Coin] {
@@ -43,42 +43,42 @@ extension CoinManager {
 
     func token(query: TokenQuery) throws -> Token? {
         try storage.tokenInfoRecord(query: query)
-            .map { $0.token }
+            .map(\.token)
     }
 
     func tokens(queries: [TokenQuery]) throws -> [Token] {
         try storage.tokenInfoRecords(queries: queries)
-            .map { $0.token }
+            .map(\.token)
     }
 
     func tokens(reference: String) throws -> [Token] {
         try storage.tokenInfoRecords(reference: reference)
-            .map { $0.token }
+            .map(\.token)
     }
 
     func tokens(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [Token] {
         try storage.tokenInfoRecords(blockchainType: blockchainType, filter: filter, limit: limit)
-            .map { $0.token }
+            .map(\.token)
     }
 
     func allBlockchains() throws -> [Blockchain] {
         try storage.allBlockchainRecords()
-            .map { $0.blockchain }
+            .map(\.blockchain)
     }
 
     func blockchain(uid: String) throws -> Blockchain? {
         try storage.blockchain(uid: uid)
-            .map { $0.blockchain }
+            .map(\.blockchain)
     }
 
     func blockchains(uids: [String]) throws -> [Blockchain] {
         try storage.blockchains(uids: uids)
-            .map { $0.blockchain }
+            .map(\.blockchain)
     }
 
     func marketInfos(rawMarketInfos: [MarketInfoRaw]) -> [MarketInfo] {
         do {
-            let fullCoins = try fullCoins(coinUids: rawMarketInfos.map { $0.uid })
+            let fullCoins = try fullCoins(coinUids: rawMarketInfos.map(\.uid))
             let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
 
             return rawMarketInfos.compactMap { rawMarketInfo in
@@ -95,7 +95,7 @@ extension CoinManager {
 
     func defiCoins(rawDefiCoins: [DefiCoinRaw]) -> [DefiCoin] {
         do {
-            let fullCoins = try fullCoins(coinUids: rawDefiCoins.compactMap { $0.uid })
+            let fullCoins = try fullCoins(coinUids: rawDefiCoins.compactMap(\.uid))
             let dictionary = fullCoins.reduce(into: [String: FullCoin]()) { $0[$1.coin.uid] = $1 }
 
             return rawDefiCoins.map { rawDefiCoin in

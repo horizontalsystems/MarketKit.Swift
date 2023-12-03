@@ -34,11 +34,9 @@ class ExchangeSyncer {
     private func save(lastSyncTimestamp: TimeInterval) {
         try? syncerStateStorage.save(value: String(lastSyncTimestamp), key: keyLastSyncTimestamp)
     }
-
 }
 
 extension ExchangeSyncer {
-
     func sync() {
         let currentTimestamp = Date().timeIntervalSince1970
 
@@ -57,5 +55,4 @@ extension ExchangeSyncer {
             }
         }.store(in: &tasks)
     }
-
 }

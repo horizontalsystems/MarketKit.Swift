@@ -1,7 +1,7 @@
 import Combine
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class FullCoinsController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
@@ -16,7 +16,8 @@ class FullCoinsController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -44,11 +45,11 @@ class FullCoinsController: UIViewController {
         tableView.keyboardDismissMode = .onDrag
 
         Singleton.instance.kit.fullCoinsUpdatedPublisher
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] in
-                    self?.syncCoins()
-                }
-                .store(in: &cancellables)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.syncCoins()
+            }
+            .store(in: &cancellables)
 
         syncCoins()
     }
@@ -61,37 +62,31 @@ class FullCoinsController: UIViewController {
             print("Failed to sync coins: \(error)")
         }
     }
-
 }
 
 extension FullCoinsController: UITableViewDataSource {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         fullCoins.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         tableView.dequeueReusableCell(withIdentifier: String(describing: FullCoinCell.self), for: indexPath)
     }
-
 }
 
 extension FullCoinsController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         60
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? FullCoinCell {
             cell.bind(fullCoin: fullCoins[indexPath.row])
         }
     }
-
 }
 
 extension FullCoinsController: UISearchResultsUpdating {
-
     public func updateSearchResults(for searchController: UISearchController) {
         let filter = searchController.searchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
 
@@ -100,5 +95,4 @@ extension FullCoinsController: UISearchResultsUpdating {
             syncCoins()
         }
     }
-
 }
