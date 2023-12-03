@@ -2,7 +2,6 @@ import Foundation
 import ObjectMapper
 
 class MarketInfoTvlRaw: ImmutableMappable {
-
     let timestamp: TimeInterval
     let tvl: Decimal?
 
@@ -13,11 +12,10 @@ class MarketInfoTvlRaw: ImmutableMappable {
     }
 
     var marketInfoTvl: ChartPoint? {
-        guard let tvl = tvl else {
+        guard let tvl else {
             return nil
         }
 
         return ChartPoint(timestamp: timestamp, value: tvl)
     }
-
 }

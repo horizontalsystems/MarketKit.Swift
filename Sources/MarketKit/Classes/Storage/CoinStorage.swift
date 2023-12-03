@@ -87,16 +87,15 @@ class CoinStorage {
 
     private func searchOrder(filter: String) -> SQL {
         SQL(sql: """
-                 CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.code) LIKE ? THEN 1 
-                 WHEN \(Coin.databaseTableName).\(Coin.Columns.code) LIKE ? THEN 2 
-                 WHEN \(Coin.databaseTableName).\(Coin.Columns.name) LIKE ? THEN 3
-                 ELSE 4 END,
-                 CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
-                 \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) ASC, 
-                 \(Coin.databaseTableName).\(Coin.Columns.name) ASC
-                 """,
-                arguments: [filter, "\(filter)%", "\(filter)%"]
-        )
+            CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.code) LIKE ? THEN 1 
+            WHEN \(Coin.databaseTableName).\(Coin.Columns.code) LIKE ? THEN 2 
+            WHEN \(Coin.databaseTableName).\(Coin.Columns.name) LIKE ? THEN 3
+            ELSE 4 END,
+            CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
+            \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) ASC, 
+            \(Coin.databaseTableName).\(Coin.Columns.name) ASC
+            """,
+            arguments: [filter, "\(filter)%", "\(filter)%"])
     }
 
     private func filter(tokenQuery: TokenQuery) -> SQLSpecificExpressible {
@@ -104,20 +103,18 @@ class CoinStorage {
 
         var conditions: [SQLSpecificExpressible] = [
             TokenRecord.Columns.blockchainUid == tokenQuery.blockchainType.uid,
-            TokenRecord.Columns.type == type
+            TokenRecord.Columns.type == type,
         ]
 
-        if let reference = reference {
+        if let reference {
             conditions.append(TokenRecord.Columns.reference.like(reference))
         }
 
         return conditions.joined(operator: .and)
     }
-
 }
 
 extension CoinStorage {
-
     func coinsCount() throws -> Int {
         try dbPool.read { db in
             try Coin.fetchCount(db)
@@ -139,10 +136,10 @@ extension CoinStorage {
     func coinTokenRecords(filter: String, limit: Int) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
             let request = Coin
-                    .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
-                    .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
-                    .order(literal: searchOrder(filter: filter))
-                    .limit(limit)
+                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
+                .order(literal: searchOrder(filter: filter))
+                .limit(limit)
 
             return try CoinTokensRecord.fetchAll(db, request)
         }
@@ -151,8 +148,8 @@ extension CoinStorage {
     func coinTokenRecord(uid: String) throws -> CoinTokensRecord? {
         try dbPool.read { db in
             let request = Coin
-                    .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
-                    .filter(Coin.Columns.uid == uid)
+                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .filter(Coin.Columns.uid == uid)
 
             return try CoinTokensRecord.fetchOne(db, request)
         }
@@ -161,8 +158,8 @@ extension CoinStorage {
     func coinTokenRecords(coinUids: [String]) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
             let request = Coin
-                    .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
-                    .filter(coinUids.contains(Coin.Columns.uid))
+                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .filter(coinUids.contains(Coin.Columns.uid))
 
             return try CoinTokensRecord.fetchAll(db, request)
         }
@@ -171,9 +168,9 @@ extension CoinStorage {
     func tokenInfoRecord(query: TokenQuery) throws -> TokenInfoRecord? {
         try dbPool.read { db in
             let request = TokenRecord
-                    .including(required: TokenRecord.coin)
-                    .including(required: TokenRecord.blockchain)
-                    .filter(filter(tokenQuery: query))
+                .including(required: TokenRecord.coin)
+                .including(required: TokenRecord.blockchain)
+                .filter(filter(tokenQuery: query))
 
             return try TokenInfoRecord.fetchOne(db, request)
         }
@@ -182,9 +179,9 @@ extension CoinStorage {
     func tokenInfoRecords(queries: [TokenQuery]) throws -> [TokenInfoRecord] {
         try dbPool.read { db in
             let request = TokenRecord
-                    .including(required: TokenRecord.coin)
-                    .including(required: TokenRecord.blockchain)
-                    .filter(queries.map { filter(tokenQuery: $0) }.joined(operator: .or))
+                .including(required: TokenRecord.coin)
+                .including(required: TokenRecord.blockchain)
+                .filter(queries.map { filter(tokenQuery: $0) }.joined(operator: .or))
 
             return try TokenInfoRecord.fetchAll(db, request)
         }
@@ -193,9 +190,9 @@ extension CoinStorage {
     func tokenInfoRecords(reference: String) throws -> [TokenInfoRecord] {
         try dbPool.read { db in
             let request = TokenRecord
-                    .including(required: TokenRecord.coin)
-                    .including(required: TokenRecord.blockchain)
-                    .filter(TokenRecord.Columns.reference.like(reference))
+                .including(required: TokenRecord.coin)
+                .including(required: TokenRecord.blockchain)
+                .filter(TokenRecord.Columns.reference.like(reference))
 
             return try TokenInfoRecord.fetchAll(db, request)
         }
@@ -204,10 +201,10 @@ extension CoinStorage {
     func tokenInfoRecords(blockchainType: BlockchainType, filter: String, limit: Int) throws -> [TokenInfoRecord] {
         try dbPool.read { db in
             let request = TokenRecord
-                    .including(required: TokenRecord.coin.filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%")))
-                    .including(required: TokenRecord.blockchain.filter(BlockchainRecord.Columns.uid == blockchainType.uid))
-                    .order(literal: searchOrder(filter: filter))
-                    .limit(limit)
+                .including(required: TokenRecord.coin.filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%")))
+                .including(required: TokenRecord.blockchain.filter(BlockchainRecord.Columns.uid == blockchainType.uid))
+                .order(literal: searchOrder(filter: filter))
+                .limit(limit)
 
             return try TokenInfoRecord.fetchAll(db, request)
         }
@@ -260,7 +257,6 @@ extension CoinStorage {
             }
         }
     }
-
 }
 
 struct CoinTokensRecord: FetchableRecord, Decodable {
@@ -269,26 +265,25 @@ struct CoinTokensRecord: FetchableRecord, Decodable {
 
     var fullCoin: FullCoin {
         FullCoin(
-                coin: coin,
-                tokens: tokens.map { record in
-                    let tokenType: TokenType
+            coin: coin,
+            tokens: tokens.map { record in
+                let tokenType: TokenType
 
-                    if record.token.decimals != nil {
-                        tokenType = TokenType(type: record.token.type, reference: record.token.reference)
-                    } else {
-                        tokenType = .unsupported(type: record.token.type, reference: record.token.reference)
-                    }
-
-                    return Token(
-                            coin: coin,
-                            blockchain: record.blockchain.blockchain,
-                            type: tokenType,
-                            decimals: record.token.decimals ?? 0
-                    )
+                if record.token.decimals != nil {
+                    tokenType = TokenType(type: record.token.type, reference: record.token.reference)
+                } else {
+                    tokenType = .unsupported(type: record.token.type, reference: record.token.reference)
                 }
+
+                return Token(
+                    coin: coin,
+                    blockchain: record.blockchain.blockchain,
+                    type: tokenType,
+                    decimals: record.token.decimals ?? 0
+                )
+            }
         )
     }
-
 }
 
 struct TokenBlockchainRecord: FetchableRecord, Decodable {
@@ -311,11 +306,10 @@ struct TokenInfoRecord: FetchableRecord, Decodable {
         }
 
         return Token(
-                coin: coin,
-                blockchain: blockchain.blockchain,
-                type: tokenType,
-                decimals: tokenRecord.decimals ?? 0
+            coin: coin,
+            blockchain: blockchain.blockchain,
+            type: tokenType,
+            decimals: tokenRecord.decimals ?? 0
         )
     }
-
 }

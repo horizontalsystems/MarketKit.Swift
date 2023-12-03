@@ -1,5 +1,5 @@
-import ObjectMapper
 import Foundation
+import ObjectMapper
 
 class MarketInfoOverviewResponse: ImmutableMappable {
     let marketCap: Decimal?
@@ -32,12 +32,12 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         var convertedLinks = [LinkType: String]()
 
         for (type, link) in links {
-            if let linkType = LinkType(rawValue: type), let link = link {
+            if let linkType = LinkType(rawValue: type), let link {
                 convertedLinks[linkType] = link
             }
         }
 
-        let convertedPerformance: [PerformanceRow] = performance.compactMap { (base, changes) -> PerformanceRow? in
+        let convertedPerformance: [PerformanceRow] = performance.compactMap { base, changes -> PerformanceRow? in
             guard let performanceBase = PerformanceBase(rawValue: base) else {
                 return nil
             }
@@ -46,7 +46,8 @@ class MarketInfoOverviewResponse: ImmutableMappable {
             for (timePeriodStr, change) in changes {
                 if let changeStr = change,
                    let changeDecimal = Decimal(string: changeStr),
-                   let timePeriod = Self.timePeriod(timePeriodStr) {
+                   let timePeriod = Self.timePeriod(timePeriodStr)
+                {
                     performanceChanges[timePeriod] = changeDecimal
                 }
             }
@@ -59,18 +60,18 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         }.sorted { $0.base < $1.base }
 
         return MarketInfoOverview(
-                fullCoin: fullCoin,
-                marketCap: marketCap,
-                marketCapRank: marketCapRank,
-                totalSupply: totalSupply,
-                circulatingSupply: circulatingSupply,
-                volume24h: volume24h,
-                dilutedMarketCap: dilutedMarketCap,
-                performance: convertedPerformance,
-                genesisDate: genesisDate,
-                categories: categories,
-                description: description,
-                links: convertedLinks
+            fullCoin: fullCoin,
+            marketCap: marketCap,
+            marketCapRank: marketCapRank,
+            totalSupply: totalSupply,
+            circulatingSupply: circulatingSupply,
+            volume24h: volume24h,
+            dilutedMarketCap: dilutedMarketCap,
+            performance: convertedPerformance,
+            genesisDate: genesisDate,
+            categories: categories,
+            description: description,
+            links: convertedLinks
         )
     }
 
@@ -85,5 +86,4 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         default: return nil
         }
     }
-
 }

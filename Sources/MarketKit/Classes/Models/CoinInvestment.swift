@@ -7,7 +7,7 @@ public class CoinInvestment: ImmutableMappable {
     public let amount: Decimal?
     public let funds: [Fund]
 
-    required public init(map: Map) throws {
+    public required init(map: Map) throws {
         date = try map.value("date", using: Transform.stringToDateTransform)
         round = try map.value("round")
         amount = try? map.value("amount", using: Transform.stringToDecimalTransform)
@@ -20,12 +20,11 @@ public class CoinInvestment: ImmutableMappable {
         public let website: String
         public let isLead: Bool
 
-        required public init(map: Map) throws {
+        public required init(map: Map) throws {
             uid = try map.value("uid")
             name = try map.value("name")
             website = try map.value("website")
             isLead = try map.value("is_lead")
         }
     }
-
 }

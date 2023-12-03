@@ -46,10 +46,9 @@ class BlockchainRecord: Record, Decodable, ImmutableMappable {
 
     var blockchain: Blockchain {
         Blockchain(
-                type: BlockchainType(uid: uid),
-                name: name,
-                explorerUrl: explorerUrl
+            type: BlockchainType(uid: uid),
+            name: name,
+            explorerUrl: explorerUrl
         )
     }
-
 }

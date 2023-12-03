@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class FullCoinCell: UITableViewCell {
     private let nameLabel = UILabel()
@@ -50,5 +50,4 @@ class FullCoinCell: UITableViewCell {
         codeLabel.text = "\(coin.code), mcr: \(coin.marketCapRank.map { "\($0)" } ?? "n/a"), cgi: \(coin.coinGeckoId.map { "\($0)" } ?? "n/a")"
         platformsLabel.text = "\(fullCoin.tokens.count)"
     }
-
 }

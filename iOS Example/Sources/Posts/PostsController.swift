@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class PostsController: UIViewController {
     private let tableView = UITableView()
@@ -11,7 +11,8 @@ class PostsController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -39,31 +40,26 @@ class PostsController: UIViewController {
             self?.tableView.reloadData()
         }
     }
-
 }
 
 extension PostsController: UITableViewDataSource {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         posts.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         tableView.dequeueReusableCell(withIdentifier: String(describing: PostCell.self), for: indexPath)
     }
-
 }
 
 extension PostsController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
         130
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? PostCell {
             cell.bind(post: posts[indexPath.row])
         }
     }
-
 }

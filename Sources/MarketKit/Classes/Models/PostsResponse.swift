@@ -6,5 +6,4 @@ struct PostsResponse: ImmutableMappable {
     init(map: Map) throws {
         posts = try map.value("Data")
     }
-
 }

@@ -1,12 +1,11 @@
 import Foundation
 
-public struct HsChartHelper {
-
+public enum HsChartHelper {
     static func pointInterval(_ interval: HsTimePeriod) -> HsPointTimePeriod {
         switch interval {
         case .day1: return .minute30
-        case .week1: return  .hour4
-        case .week2: return  .hour8
+        case .week1: return .hour4
+        case .week2: return .hour8
         case .year2: return .week1
         default: return .day1
         }
@@ -67,5 +66,4 @@ public struct HsChartHelper {
         }
         return .week1
     }
-
 }

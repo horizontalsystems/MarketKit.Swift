@@ -11,15 +11,12 @@ public class ChartPoint {
         self.value = value
         self.volume = volume
     }
-
 }
 
 extension ChartPoint: Equatable {
-
-    public static func ==(lhs: ChartPoint, rhs: ChartPoint) -> Bool {
+    public static func == (lhs: ChartPoint, rhs: ChartPoint) -> Bool {
         lhs.timestamp == rhs.timestamp && lhs.value == rhs.value && lhs.volume == rhs.volume
     }
-
 }
 
 public struct AggregatedChartPoints {

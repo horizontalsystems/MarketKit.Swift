@@ -15,13 +15,13 @@ public enum HsPeriodType: Hashable {
         let chunks = rawValue.split(separator: "_")
         if chunks.count == 2 {
             if chunks[0] == Self.keyAll,
-               let timestamp = Int(chunks[1]) {
-
+               let timestamp = Int(chunks[1])
+            {
                 self = .byStartTime(TimeInterval(timestamp))
                 return
             } else if let period = HsTimePeriod(rawValue: String(chunks[0])),
-                      let pointCount = Int(chunks[1]) {
-
+                      let pointCount = Int(chunks[1])
+            {
                 self = .byCustomPoints(period, pointCount)
                 return
             }
@@ -31,29 +31,28 @@ public enum HsPeriodType: Hashable {
 
     public var rawValue: String {
         switch self {
-        case .byPeriod(let interval): return interval.rawValue
-        case .byStartTime(let timeStart): return [Self.keyAll, Int(timeStart).description].joined(separator: "_")
-        case .byCustomPoints(let interval, let pointCount): return [interval.rawValue, pointCount.description].joined(separator: "_")
+        case let .byPeriod(interval): return interval.rawValue
+        case let .byStartTime(timeStart): return [Self.keyAll, Int(timeStart).description].joined(separator: "_")
+        case let .byCustomPoints(interval, pointCount): return [interval.rawValue, pointCount.description].joined(separator: "_")
         }
     }
 
     public func hash(into hasher: inout Hasher) {
         switch self {
-        case .byPeriod(let interval): hasher.combine(interval)
-        case .byStartTime(let startTime): hasher.combine(startTime)
-        case .byCustomPoints(let interval, let pointCount):
+        case let .byPeriod(interval): hasher.combine(interval)
+        case let .byStartTime(startTime): hasher.combine(startTime)
+        case let .byCustomPoints(interval, pointCount):
             hasher.combine(interval)
             hasher.combine(pointCount)
         }
     }
 
-    public static func ==(lhs: HsPeriodType, rhs: HsPeriodType) -> Bool {
+    public static func == (lhs: HsPeriodType, rhs: HsPeriodType) -> Bool {
         switch (lhs, rhs) {
-        case (.byPeriod(let lhsPeriod), .byPeriod(let rhsPeriod)): return lhsPeriod == rhsPeriod
-        case (.byStartTime(let lhsStartTime), .byStartTime(let rhsStartTime)): return lhsStartTime == rhsStartTime
-        case (.byCustomPoints(let lhsI, let lhsC), .byCustomPoints(let rhsI, let rhsC)): return lhsI == rhsI && lhsC == rhsC
+        case let (.byPeriod(lhsPeriod), .byPeriod(rhsPeriod)): return lhsPeriod == rhsPeriod
+        case let (.byStartTime(lhsStartTime), .byStartTime(rhsStartTime)): return lhsStartTime == rhsStartTime
+        case let (.byCustomPoints(lhsI, lhsC), .byCustomPoints(rhsI, rhsC)): return lhsI == rhsI && lhsC == rhsC
         default: return false
         }
     }
-
 }

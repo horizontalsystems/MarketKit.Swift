@@ -20,12 +20,10 @@ public class CoinCategory: ImmutableMappable {
         diff1W = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
         diff1M = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
     }
-
 }
 
-extension CoinCategory {
-
-    public func diff(timePeriod: HsTimePeriod) -> Decimal? {
+public extension CoinCategory {
+    func diff(timePeriod: HsTimePeriod) -> Decimal? {
         switch timePeriod {
         case .day1: return diff24H
         case .week1: return diff1W
@@ -34,13 +32,10 @@ extension CoinCategory {
         default: return diff24H
         }
     }
-
 }
 
 extension CoinCategory: CustomStringConvertible {
-
     public var description: String {
         "CoinCategory [uid: \(uid); name: \(name); descriptionCount: \(descriptions.count)]"
     }
-
 }

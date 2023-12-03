@@ -6,5 +6,4 @@ public struct FullCoin {
         self.coin = coin
         self.tokens = tokens
     }
-
 }

@@ -12,29 +12,22 @@ public struct Blockchain {
     public var uid: String {
         type.uid
     }
-
 }
 
 extension Blockchain: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         hasher.combine(type)
     }
-
 }
 
 extension Blockchain: Equatable {
-
-    public static func ==(lhs: Blockchain, rhs: Blockchain) -> Bool {
+    public static func == (lhs: Blockchain, rhs: Blockchain) -> Bool {
         lhs.type == rhs.type
     }
-
 }
 
 extension Blockchain: CustomStringConvertible {
-
     public var description: String {
         "Blockchain [type: \(type); name: \(name); explorerUrl: \(explorerUrl ?? "nil")]"
     }
-
 }

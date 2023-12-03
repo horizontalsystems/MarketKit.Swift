@@ -39,13 +39,10 @@ public class CoinHistoricalPrice: Record {
         container[Columns.value] = value
         container[Columns.timestamp] = timestamp
     }
-
 }
 
 extension CoinHistoricalPrice: CustomStringConvertible {
-
     public var description: String {
         "CoinHistoricalPrice [coinUid: \(coinUid); currencyCode: \(currencyCode); value: \(value); timestamp: \(timestamp)]"
     }
-
 }

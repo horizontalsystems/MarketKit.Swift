@@ -34,20 +34,19 @@ struct MarketInfoRaw: ImmutableMappable {
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
         MarketInfo(
-                fullCoin: fullCoin,
-                price: price,
-                priceChange24h: priceChange24h,
-                priceChange7d: priceChange7d,
-                priceChange14d: priceChange14d,
-                priceChange30d: priceChange30d,
-                priceChange200d: priceChange200d,
-                priceChange1y: priceChange1y,
-                marketCap: marketCap,
-                marketCapRank: marketCapRank,
-                totalVolume: totalVolume,
-                athPercentage: athPercentage,
-                atlPercentage: atlPercentage
+            fullCoin: fullCoin,
+            price: price,
+            priceChange24h: priceChange24h,
+            priceChange7d: priceChange7d,
+            priceChange14d: priceChange14d,
+            priceChange30d: priceChange30d,
+            priceChange200d: priceChange200d,
+            priceChange1y: priceChange1y,
+            marketCap: marketCap,
+            marketCapRank: marketCapRank,
+            totalVolume: totalVolume,
+            athPercentage: athPercentage,
+            atlPercentage: atlPercentage
         )
     }
-
 }

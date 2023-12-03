@@ -26,16 +26,14 @@ class CoinHistoricalPriceStorage {
 
         return migrator
     }
-
 }
 
 extension CoinHistoricalPriceStorage {
-
     func coinHistoricalPrice(coinUid: String, currencyCode: String, timestamp: TimeInterval) throws -> CoinHistoricalPrice? {
         try dbPool.read { db in
             try CoinHistoricalPrice
-                    .filter(CoinHistoricalPrice.Columns.coinUid == coinUid && CoinHistoricalPrice.Columns.currencyCode == currencyCode && CoinHistoricalPrice.Columns.timestamp == timestamp)
-                    .fetchOne(db)
+                .filter(CoinHistoricalPrice.Columns.coinUid == coinUid && CoinHistoricalPrice.Columns.currencyCode == currencyCode && CoinHistoricalPrice.Columns.timestamp == timestamp)
+                .fetchOne(db)
         }
     }
 
@@ -44,5 +42,4 @@ extension CoinHistoricalPriceStorage {
             try coinHistoricalPrice.insert(db)
         }
     }
-
 }

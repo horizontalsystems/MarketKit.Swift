@@ -1,7 +1,7 @@
-import Foundation
 import Alamofire
-import ObjectMapper
+import Foundation
 import HsToolKit
+import ObjectMapper
 
 class DefiYieldProvider {
     private let baseUrl = "https://api.safe.defiyield.app"
@@ -13,14 +13,12 @@ class DefiYieldProvider {
         self.networkManager = networkManager
         self.apiKey = apiKey
     }
-
 }
 
 extension DefiYieldProvider {
-
     func auditReports(addresses: [String]) async throws -> [Auditor] {
         let parameters: Parameters = [
-            "addresses": addresses
+            "addresses": addresses,
         ]
 
         let headers = apiKey.map { HTTPHeaders([HTTPHeader.authorization(bearerToken: $0)]) }
@@ -61,21 +59,19 @@ extension DefiYieldProvider {
                 }
 
                 return AuditReport(
-                        name: audit.name,
-                        date: date,
-                        issues: audit.techIssues ?? 0,
-                        link: audit.auditLink.map { "https://files.safe.defiyield.app/\($0)" }
+                    name: audit.name,
+                    date: date,
+                    issues: audit.techIssues ?? 0,
+                    link: audit.auditLink.map { "https://files.safe.defiyield.app/\($0)" }
                 )
             }
 
             return Auditor(name: partner.name, reports: reports)
         }
     }
-
 }
 
 extension DefiYieldProvider {
-
     struct AuditInfo: ImmutableMappable {
         let partnerAudits: [PartnerAudit]
 
@@ -109,5 +105,4 @@ extension DefiYieldProvider {
             name = try map.value("name")
         }
     }
-
 }

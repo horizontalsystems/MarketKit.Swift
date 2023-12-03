@@ -18,5 +18,4 @@ public struct DefiCoin {
         case fullCoin(fullCoin: FullCoin)
         case defiCoin(name: String, logo: String)
     }
-
 }

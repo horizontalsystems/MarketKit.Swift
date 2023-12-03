@@ -1,7 +1,7 @@
-import Foundation
-import ObjectMapper
 import Alamofire
+import Foundation
 import HsToolKit
+import ObjectMapper
 
 class HsNftProvider {
     private let baseUrl: String
@@ -15,19 +15,16 @@ class HsNftProvider {
 
         headers = apiKey.flatMap { HTTPHeaders([HTTPHeader(name: "apikey", value: $0)]) }
     }
-
 }
 
 extension HsNftProvider {
-
     func topCollections() async throws -> [NftTopCollectionResponse] {
         let parameters: Parameters = [
-            "simplified": true
+            "simplified": true,
         ]
 
         return try await networkManager.fetch(url: "\(baseUrl)/v1/nft/collections", parameters: parameters, encoding: encoding, headers: headers)
     }
-
 }
 
 struct NftTopCollectionResponse: ImmutableMappable {

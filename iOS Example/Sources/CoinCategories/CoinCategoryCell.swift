@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class CoinCategoryCell: UITableViewCell {
     private let nameLabel = UILabel()
@@ -37,5 +37,4 @@ class CoinCategoryCell: UITableViewCell {
         nameLabel.text = coinCategory.name
         descriptionLabel.text = coinCategory.descriptions.keys.joined(separator: ", ")
     }
-
 }

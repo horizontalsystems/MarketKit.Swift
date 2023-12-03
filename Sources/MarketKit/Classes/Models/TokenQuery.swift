@@ -15,30 +15,25 @@ public struct TokenQuery {
         }
 
         self.init(
-                blockchainType: BlockchainType(uid: chunks[0]),
-                tokenType: tokenType
+            blockchainType: BlockchainType(uid: chunks[0]),
+            tokenType: tokenType
         )
     }
 
     public var id: String {
         [blockchainType.uid, tokenType.id].joined(separator: "|")
     }
-
 }
 
 extension TokenQuery: Hashable {
-
     public func hash(into hasher: inout Hasher) {
         hasher.combine(blockchainType)
         hasher.combine(tokenType)
     }
-
 }
 
 extension TokenQuery: Equatable {
-
-    public static func ==(lhs: TokenQuery, rhs: TokenQuery) -> Bool {
+    public static func == (lhs: TokenQuery, rhs: TokenQuery) -> Bool {
         lhs.blockchainType == rhs.blockchainType && lhs.tokenType == rhs.tokenType
     }
-
 }

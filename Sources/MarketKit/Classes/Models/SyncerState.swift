@@ -30,13 +30,10 @@ class SyncerState: Record {
         container[Columns.key] = key
         container[Columns.value] = value
     }
-
 }
 
 extension SyncerState: CustomStringConvertible {
-
     public var description: String {
         "SyncerState [key: \(key); value: \(value)]"
     }
-
 }

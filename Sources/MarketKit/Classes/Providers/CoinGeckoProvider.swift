@@ -1,7 +1,7 @@
-import Foundation
 import Alamofire
-import ObjectMapper
+import Foundation
 import HsToolKit
+import ObjectMapper
 
 class CoinGeckoProvider {
     private let baseUrl = "https://api.coingecko.com/api/v3"
@@ -11,15 +11,13 @@ class CoinGeckoProvider {
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
     }
-
 }
 
 extension CoinGeckoProvider {
-
     func exchanges(limit: Int, page: Int) async throws -> [Exchange] {
         let parameters: Parameters = [
             "per_page": limit,
-            "page": page
+            "page": page,
         ]
 
         return try await networkManager.fetch(url: "\(baseUrl)/exchanges", method: .get, parameters: parameters)
@@ -32,10 +30,9 @@ extension CoinGeckoProvider {
             "market_data": "false",
             "community_data": "false",
             "developer_data": "false",
-            "sparkline": "false"
+            "sparkline": "false",
         ]
 
         return try await networkManager.fetch(url: "\(baseUrl)/coins/\(coinId)", method: .get, parameters: parameters)
     }
-
 }

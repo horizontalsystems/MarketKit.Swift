@@ -25,16 +25,14 @@ class GlobalMarketInfoStorage {
 
         return migrator
     }
-
 }
 
 extension GlobalMarketInfoStorage {
-
     func globalMarketInfo(currencyCode: String, timePeriod: HsTimePeriod) throws -> GlobalMarketInfo? {
         try dbPool.read { db in
             try GlobalMarketInfo
-                    .filter(GlobalMarketInfo.Columns.currencyCode == currencyCode && GlobalMarketInfo.Columns.timePeriod == timePeriod.rawValue)
-                    .fetchOne(db)
+                .filter(GlobalMarketInfo.Columns.currencyCode == currencyCode && GlobalMarketInfo.Columns.timePeriod == timePeriod.rawValue)
+                .fetchOne(db)
         }
     }
 
@@ -43,5 +41,4 @@ extension GlobalMarketInfoStorage {
             try globalMarketInfo.insert(db)
         }
     }
-
 }

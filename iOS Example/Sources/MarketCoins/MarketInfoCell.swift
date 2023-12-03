@@ -1,6 +1,6 @@
-import UIKit
-import SnapKit
 import MarketKit
+import SnapKit
+import UIKit
 
 class MarketInfoCell: UITableViewCell {
     private let nameLabel = UILabel()
@@ -50,5 +50,4 @@ class MarketInfoCell: UITableViewCell {
         codeLabel.text = "\(coin.code), mcr: \(marketInfo.marketCapRank.map { "\($0)" } ?? "n/a")"
         marketLabel.text = "\(marketInfo.price.map { "\($0)" } ?? "n/a"); \(marketInfo.priceChange24h.map { "\($0)" } ?? "n/a")\n\(marketInfo.marketCap.map { "\($0)" } ?? "n/a"); \(marketInfo.totalVolume.map { "\($0)" } ?? "n/a")"
     }
-
 }

@@ -17,17 +17,14 @@ public enum PerformanceBase: String, CaseIterable {
         case .eth: return 2
         }
     }
-
 }
 
 extension PerformanceBase: Comparable {
-
-    public static func <(lhs: PerformanceBase, rhs: PerformanceBase) -> Bool {
+    public static func < (lhs: PerformanceBase, rhs: PerformanceBase) -> Bool {
         lhs.index < rhs.index
     }
 
-    public static func ==(lhs: PerformanceBase, rhs: PerformanceBase) -> Bool {
+    public static func == (lhs: PerformanceBase, rhs: PerformanceBase) -> Bool {
         lhs.index == rhs.index
     }
-
 }

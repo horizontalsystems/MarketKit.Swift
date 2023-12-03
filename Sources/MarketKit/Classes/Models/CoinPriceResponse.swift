@@ -1,6 +1,6 @@
 import Foundation
-import ObjectMapper
 import HsToolKit
+import ObjectMapper
 
 struct CoinPriceResponse: ImmutableMappable {
     let uid: String
@@ -31,5 +31,4 @@ struct CoinPriceResponse: ImmutableMappable {
             timestamp: lastUpdated
         )
     }
-
 }

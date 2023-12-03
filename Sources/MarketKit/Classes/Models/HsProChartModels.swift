@@ -47,8 +47,8 @@ public struct Analytics: ImmutableMappable {
 
         public var aggregatedChartPoints: AggregatedChartPoints {
             AggregatedChartPoints(
-                    points: points.map { $0.chartPoint },
-                    aggregatedValue: points.map { $0.volume }.reduce(0, +)
+                points: points.map(\.chartPoint),
+                aggregatedValue: points.map(\.volume).reduce(0, +)
             )
         }
     }
@@ -65,7 +65,7 @@ public struct Analytics: ImmutableMappable {
         }
 
         public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+            points.map(\.chartPoint)
         }
     }
 
@@ -83,7 +83,7 @@ public struct Analytics: ImmutableMappable {
         }
 
         public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+            points.map(\.chartPoint)
         }
     }
 
@@ -102,8 +102,8 @@ public struct Analytics: ImmutableMappable {
 
         public var aggregatedChartPoints: AggregatedChartPoints {
             AggregatedChartPoints(
-                    points: points.map { $0.chartPoint },
-                    aggregatedValue: points.map { $0.count }.reduce(0, +)
+                points: points.map(\.chartPoint),
+                aggregatedValue: points.map(\.count).reduce(0, +)
             )
         }
     }
@@ -132,7 +132,7 @@ public struct Analytics: ImmutableMappable {
         }
 
         public var chartPoints: [ChartPoint] {
-            points.map { $0.chartPoint }
+            points.map(\.chartPoint)
         }
     }
 
@@ -161,7 +161,6 @@ public struct Analytics: ImmutableMappable {
             ChartPoint(timestamp: timestamp, value: tvl)
         }
     }
-
 }
 
 public struct AnalyticsPreview: ImmutableMappable {
@@ -288,7 +287,6 @@ public struct RankMultiValue: ImmutableMappable {
         value7d = try? map.value("value_7d", using: Transform.stringToDecimalTransform)
         value30d = try? map.value("value_30d", using: Transform.stringToDecimalTransform)
     }
-
 }
 
 public struct RankValue: ImmutableMappable {
@@ -299,7 +297,6 @@ public struct RankValue: ImmutableMappable {
         uid = try map.value("uid")
         value = try? map.value("value", using: Transform.stringToDecimalTransform)
     }
-
 }
 
 public struct ProSubscription: ImmutableMappable {

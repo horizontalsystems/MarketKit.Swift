@@ -22,11 +22,9 @@ class CoinPriceManager {
 
         delegate?.didUpdate(coinPriceMap: coinPriceMap, currencyCode: currencyCode)
     }
-
 }
 
 extension CoinPriceManager {
-
     func lastSyncTimestamp(coinUids: [String], currencyCode: String) -> TimeInterval? {
         do {
             let coinPrices = try storage.coinPricesSortedByTimestamp(coinUids: coinUids, currencyCode: currencyCode)
@@ -54,8 +52,7 @@ extension CoinPriceManager {
             for coinPrice in try storage.coinPrices(coinUids: coinUids, currencyCode: currencyCode) {
                 map[coinPrice.coinUid] = coinPrice
             }
-        } catch {
-        }
+        } catch {}
 
         return map
     }
@@ -77,5 +74,4 @@ extension CoinPriceManager {
             // todo
         }
     }
-
 }

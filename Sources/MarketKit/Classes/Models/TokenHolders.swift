@@ -1,5 +1,5 @@
-import ObjectMapper
 import Foundation
+import ObjectMapper
 
 public struct TokenHolders: ImmutableMappable {
     public let count: Decimal
@@ -22,7 +22,5 @@ public struct TokenHolders: ImmutableMappable {
             percentage = try map.value("percentage", using: Transform.stringToDecimalTransform)
             balance = try map.value("balance", using: Transform.stringToDecimalTransform)
         }
-
     }
-
 }

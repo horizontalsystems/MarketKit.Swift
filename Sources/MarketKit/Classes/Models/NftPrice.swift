@@ -8,5 +8,4 @@ public struct NftPrice {
         self.token = token
         self.value = value
     }
-
 }
