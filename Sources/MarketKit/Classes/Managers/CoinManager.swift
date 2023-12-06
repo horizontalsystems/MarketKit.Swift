@@ -25,7 +25,7 @@ extension CoinManager {
 
     func topFullCoins(limit: Int) throws -> [FullCoin] {
         try storage.topCoinTokenRecords(limit: limit)
-            .map { $0.fullCoin }
+            .map(\.fullCoin)
     }
 
     func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
