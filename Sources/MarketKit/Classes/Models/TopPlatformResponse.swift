@@ -20,14 +20,14 @@ struct TopPlatformResponse: ImmutableMappable {
 
     var topPlatform: TopPlatform {
         var ranks = [HsTimePeriod: Int]()
-        ranks[.day1] = stats.oneDayRank
-        ranks[.week1] = stats.sevenDaysRank
-        ranks[.month1] = stats.thirtyDaysRank
+        ranks[.week1] = stats.rank1w
+        ranks[.month1] = stats.rank1m
+        ranks[.month3] = stats.rank3m
 
         var changes = [HsTimePeriod: Decimal]()
-        changes[.day1] = stats.oneDayChange
-        changes[.week1] = stats.sevenDaysChange
-        changes[.month1] = stats.thirtyDaysChange
+        changes[.week1] = stats.change1w
+        changes[.month1] = stats.change1m
+        changes[.month3] = stats.change3m
 
         return TopPlatform(
             blockchain: Blockchain(type: BlockchainType(uid: uid), name: name, explorerUrl: nil),
@@ -42,21 +42,21 @@ struct TopPlatformResponse: ImmutableMappable {
 
 extension TopPlatformResponse {
     struct StatsResponse: ImmutableMappable {
-        let oneDayRank: Int?
-        let sevenDaysRank: Int?
-        let thirtyDaysRank: Int?
-        let oneDayChange: Decimal?
-        let sevenDaysChange: Decimal?
-        let thirtyDaysChange: Decimal?
+        let rank1w: Int?
+        let rank1m: Int?
+        let rank3m: Int?
+        let change1w: Decimal?
+        let change1m: Decimal?
+        let change3m: Decimal?
 
         init(map: Map) throws {
-            oneDayRank = try? map.value("rank_1d", using: Transform.stringToIntTransform)
-            sevenDaysRank = try? map.value("rank_1w", using: Transform.stringToIntTransform)
-            thirtyDaysRank = try? map.value("rank_1m", using: Transform.stringToIntTransform)
+            rank1w = try? map.value("rank_1w", using: Transform.stringToIntTransform)
+            rank1m = try? map.value("rank_1m", using: Transform.stringToIntTransform)
+            rank3m = try? map.value("rank_3m", using: Transform.stringToIntTransform)
 
-            oneDayChange = try? map.value("change_1d", using: Transform.stringToDecimalTransform)
-            sevenDaysChange = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
-            thirtyDaysChange = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
+            change1w = try? map.value("change_1w", using: Transform.stringToDecimalTransform)
+            change1m = try? map.value("change_1m", using: Transform.stringToDecimalTransform)
+            change3m = try? map.value("change_3m", using: Transform.stringToDecimalTransform)
         }
     }
 }
