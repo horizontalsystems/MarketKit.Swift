@@ -223,8 +223,12 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/coins/\(coinUid)/price_history", method: .get, parameters: parameters, headers: headers())
     }
 
-    func coinPriceChartStart(coinUid: String) async throws -> CoinPriceStart {
+    func coinPriceChartStart(coinUid: String) async throws -> ChartStart {
         try await networkManager.fetch(url: "\(baseUrl)/v1/coins/\(coinUid)/price_chart_start", method: .get, headers: headers())
+    }
+
+    func topPlatformMarketCapStart(platform: String) async throws -> ChartStart {
+        try await networkManager.fetch(url: "\(baseUrl)/v1/top-platforms/\(platform)/market_chart_start", method: .get, headers: headers())
     }
 
     func coinPriceChart(coinUid: String, currencyCode: String, interval: HsPointTimePeriod, fromTimestamp: TimeInterval? = nil) async throws -> [ChartCoinPriceResponse] {
@@ -309,14 +313,18 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/top-platforms/\(blockchain)/list", method: .get, parameters: parameters, headers: headers(apiTag: apiTag))
     }
 
-    func topPlatformMarketCapChart(platform: String, currencyCode: String?, timePeriod: HsTimePeriod) async throws -> [CategoryMarketPoint] {
-        var parameters: Parameters = [:]
+    func topPlatformMarketCapChart(platform: String, currencyCode: String?, interval: HsPointTimePeriod, fromTimestamp: TimeInterval? = nil) async throws -> [CategoryMarketPoint] {
+        var parameters: Parameters = [
+            "interval": interval.rawValue,
+        ]
         if let currencyCode {
             parameters["currency"] = currencyCode.lowercased()
         }
-        parameters["interval"] = timePeriod.rawValue
+        if let fromTimestamp {
+            parameters["from_timestamp"] = Int(fromTimestamp)
+        }
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/top-platforms/\(platform)/chart", method: .get, parameters: parameters, headers: headers())
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/top-platforms/\(platform)/market_chart", method: .get, parameters: parameters, headers: headers())
     }
 
     // Pro Charts
