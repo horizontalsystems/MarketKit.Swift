@@ -246,7 +246,7 @@ public extension Kit {
         return points
     }
 
-    func chartPoints(coinUid: String, currencyCode: String, periodType: HsPeriodType) async throws -> (TimeInterval, [ChartPoint]) {
+    private func intervalData(periodType: HsPeriodType) -> (interval: HsPointTimePeriod, timestamp: TimeInterval?, visible: TimeInterval) {
         let interval: HsPointTimePeriod
 
         var fromTimestamp: TimeInterval?
@@ -267,10 +267,21 @@ public extension Kit {
             visibleTimestamp = startTime
         }
 
-        let points = try await hsProvider.coinPriceChart(coinUid: coinUid, currencyCode: currencyCode, interval: interval, fromTimestamp: fromTimestamp)
-            .map(\.chartPoint)
+        return (interval: interval, timestamp: fromTimestamp, visible: visibleTimestamp)
+    }
 
-        return (visibleTimestamp, points)
+    func chartPoints(coinUid: String, currencyCode: String, periodType: HsPeriodType) async throws -> (TimeInterval, [ChartPoint]) {
+        let data = intervalData(periodType: periodType)
+
+        let points = try await hsProvider.coinPriceChart(
+            coinUid: coinUid,
+            currencyCode: currencyCode,
+            interval: data.interval,
+            fromTimestamp: data.timestamp
+        )
+        .map(\.chartPoint)
+
+        return (data.visible, points)
     }
 
     // Posts
@@ -297,8 +308,19 @@ public extension Kit {
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func topPlatformMarketCapChart(platform: String, currencyCode: String?, timePeriod: HsTimePeriod) async throws -> [CategoryMarketPoint] {
-        try await hsProvider.topPlatformMarketCapChart(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
+    func topPlatformMarketCapStart(platform: String) async throws -> TimeInterval {
+        try await hsProvider.topPlatformMarketCapStart(platform: platform).timestamp
+    }
+
+    func topPlatformMarketCapChart(platform: String, currencyCode: String?, periodType: HsPeriodType) async throws -> [CategoryMarketPoint] {
+        let data = intervalData(periodType: periodType)
+
+        return try await hsProvider.topPlatformMarketCapChart(
+            platform: platform,
+            currencyCode: currencyCode,
+            interval: data.interval,
+            fromTimestamp: data.timestamp
+        )
     }
 
     // Pro Data
