@@ -459,16 +459,10 @@ extension HsProvider {
         _ = try await networkManager.fetchJson(url: "\(baseUrl)/v1/support/start-chat", method: .post, parameters: parameters, headers: proHeaders())
     }
 
-    // Verified Exchanges
+    // Market Tickers
 
-    func verifiedExchangeUids() async throws -> [String] {
-        let json = try await networkManager.fetchJson(url: "\(baseUrl)/v1/exchanges/whitelist", headers: headers())
-
-        guard let uids = json as? [String] else {
-            throw NetworkManager.TaskError()
-        }
-
-        return uids
+    func marketTickers(coinUid: String) async throws -> [MarketTicker] {
+        try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/tickers/\(coinUid)", method: .get, headers: headers())
     }
 }
 
