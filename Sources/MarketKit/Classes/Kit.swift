@@ -7,7 +7,6 @@ public class Kit {
     private let marketOverviewManager: MarketOverviewManager
     private let hsDataSyncer: HsDataSyncer
     private let coinSyncer: CoinSyncer
-    private let exchangeSyncer: ExchangeSyncer
     private let coinPriceManager: CoinPriceManager
     private let coinPriceSyncManager: CoinPriceSyncManager
     private let coinHistoricalPriceManager: CoinHistoricalPriceManager
@@ -15,16 +14,13 @@ public class Kit {
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let hsProvider: HsProvider
     private let defiYieldProvider: DefiYieldProvider
-    private let coinGeckoProvider: CoinGeckoProvider
-    private let exchangeManager: ExchangeManager
 
-    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, exchangeSyncer: ExchangeSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider, defiYieldProvider: DefiYieldProvider, coinGeckoProvider: CoinGeckoProvider, exchangeManager: ExchangeManager) {
+    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider, defiYieldProvider: DefiYieldProvider) {
         self.coinManager = coinManager
         self.nftManager = nftManager
         self.marketOverviewManager = marketOverviewManager
         self.hsDataSyncer = hsDataSyncer
         self.coinSyncer = coinSyncer
-        self.exchangeSyncer = exchangeSyncer
         self.coinPriceManager = coinPriceManager
         self.coinPriceSyncManager = coinPriceSyncManager
         self.coinHistoricalPriceManager = coinHistoricalPriceManager
@@ -32,8 +28,6 @@ public class Kit {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.hsProvider = hsProvider
         self.defiYieldProvider = defiYieldProvider
-        self.coinGeckoProvider = coinGeckoProvider
-        self.exchangeManager = exchangeManager
 
         coinSyncer.initialSync()
     }
@@ -42,7 +36,6 @@ public class Kit {
 public extension Kit {
     func sync() {
         hsDataSyncer.sync()
-        exchangeSyncer.sync()
     }
 
     func set(proAuthToken: String?) {
@@ -144,16 +137,7 @@ public extension Kit {
     }
 
     func marketTickers(coinUid: String) async throws -> [MarketTicker] {
-        guard let coin = try? coinManager.coin(uid: coinUid), let coinGeckoId = coin.coinGeckoId else {
-            return []
-        }
-
-        let response = try await coinGeckoProvider.marketTickers(coinId: coinGeckoId)
-
-        let coinUids = (response.tickers.map { [$0.coinId, $0.targetCoinId] }).flatMap { $0 }.compactMap { $0 }
-        let coins = (try? coinManager.coins(uids: coinUids)) ?? []
-
-        return response.marketTickers(verifiedExchangeUids: exchangeManager.verifiedExchangeUids(), imageUrls: exchangeManager.imageUrlsMap(ids: response.exchangeIds), coins: coins)
+        try await hsProvider.marketTickers(coinUid: coinUid)
     }
 
     func tokenHolders(coinUid: String, blockchainUid: String) async throws -> TokenHolders {

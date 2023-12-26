@@ -17,11 +17,6 @@ extension Kit {
 
         let syncerStateStorage = try SyncerStateStorage(dbPool: dbPool)
 
-        let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager)
-        let exchangeStorage = try ExchangeStorage(dbPool: dbPool)
-        let exchangeManager = ExchangeManager(storage: exchangeStorage)
-        let exchangeSyncer = ExchangeSyncer(exchangeManager: exchangeManager, coinGeckoProvider: coinGeckoProvider, syncerStateStorage: syncerStateStorage)
-
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, appVersion: appVersion, appId: appId, apiKey: hsProviderApiKey)
         let hsNftProvider = HsNftProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, apiKey: hsProviderApiKey)
@@ -32,9 +27,7 @@ extension Kit {
         let marketOverviewManager = MarketOverviewManager(nftManager: nftManager, hsProvider: hsProvider)
 
         let coinSyncer = CoinSyncer(storage: coinStorage, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
-        let verifiedExchangeSyncer = VerifiedExchangeSyncer(exchangeManager: exchangeManager, hsProvider: hsProvider, syncerStateStorage: syncerStateStorage)
-
-        let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, verifiedExchangeSyncer: verifiedExchangeSyncer, hsProvider: hsProvider)
+        let hsDataSyncer = HsDataSyncer(coinSyncer: coinSyncer, hsProvider: hsProvider)
 
         let coinPriceStorage = try CoinPriceStorage(dbPool: dbPool)
         let coinPriceManager = CoinPriceManager(storage: coinPriceStorage)
@@ -56,16 +49,13 @@ extension Kit {
             marketOverviewManager: marketOverviewManager,
             hsDataSyncer: hsDataSyncer,
             coinSyncer: coinSyncer,
-            exchangeSyncer: exchangeSyncer,
             coinPriceManager: coinPriceManager,
             coinPriceSyncManager: coinPriceSyncManager,
             coinHistoricalPriceManager: coinHistoricalPriceManager,
             postManager: postManager,
             globalMarketInfoManager: globalMarketInfoManager,
             hsProvider: hsProvider,
-            defiYieldProvider: defiYieldProvider,
-            coinGeckoProvider: coinGeckoProvider,
-            exchangeManager: exchangeManager
+            defiYieldProvider: defiYieldProvider
         )
     }
 
