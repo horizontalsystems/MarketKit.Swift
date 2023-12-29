@@ -17,6 +17,7 @@ extension MarketOverviewManager {
         return MarketOverview(
             globalMarketPoints: response.globalMarketPoints,
             coinCategories: response.coinCategories,
+            topPairs: response.topPairs,
             topPlatforms: response.topPlatforms.map(\.topPlatform),
             collections: [
                 .day1: nftManager.topCollections(responses: response.collections1d),

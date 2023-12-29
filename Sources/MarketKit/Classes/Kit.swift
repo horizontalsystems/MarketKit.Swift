@@ -280,6 +280,12 @@ public extension Kit {
         try await globalMarketInfoManager.globalMarketPoints(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    // Pairs
+
+    func topPairs(currencyCode: String) async throws -> [MarketPair] {
+        try await hsProvider.topPairs(currencyCode: currencyCode)
+    }
+
     // Platforms
 
     func topPlatforms(currencyCode: String) async throws -> [TopPlatform] {
