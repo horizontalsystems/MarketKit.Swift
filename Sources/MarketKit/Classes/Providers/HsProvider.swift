@@ -295,6 +295,16 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/global-markets", method: .get, parameters: parameters, headers: headers())
     }
 
+    // Top Pairs
+
+    func topPairs(currencyCode: String) async throws -> [MarketPair] {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/top-pairs", method: .get, parameters: parameters, headers: headers())
+    }
+
     // Top Platforms
 
     func topPlatforms(currencyCode: String) async throws -> [TopPlatformResponse] {
