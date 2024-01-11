@@ -120,7 +120,7 @@ extension HsProvider {
     func marketInfos(coinUids: [String], currencyCode: String, apiTag: String) async throws -> [MarketInfoRaw] {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "fields": "price,price_change_24h,market_cap,market_cap_rank,total_volume",
+            "fields": "price,price_change_24h,price_change_7d,price_change_30d,market_cap,market_cap_rank,total_volume",
             "currency": currencyCode.lowercased(),
         ]
 
