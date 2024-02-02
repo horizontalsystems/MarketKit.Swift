@@ -15,6 +15,10 @@ struct MarketInfoRaw: ImmutableMappable {
     let totalVolume: Decimal?
     let athPercentage: Decimal?
     let atlPercentage: Decimal?
+    let listedOnTopExchanges: Bool?
+    let solidCex: Bool?
+    let solidDex: Bool?
+    let goodDistribution: Bool?
 
     public init(map: Map) throws {
         uid = try map.value("uid")
@@ -30,6 +34,10 @@ struct MarketInfoRaw: ImmutableMappable {
         totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
         athPercentage = try? map.value("ath_percentage", using: Transform.stringToDecimalTransform)
         atlPercentage = try? map.value("atl_percentage", using: Transform.stringToDecimalTransform)
+        listedOnTopExchanges = try? map.value("listed_on_top_exchanges")
+        solidCex = try? map.value("solid_cex")
+        solidDex = try? map.value("solid_dex")
+        goodDistribution = try? map.value("good_distribution")
     }
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
@@ -46,7 +54,11 @@ struct MarketInfoRaw: ImmutableMappable {
             marketCapRank: marketCapRank,
             totalVolume: totalVolume,
             athPercentage: athPercentage,
-            atlPercentage: atlPercentage
+            atlPercentage: atlPercentage,
+            listedOnTopExchanges: listedOnTopExchanges,
+            solidCex: solidCex,
+            solidDex: solidDex,
+            goodDistribution: goodDistribution
         )
     }
 }

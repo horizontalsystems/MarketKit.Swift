@@ -7,7 +7,7 @@ public enum HsPointTimePeriod: String, CaseIterable {
     case hour8 = "8h"
     case day1 = "1d"
     case week1 = "1w"
-    case month1 = "1m"
+    case month1 = "1M"
 
     var interval: TimeInterval {
         switch self {

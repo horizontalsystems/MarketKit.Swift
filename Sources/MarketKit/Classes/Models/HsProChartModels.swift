@@ -16,6 +16,7 @@ public struct Analytics: ImmutableMappable {
     public let reports: Int?
     public let fundsInvested: Decimal?
     public let treasuries: Decimal?
+    public let issueBlockchains: [IssueBlockchain]?
 
     public init(map: Map) throws {
         cexVolume = try? map.value("cex_volume")
@@ -32,6 +33,7 @@ public struct Analytics: ImmutableMappable {
         reports = try? map.value("reports")
         fundsInvested = try? map.value("funds_invested", using: Transform.stringToDecimalTransform)
         treasuries = try? map.value("treasuries", using: Transform.stringToDecimalTransform)
+        issueBlockchains = try? map.value("issues")
     }
 
     public struct ExVolume: ImmutableMappable {
@@ -159,6 +161,40 @@ public struct Analytics: ImmutableMappable {
 
         public var chartPoint: ChartPoint {
             ChartPoint(timestamp: timestamp, value: tvl)
+        }
+    }
+
+    public struct IssueBlockchain: ImmutableMappable {
+        public let blockchain: String
+        public let issues: [Issue]
+
+        public init(map: Map) throws {
+            blockchain = try map.value("blockchain")
+            issues = try map.value("issues")
+        }
+    }
+
+    public struct Issue: ImmutableMappable {
+        public let issue: String?
+        public let title: String?
+        public let description: String?
+        public let issues: [Issue]?
+
+        public init(map: Map) throws {
+            issue = try? map.value("issue")
+            title = try? map.value("title")
+            description = try? map.value("description")
+            issues = try? map.value("issues")
+        }
+
+        public struct Issue: ImmutableMappable {
+            public let impact: String?
+            public let description: String?
+
+            public init(map: Map) throws {
+                impact = try map.value("impact")
+                description = try? map.value("description")
+            }
         }
     }
 }
