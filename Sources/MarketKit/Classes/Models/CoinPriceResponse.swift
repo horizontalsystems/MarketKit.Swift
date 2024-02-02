@@ -5,10 +5,10 @@ import ObjectMapper
 struct CoinPriceResponse: ImmutableMappable {
     let uid: String
     let price: Decimal
-    let priceChange: Decimal
+    let priceChange: Decimal?
     let lastUpdated: TimeInterval
 
-    init(uid: String, price: Decimal, priceChange: Decimal, lastUpdated: TimeInterval) {
+    init(uid: String, price: Decimal, priceChange: Decimal?, lastUpdated: TimeInterval) {
         self.uid = uid
         self.price = price
         self.priceChange = priceChange
@@ -18,7 +18,7 @@ struct CoinPriceResponse: ImmutableMappable {
     init(map: Map) throws {
         uid = try map.value("uid")
         price = try map.value("price", using: Transform.stringToDecimalTransform)
-        priceChange = try map.value("price_change_24h", using: Transform.stringToDecimalTransform)
+        priceChange = try? map.value("price_change_24h", using: Transform.stringToDecimalTransform)
         lastUpdated = try map.value("last_updated")
     }
 

@@ -109,12 +109,11 @@ extension HsProvider {
     func advancedMarketInfos(top: Int, currencyCode: String) async throws -> [MarketInfoRaw] {
         let parameters: Parameters = [
             "limit": top,
-            "fields": "price,market_cap,market_cap_rank,total_volume,price_change_24h,price_change_7d,price_change_14d,price_change_30d,price_change_200d,price_change_1y,ath_percentage,atl_percentage",
             "currency": currencyCode.lowercased(),
             "order_by_rank": "true",
         ]
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers(apiTag: "advanced_search"))
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/coins/filter", method: .get, parameters: parameters, headers: headers(apiTag: "advanced_search"))
     }
 
     func marketInfos(coinUids: [String], currencyCode: String, apiTag: String) async throws -> [MarketInfoRaw] {
