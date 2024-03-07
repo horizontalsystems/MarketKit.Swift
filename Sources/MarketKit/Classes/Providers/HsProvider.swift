@@ -371,7 +371,6 @@ extension HsProvider {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
         ]
-
         return try await networkManager.fetch(url: "\(baseUrl)/v1/analytics/\(coinUid)", method: .get, parameters: parameters, headers: proHeaders(apiTag: apiTag))
     }
 
