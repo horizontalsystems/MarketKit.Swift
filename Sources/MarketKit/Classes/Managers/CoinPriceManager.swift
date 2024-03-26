@@ -16,7 +16,7 @@ class CoinPriceManager {
     private func notify(coinPrices: [CoinPrice], currencyCode: String) {
         var coinPriceMap = [String: CoinPrice]()
 
-        coinPrices.forEach { coinPrice in
+        for coinPrice in coinPrices {
             coinPriceMap[coinPrice.coinUid] = coinPrice
         }
 

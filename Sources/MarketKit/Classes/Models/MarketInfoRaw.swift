@@ -19,6 +19,7 @@ struct MarketInfoRaw: ImmutableMappable {
     let solidCex: Bool?
     let solidDex: Bool?
     let goodDistribution: Bool?
+    let indicatorsResult: String?
 
     public init(map: Map) throws {
         uid = try map.value("uid")
@@ -38,6 +39,11 @@ struct MarketInfoRaw: ImmutableMappable {
         solidCex = try? map.value("solid_cex")
         solidDex = try? map.value("solid_dex")
         goodDistribution = try? map.value("good_distribution")
+        indicatorsResult = try? map.value("indicators_result")
+    }
+
+    private var advice: TechnicalAdvice.Advice? {
+        indicatorsResult.flatMap { .init(rawValue: $0) }
     }
 
     func marketInfo(fullCoin: FullCoin) -> MarketInfo {
@@ -58,7 +64,8 @@ struct MarketInfoRaw: ImmutableMappable {
             listedOnTopExchanges: listedOnTopExchanges,
             solidCex: solidCex,
             solidDex: solidDex,
-            goodDistribution: goodDistribution
+            goodDistribution: goodDistribution,
+            indicatorsResult: advice
         )
     }
 }
