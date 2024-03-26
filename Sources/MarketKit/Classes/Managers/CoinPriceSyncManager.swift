@@ -13,8 +13,8 @@ struct CoinPriceKey: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(tag)
         hasher.combine(currencyCode)
-        ids.forEach {
-            hasher.combine($0)
+        for id in ids {
+            hasher.combine(id)
         }
     }
 
@@ -54,7 +54,7 @@ class CoinPriceSyncManager {
     private func observingCoinUids(currencyCode: String) -> Set<String> {
         var coinUids = Set<String>()
 
-        subjects.forEach { existingKey, _ in
+        for (existingKey, _) in subjects {
             if existingKey.currencyCode == currencyCode {
                 coinUids.formUnion(Set(existingKey.coinUids))
             }
@@ -66,7 +66,7 @@ class CoinPriceSyncManager {
     private func observingCoinUids(tag: String, currencyCode: String) -> Set<String> {
         var coinUids = Set<String>()
 
-        subjects.forEach { existingKey, _ in
+        for (existingKey, _) in subjects {
             if existingKey.tag == tag, existingKey.currencyCode == currencyCode {
                 coinUids.formUnion(Set(existingKey.coinUids))
             }
@@ -77,7 +77,7 @@ class CoinPriceSyncManager {
 
     private var observingCurrencies: Set<String> {
         var currencyCodes = Set<String>()
-        subjects.forEach { existKey, _ in
+        for (existKey, _) in subjects {
             currencyCodes.insert(existKey.currencyCode)
         }
         return currencyCodes
@@ -173,7 +173,7 @@ extension CoinPriceSyncManager {
 extension CoinPriceSyncManager: ICoinPriceManagerDelegate {
     func didUpdate(coinPriceMap: [String: CoinPrice], currencyCode: String) {
         queue.async {
-            self.subjects.forEach { key, subject in
+            for (key, subject) in self.subjects {
                 // send new rates for all subject which has at least one coinType in key
                 if key.currencyCode == currencyCode {
                     let coinPrices = coinPriceMap.filter { coinUid, _ in

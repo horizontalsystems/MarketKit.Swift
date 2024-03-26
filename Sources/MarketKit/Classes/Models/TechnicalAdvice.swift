@@ -29,7 +29,7 @@ public struct TechnicalAdvice: ImmutableMappable {
 }
 
 public extension TechnicalAdvice {
-    enum Advice: String {
+    enum Advice: String, CaseIterable {
         case oversold
         case strongBuy = "buy_signal"
         case buy
@@ -37,5 +37,12 @@ public extension TechnicalAdvice {
         case sell
         case strongSell = "sell_signal"
         case overbought
+
+        public var isRisky: Bool {
+            switch self {
+            case .oversold, .overbought: return true
+            default: return false
+            }
+        }
     }
 }

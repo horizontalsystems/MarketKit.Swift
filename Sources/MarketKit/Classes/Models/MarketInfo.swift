@@ -18,4 +18,5 @@ public struct MarketInfo {
     public let solidCex: Bool?
     public let solidDex: Bool?
     public let goodDistribution: Bool?
+    public let indicatorsResult: TechnicalAdvice.Advice?
 }
