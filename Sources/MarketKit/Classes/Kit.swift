@@ -106,8 +106,8 @@ public extension Kit {
 
     // Market Info
 
-    func marketInfos(top: Int = 250, currencyCode: String, defi: Bool = false, apiTag: String) async throws -> [MarketInfo] {
-        let rawMarketInfos = try await hsProvider.marketInfos(top: top, currencyCode: currencyCode, defi: defi, apiTag: apiTag)
+    func marketInfos(top: Int = 250, currencyCode: String, defi: Bool = false) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(top: top, currencyCode: currencyCode, defi: defi)
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
@@ -116,18 +116,18 @@ public extension Kit {
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfos(coinUids: [String], currencyCode: String, apiTag: String) async throws -> [MarketInfo] {
-        let rawMarketInfos = try await hsProvider.marketInfos(coinUids: coinUids, currencyCode: currencyCode, apiTag: apiTag)
+    func marketInfos(coinUids: [String], currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(coinUids: coinUids, currencyCode: currencyCode)
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfos(categoryUid: String, currencyCode: String, apiTag: String) async throws -> [MarketInfo] {
-        let rawMarketInfos = try await hsProvider.marketInfos(categoryUid: categoryUid, currencyCode: currencyCode, apiTag: apiTag)
+    func marketInfos(categoryUid: String, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.marketInfos(categoryUid: categoryUid, currencyCode: currencyCode)
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfoOverview(coinUid: String, currencyCode: String, languageCode: String, apiTag: String) async throws -> MarketInfoOverview {
-        let response = try await hsProvider.marketInfoOverview(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode, apiTag: apiTag)
+    func marketInfoOverview(coinUid: String, currencyCode: String, languageCode: String) async throws -> MarketInfoOverview {
+        let response = try await hsProvider.marketInfoOverview(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
 
         guard let fullCoin = try? coinManager.fullCoin(uid: coinUid) else {
             throw Kit.KitError.noFullCoin
@@ -164,8 +164,8 @@ public extension Kit {
         try await hsProvider.marketInfoGlobalTvl(platform: platform, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
-    func defiCoins(currencyCode: String, apiTag: String) async throws -> [DefiCoin] {
-        let rawDefiCoins = try await hsProvider.defiCoins(currencyCode: currencyCode, apiTag: apiTag)
+    func defiCoins(currencyCode: String) async throws -> [DefiCoin] {
+        let rawDefiCoins = try await hsProvider.defiCoins(currencyCode: currencyCode)
         return coinManager.defiCoins(rawDefiCoins: rawDefiCoins)
     }
 
@@ -293,8 +293,8 @@ public extension Kit {
         return responses.map(\.topPlatform)
     }
 
-    func topPlatformMarketInfos(blockchain: String, currencyCode: String, apiTag: String) async throws -> [MarketInfo] {
-        let rawMarketInfos = try await hsProvider.topPlatformCoinsList(blockchain: blockchain, currencyCode: currencyCode, apiTag: apiTag)
+    func topPlatformMarketInfos(blockchain: String, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.topPlatformCoinsList(blockchain: blockchain, currencyCode: currencyCode)
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
@@ -315,12 +315,12 @@ public extension Kit {
 
     // Pro Data
 
-    func analytics(coinUid: String, currencyCode: String, apiTag: String) async throws -> Analytics {
-        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode, apiTag: apiTag)
+    func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
+        try await hsProvider.analytics(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func analyticsPreview(coinUid: String, apiTag: String) async throws -> AnalyticsPreview {
-        try await hsProvider.analyticsPreview(coinUid: coinUid, apiTag: apiTag)
+    func analyticsPreview(coinUid: String) async throws -> AnalyticsPreview {
+        try await hsProvider.analyticsPreview(coinUid: coinUid)
     }
 
     func cexVolumes(coinUid: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> AggregatedChartPoints {
@@ -447,6 +447,12 @@ public extension Kit {
 
     func syncInfo() -> SyncInfo {
         coinSyncer.syncInfo()
+    }
+
+    // Stats
+
+    func send(stats: Any, appVersion: String, appId: String?) async throws {
+        try await hsProvider.send(stats: stats, appVersion: appVersion, appId: appId)
     }
 }
 
