@@ -6,7 +6,7 @@ extension Kit {
     private static let dataDirectoryName = "market-kit"
     private static let databaseFileName = "market-kit"
 
-    public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, defiYieldApiKey: String? = nil, hsProviderApiKey: String? = nil, minLogLevel: Logger.Level = .error) throws -> Kit {
+    public static func instance(hsApiBaseUrl: String, cryptoCompareApiKey: String? = nil, hsProviderApiKey: String? = nil, minLogLevel: Logger.Level = .error) throws -> Kit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
         let networkManager = NetworkManager(logger: logger)
@@ -20,7 +20,6 @@ extension Kit {
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
         let hsProvider = HsProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, apiKey: hsProviderApiKey)
         let hsNftProvider = HsNftProvider(baseUrl: hsApiBaseUrl, networkManager: networkManager, apiKey: hsProviderApiKey)
-        let defiYieldProvider = DefiYieldProvider(networkManager: networkManager, apiKey: defiYieldApiKey)
 
         let coinManager = CoinManager(storage: coinStorage, hsProvider: hsProvider)
         let nftManager = NftManager(coinManager: coinManager, provider: hsNftProvider)
@@ -54,8 +53,7 @@ extension Kit {
             coinHistoricalPriceManager: coinHistoricalPriceManager,
             postManager: postManager,
             globalMarketInfoManager: globalMarketInfoManager,
-            hsProvider: hsProvider,
-            defiYieldProvider: defiYieldProvider
+            hsProvider: hsProvider
         )
     }
 
