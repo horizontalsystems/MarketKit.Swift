@@ -13,9 +13,8 @@ public class Kit {
     private let postManager: PostManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let hsProvider: HsProvider
-    private let defiYieldProvider: DefiYieldProvider
 
-    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider, defiYieldProvider: DefiYieldProvider) {
+    init(coinManager: CoinManager, nftManager: NftManager, marketOverviewManager: MarketOverviewManager, hsDataSyncer: HsDataSyncer, coinSyncer: CoinSyncer, coinPriceManager: CoinPriceManager, coinPriceSyncManager: CoinPriceSyncManager, coinHistoricalPriceManager: CoinHistoricalPriceManager, postManager: PostManager, globalMarketInfoManager: GlobalMarketInfoManager, hsProvider: HsProvider) {
         self.coinManager = coinManager
         self.nftManager = nftManager
         self.marketOverviewManager = marketOverviewManager
@@ -27,7 +26,6 @@ public class Kit {
         self.postManager = postManager
         self.globalMarketInfoManager = globalMarketInfoManager
         self.hsProvider = hsProvider
-        self.defiYieldProvider = defiYieldProvider
 
         coinSyncer.initialSync()
     }
@@ -142,10 +140,6 @@ public extension Kit {
 
     func tokenHolders(coinUid: String, blockchainUid: String) async throws -> TokenHolders {
         try await hsProvider.tokenHolders(coinUid: coinUid, blockchainUid: blockchainUid)
-    }
-
-    func auditReports(addresses: [String]) async throws -> [Auditor] {
-        try await defiYieldProvider.auditReports(addresses: addresses)
     }
 
     func investments(coinUid: String) async throws -> [CoinInvestment] {
