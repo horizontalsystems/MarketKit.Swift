@@ -8,8 +8,6 @@ class Singleton {
     init() {
         kit = try! Kit.instance(
             hsApiBaseUrl: "https://api-dev.blocksdecoded.com",
-            appVersion: "1.0.0",
-            appId: "app-id",
             minLogLevel: .error
         )
 

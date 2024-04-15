@@ -36,7 +36,7 @@ class MarketInfosController: UIViewController {
 
     private func syncCoins() {
         Task { [weak self] in
-            self?.marketInfos = try await Singleton.instance.kit.marketInfos(top: 250, currencyCode: "USD", apiTag: "demo-app")
+            self?.marketInfos = try await Singleton.instance.kit.marketInfos(top: 250, currencyCode: "USD")
             self?.tableView.reloadData()
         }
     }
