@@ -457,8 +457,12 @@ extension HsProvider {
 
     // Market Tickers
 
-    func marketTickers(coinUid: String) async throws -> [MarketTicker] {
-        try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/tickers/\(coinUid)", method: .get, headers: headers)
+    func marketTickers(coinUid: String, currencyCode: String) async throws -> [MarketTicker] {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/tickers/\(coinUid)", method: .get, parameters: parameters, headers: headers)
     }
 
     // Stats
