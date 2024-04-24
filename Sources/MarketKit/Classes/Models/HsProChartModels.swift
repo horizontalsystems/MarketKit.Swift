@@ -201,7 +201,7 @@ public struct Analytics: ImmutableMappable {
             }
         }
     }
-    
+
     public struct Audit: ImmutableMappable {
         public let name: String
         public let date: String
@@ -217,7 +217,6 @@ public struct Analytics: ImmutableMappable {
             partnerName = try? map.value("partner_name")
         }
     }
-
 }
 
 public struct AnalyticsPreview: ImmutableMappable {

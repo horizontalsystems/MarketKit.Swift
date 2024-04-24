@@ -134,8 +134,8 @@ public extension Kit {
         return response.marketInfoOverview(fullCoin: fullCoin)
     }
 
-    func marketTickers(coinUid: String) async throws -> [MarketTicker] {
-        try await hsProvider.marketTickers(coinUid: coinUid)
+    func marketTickers(coinUid: String, currencyCode: String) async throws -> [MarketTicker] {
+        try await hsProvider.marketTickers(coinUid: coinUid, currencyCode: currencyCode)
     }
 
     func tokenHolders(coinUid: String, blockchainUid: String) async throws -> TokenHolders {
@@ -191,12 +191,12 @@ public extension Kit {
         coinPriceManager.coinPriceMap(coinUids: coinUids, currencyCode: currencyCode)
     }
 
-    func coinPricePublisher(tag: String, coinUid: String, currencyCode: String) -> AnyPublisher<CoinPrice, Never> {
-        coinPriceSyncManager.coinPricePublisher(tag: tag, coinUid: coinUid, currencyCode: currencyCode)
+    func coinPricePublisher(coinUid: String, currencyCode: String) -> AnyPublisher<CoinPrice, Never> {
+        coinPriceSyncManager.coinPricePublisher(coinUid: coinUid, currencyCode: currencyCode)
     }
 
-    func coinPriceMapPublisher(tag: String, coinUids: [String], currencyCode: String) -> AnyPublisher<[String: CoinPrice], Never> {
-        coinPriceSyncManager.coinPriceMapPublisher(tag: tag, coinUids: coinUids, currencyCode: currencyCode)
+    func coinPriceMapPublisher(coinUids: [String], currencyCode: String) -> AnyPublisher<[String: CoinPrice], Never> {
+        coinPriceSyncManager.coinPriceMapPublisher(coinUids: coinUids, currencyCode: currencyCode)
     }
 
     // Coin Historical Prices
