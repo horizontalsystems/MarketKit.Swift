@@ -94,6 +94,17 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
     }
 
+    func topCoinsMarketInfos(top: Int, currencyCode: String) async throws -> [MarketInfoRaw] {
+        let parameters: Parameters = [
+            "limit": top,
+            "fields": "price,price_change_24h,price_change_7d,price_change_30d,price_change_90d,market_cap,market_cap_rank,total_volume",
+            "currency": currencyCode.lowercased(),
+            "order_by_rank": "true",
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
+    }
+
     func advancedMarketInfos(top: Int, currencyCode: String) async throws -> [MarketInfoRaw] {
         let parameters: Parameters = [
             "limit": top,
@@ -107,7 +118,7 @@ extension HsProvider {
     func marketInfos(coinUids: [String], currencyCode: String) async throws -> [MarketInfoRaw] {
         let parameters: Parameters = [
             "uids": coinUids.joined(separator: ","),
-            "fields": "price,price_change_24h,price_change_7d,price_change_30d,market_cap,market_cap_rank,total_volume",
+            "fields": "price,price_change_24h,price_change_7d,price_change_30d,price_change_90d,market_cap,market_cap_rank,total_volume",
             "currency": currencyCode.lowercased(),
         ]
 

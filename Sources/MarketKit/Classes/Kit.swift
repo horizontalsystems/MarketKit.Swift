@@ -109,6 +109,11 @@ public extension Kit {
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
+    func topCoinsMarketInfos(top: Int, currencyCode: String) async throws -> [MarketInfo] {
+        let rawMarketInfos = try await hsProvider.topCoinsMarketInfos(top: top, currencyCode: currencyCode)
+        return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
+    }
+
     func advancedMarketInfos(top: Int = 250, currencyCode: String) async throws -> [MarketInfo] {
         let rawMarketInfos = try await hsProvider.advancedMarketInfos(top: top, currencyCode: currencyCode)
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)

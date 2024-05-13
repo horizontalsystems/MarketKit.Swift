@@ -7,6 +7,7 @@ public struct MarketInfo {
     public let priceChange7d: Decimal?
     public let priceChange14d: Decimal?
     public let priceChange30d: Decimal?
+    public let priceChange90d: Decimal?
     public let priceChange200d: Decimal?
     public let priceChange1y: Decimal?
     public let marketCap: Decimal?
