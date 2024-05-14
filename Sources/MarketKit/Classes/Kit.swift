@@ -442,6 +442,13 @@ public extension Kit {
         try await hsProvider.requestPersonalSupport(telegramUsername: telegramUsername)
     }
 
+    // Signals
+
+    func signals(coinUids: [String]) async throws -> [String: TechnicalAdvice.Advice] {
+        let responses = try await hsProvider.signals(coinUids: coinUids)
+        return responses.reduce(into: [String: TechnicalAdvice.Advice]()) { $0[$1.uid] = $1.signal }
+    }
+
     // Misc
 
     func syncInfo() -> SyncInfo {

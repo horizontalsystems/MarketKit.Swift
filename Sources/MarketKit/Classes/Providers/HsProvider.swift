@@ -300,7 +300,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased(),
         ]
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/top-pairs", method: .get, parameters: parameters, headers: headers)
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/top-market-pairs", method: .get, parameters: parameters, headers: headers)
     }
 
     // Top Platforms
@@ -476,6 +476,16 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/exchanges/tickers/\(coinUid)", method: .get, parameters: parameters, headers: headers)
     }
 
+    // Signals
+
+    func signals(coinUids: [String]) async throws -> [SignalResponse] {
+        let parameters: Parameters = [
+            "uids": coinUids.joined(separator: ","),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/coins/signals", method: .get, parameters: parameters, headers: headers)
+    }
+
     // Stats
 
     func send(stats: Any, appVersion: String, appId: String?) async throws {
@@ -493,6 +503,16 @@ extension HsProvider {
 }
 
 extension HsProvider {
+    struct SignalResponse: ImmutableMappable {
+        let uid: String
+        let signal: TechnicalAdvice.Advice?
+
+        init(map: Map) throws {
+            uid = try map.value("uid")
+            signal = try TechnicalAdvice.Advice(rawValue: map.value("signal"))
+        }
+    }
+
     struct HistoricalCoinPriceResponse: ImmutableMappable {
         let timestamp: Int
         let price: Decimal
