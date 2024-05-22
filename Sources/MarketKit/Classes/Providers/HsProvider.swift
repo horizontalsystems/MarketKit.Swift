@@ -335,6 +335,24 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/top-platforms/\(platform)/market_chart", method: .get, parameters: parameters, headers: headers)
     }
 
+    // Etf
+
+    func etfs(currencyCode: String) async throws -> [Etf] {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs", method: .get, parameters: parameters, headers: headers)
+    }
+
+    func etfPoints(currencyCode: String) async throws -> [EtfPoint] {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/total", method: .get, parameters: parameters, headers: headers)
+    }
+
     // Pro Charts
 
     private func proData<T: ImmutableMappable>(path: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [T] {

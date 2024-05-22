@@ -312,6 +312,16 @@ public extension Kit {
         )
     }
 
+    // Etf
+
+    func etfs(currencyCode: String) async throws -> [Etf] {
+        try await hsProvider.etfs(currencyCode: currencyCode)
+    }
+
+    func etfPoints(currencyCode: String) async throws -> [EtfPoint] {
+        try await hsProvider.etfPoints(currencyCode: currencyCode)
+    }
+
     // Pro Data
 
     func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
