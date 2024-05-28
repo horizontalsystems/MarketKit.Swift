@@ -412,6 +412,10 @@ public extension Kit {
 
     // Overview
 
+    func marketGlobal(currencyCode: String) async throws -> MarketGlobal {
+        try await hsProvider.marketGlobal(currencyCode: currencyCode)
+    }
+
     func marketOverview(currencyCode: String) async throws -> MarketOverview {
         try await marketOverviewManager.marketOverview(currencyCode: currencyCode)
     }
