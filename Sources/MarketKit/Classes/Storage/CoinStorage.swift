@@ -82,6 +82,12 @@ class CoinStorage {
             }
         }
 
+        migrator.registerMigration("Add image to Coin") { db in
+            try db.alter(table: Coin.databaseTableName) { t in
+                t.add(column: Coin.Columns.image.name, .text)
+            }
+        }
+
         return migrator
     }
 
