@@ -1,6 +1,7 @@
 import Foundation
 
 public struct DefiCoin {
+    public let uid: String
     public let type: DefiCoinType
     public let tvl: Decimal
     public let tvlRank: Int

@@ -177,7 +177,7 @@ extension HsProvider {
             "currency": currencyCode.lowercased(),
         ]
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/defi-protocols", method: .get, parameters: parameters, headers: headers)
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/defi-protocols/list", method: .get, parameters: parameters, headers: headers)
     }
 
     // Coin Categories
