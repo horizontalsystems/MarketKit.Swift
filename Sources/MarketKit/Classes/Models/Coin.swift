@@ -9,21 +9,23 @@ public class Coin: Record, Decodable, ImmutableMappable {
     public let code: String
     public let marketCapRank: Int?
     public let coinGeckoId: String?
+    public let image: String?
 
     override open class var databaseTableName: String {
         "coin"
     }
 
     enum Columns: String, ColumnExpression {
-        case uid, name, code, marketCapRank, coinGeckoId
+        case uid, name, code, marketCapRank, coinGeckoId, image
     }
 
-    public init(uid: String, name: String, code: String, marketCapRank: Int? = nil, coinGeckoId: String? = nil) {
+    public init(uid: String, name: String, code: String, marketCapRank: Int? = nil, coinGeckoId: String? = nil, image: String? = nil) {
         self.uid = uid
         self.name = name
         self.code = code
         self.marketCapRank = marketCapRank
         self.coinGeckoId = coinGeckoId
+        self.image = image
 
         super.init()
     }
@@ -35,6 +37,7 @@ public class Coin: Record, Decodable, ImmutableMappable {
         self.code = code.uppercased()
         marketCapRank = try? map.value("market_cap_rank")
         coinGeckoId = try? map.value("coingecko_id")
+        image = try? map.value("image")
 
         super.init()
     }
@@ -45,6 +48,7 @@ public class Coin: Record, Decodable, ImmutableMappable {
         code >>> map["code"]
         marketCapRank >>> map["market_cap_rank"]
         coinGeckoId >>> map["coingecko_id"]
+        image >>> map["image"]
     }
 
     required init(row: Row) throws {
@@ -53,6 +57,7 @@ public class Coin: Record, Decodable, ImmutableMappable {
         code = row[Columns.code]
         marketCapRank = row[Columns.marketCapRank]
         coinGeckoId = row[Columns.coinGeckoId]
+        image = row[Columns.image]
 
         try super.init(row: row)
     }
@@ -63,6 +68,7 @@ public class Coin: Record, Decodable, ImmutableMappable {
         container[Columns.code] = code
         container[Columns.marketCapRank] = marketCapRank
         container[Columns.coinGeckoId] = coinGeckoId
+        container[Columns.image] = image
     }
 }
 
