@@ -2,7 +2,8 @@ import Foundation
 import ObjectMapper
 
 class DefiCoinRaw: ImmutableMappable {
-    let uid: String?
+    let uid: String
+    let coinUid: String?
     let name: String
     let logo: String
     let tvl: Decimal
@@ -18,7 +19,8 @@ class DefiCoinRaw: ImmutableMappable {
     let chainTvls: [String: Decimal]
 
     required init(map: Map) throws {
-        uid = try? map.value("uid")
+        uid = try map.value("uid")
+        coinUid = try? map.value("coin_uid")
         name = try map.value("name")
         logo = try map.value("logo")
         tvl = try map.value("tvl", using: Transform.stringToDecimalTransform)
@@ -34,7 +36,7 @@ class DefiCoinRaw: ImmutableMappable {
         chainTvls = (try? map.value("chain_tvls", using: Transform.stringToDecimalTransform)) ?? [:]
     }
 
-    func defiCoin(fullCoin: FullCoin?) -> DefiCoin {
+    func defiCoin(uid: String, fullCoin: FullCoin?) -> DefiCoin {
         let type: DefiCoin.DefiCoinType
 
         if let fullCoin {
@@ -44,6 +46,7 @@ class DefiCoinRaw: ImmutableMappable {
         }
 
         return DefiCoin(
+            uid: uid,
             type: type,
             tvl: tvl,
             tvlRank: tvlRank,
