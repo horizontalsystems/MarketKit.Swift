@@ -282,7 +282,27 @@ public extension Kit {
     // Pairs
 
     func topPairs(currencyCode: String) async throws -> [MarketPair] {
-        try await hsProvider.topPairs(currencyCode: currencyCode)
+        let responses = try await hsProvider.topPairs(currencyCode: currencyCode)
+        let uids = responses.compactMap(\.baseCoinUid) + responses.compactMap(\.targetCoinUid)
+        let coins = try coinManager.coins(uids: Array(Set(uids)))
+        let coinsDictionary = Dictionary(grouping: coins, by: { $0.uid })
+
+        return responses.map { response in
+            MarketPair(
+                base: response.base,
+                baseCoinUid: response.baseCoinUid,
+                target: response.target,
+                targetCoinUid: response.targetCoinUid,
+                marketName: response.marketName,
+                marketImageUrl: response.marketImageUrl,
+                rank: response.rank,
+                volume: response.volume,
+                price: response.price,
+                tradeUrl: response.tradeUrl,
+                baseCoin: response.baseCoinUid.flatMap { coinsDictionary[$0]?.first },
+                targetCoin: response.targetCoinUid.flatMap { coinsDictionary[$0]?.first }
+            )
+        }
     }
 
     // Platforms
