@@ -301,7 +301,7 @@ extension HsProvider {
 
     // Top Pairs
 
-    func topPairs(currencyCode: String) async throws -> [MarketPair] {
+    func topPairs(currencyCode: String) async throws -> [MarketPairResponse] {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
         ]
