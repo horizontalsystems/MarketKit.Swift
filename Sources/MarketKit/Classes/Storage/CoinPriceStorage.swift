@@ -17,7 +17,21 @@ class CoinPriceStorage {
                 t.column(CoinPrice.Columns.coinUid.name, .text).notNull()
                 t.column(CoinPrice.Columns.currencyCode.name, .text).notNull()
                 t.column(CoinPrice.Columns.value.name, .text)
-                t.column(CoinPrice.Columns.diff.name, .double)
+                t.column(CoinPrice.Columns.diff24h.name, .double)
+                t.column(CoinPrice.Columns.timestamp.name, .double)
+
+                t.primaryKey([CoinPrice.Columns.coinUid.name, CoinPrice.Columns.currencyCode.name], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("Add diff1d price change") { db in
+            try db.drop(table: CoinPrice.databaseTableName)
+            try db.create(table: CoinPrice.databaseTableName) { t in
+                t.column(CoinPrice.Columns.coinUid.name, .text).notNull()
+                t.column(CoinPrice.Columns.currencyCode.name, .text).notNull()
+                t.column(CoinPrice.Columns.value.name, .text)
+                t.column(CoinPrice.Columns.diff24h.name, .double)
+                t.column(CoinPrice.Columns.diff1d.name, .double)
                 t.column(CoinPrice.Columns.timestamp.name, .double)
 
                 t.primaryKey([CoinPrice.Columns.coinUid.name, CoinPrice.Columns.currencyCode.name], onConflict: .replace)

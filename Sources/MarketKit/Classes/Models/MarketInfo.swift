@@ -4,6 +4,7 @@ public struct MarketInfo {
     public let fullCoin: FullCoin
     public let price: Decimal?
     public let priceChange24h: Decimal?
+    public let priceChange1d: Decimal?
     public let priceChange7d: Decimal?
     public let priceChange14d: Decimal?
     public let priceChange30d: Decimal?

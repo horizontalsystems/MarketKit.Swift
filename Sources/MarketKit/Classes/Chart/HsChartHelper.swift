@@ -3,7 +3,7 @@ import Foundation
 public enum HsChartHelper {
     static func pointInterval(_ interval: HsTimePeriod) -> HsPointTimePeriod {
         switch interval {
-        case .day1: return .minute30
+        case .day1, .hour24: return .minute30
         case .week1: return .hour4
         case .week2: return .hour8
         case .month1, .month3, .month6: return .day1
