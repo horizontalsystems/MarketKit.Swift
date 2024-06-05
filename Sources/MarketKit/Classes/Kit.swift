@@ -238,12 +238,12 @@ public extension Kit {
         switch periodType {
         case let .byPeriod(timePeriod):
             interval = HsChartHelper.pointInterval(timePeriod)
-            visibleTimestamp = Date().timeIntervalSince1970 - timePeriod.range
+            visibleTimestamp = timePeriod.startTimestamp
             fromTimestamp = visibleTimestamp
         case let .byCustomPoints(timePeriod, pointCount): // custom points needed to build chart indicators
             interval = HsChartHelper.pointInterval(timePeriod)
             let customPointInterval = interval.interval * TimeInterval(pointCount)
-            visibleTimestamp = Date().timeIntervalSince1970 - timePeriod.range
+            visibleTimestamp = timePeriod.startTimestamp
             fromTimestamp = visibleTimestamp - customPointInterval
         case let .byStartTime(startTime):
             interval = HsChartHelper.intervalForAll(genesisTime: startTime)
@@ -357,7 +357,7 @@ public extension Kit {
             coinUid: coinUid,
             currencyCode: currencyCode,
             interval: .day1,
-            fromTimestamp: Date().timeIntervalSince1970 - timePeriod.range
+            fromTimestamp: timePeriod.startTimestamp
         )
 
         let points = responses.compactMap(\.volumeChartPoint)
