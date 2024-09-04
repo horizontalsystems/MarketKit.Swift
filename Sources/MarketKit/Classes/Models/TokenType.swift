@@ -17,6 +17,7 @@ public enum TokenType {
     case eip20(address: String)
     case bep2(symbol: String)
     case spl(address: String)
+    case jetton(address: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -40,6 +41,11 @@ public enum TokenType {
             case "spl":
                 if let reference {
                     self = .spl(address: reference)
+                    return
+                }
+            case "the-open-network":
+                if let reference {
+                    self = .jetton(address: reference)
                     return
                 }
             default: ()
@@ -87,6 +93,7 @@ public enum TokenType {
             case "eip20": self = .eip20(address: chunks[1])
             case "bep2": self = .bep2(symbol: chunks[1])
             case "spl": self = .spl(address: chunks[1])
+            case "the-open-network": self = .jetton(address: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -114,6 +121,8 @@ public enum TokenType {
             return ["bep2", symbol].joined(separator: ":")
         case let .spl(address):
             return ["spl", address].joined(separator: ":")
+        case let .jetton(address):
+            return ["the-open-network", address].joined(separator: ":")
         case let .unsupported(type, reference):
             if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -131,6 +140,7 @@ public enum TokenType {
         case let .eip20(address): return (type: "eip20", reference: address)
         case let .bep2(symbol): return (type: "bep2", reference: symbol)
         case let .spl(address): return (type: "spl", reference: address)
+        case let .jetton(address): return (type: "the-open-network", reference: address)
         case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }
