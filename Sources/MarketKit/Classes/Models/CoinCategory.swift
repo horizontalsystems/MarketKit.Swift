@@ -2,6 +2,7 @@ import Foundation
 import ObjectMapper
 
 public class CoinCategory: ImmutableMappable {
+    public let id: Int
     public let uid: String
     public let name: String
     public let descriptions: [String: String]
@@ -11,6 +12,7 @@ public class CoinCategory: ImmutableMappable {
     public let diff1M: Decimal?
 
     public required init(map: Map) throws {
+        id = try map.value("id")
         uid = try map.value("uid")
         name = try map.value("name")
         descriptions = try map.value("description")
@@ -36,6 +38,6 @@ public extension CoinCategory {
 
 extension CoinCategory: CustomStringConvertible {
     public var description: String {
-        "CoinCategory [uid: \(uid); name: \(name); descriptionCount: \(descriptions.count)]"
+        "CoinCategory [uid: \(uid); id: \(id); name: \(name); descriptionCount: \(descriptions.count)]"
     }
 }
