@@ -22,6 +22,7 @@ struct MarketInfoRaw: ImmutableMappable {
     let solidDex: Bool?
     let goodDistribution: Bool?
     let indicatorsResult: String?
+    let categoryIds: [Int]?
 
     public init(map: Map) throws {
         uid = try map.value("uid")
@@ -44,6 +45,7 @@ struct MarketInfoRaw: ImmutableMappable {
         solidDex = try? map.value("solid_dex")
         goodDistribution = try? map.value("good_distribution")
         indicatorsResult = try? map.value("indicators_result")
+        categoryIds = try? map.value("category_ids")
     }
 
     private var advice: TechnicalAdvice.Advice? {
@@ -71,7 +73,8 @@ struct MarketInfoRaw: ImmutableMappable {
             solidCex: solidCex,
             solidDex: solidDex,
             goodDistribution: goodDistribution,
-            indicatorsResult: advice
+            indicatorsResult: advice,
+            categoryIds: categoryIds ?? []
         )
     }
 }
