@@ -1,6 +1,8 @@
 import Foundation
 
 public enum HsTimePeriod: String, CaseIterable {
+    static var all: [Self] = [.day1, .week1, .week2, .month1, .month3, .month6, .year1, .year2, .year5]
+
     case hour24 = "24h"
     case day1 = "1d"
     case week1 = "1w"

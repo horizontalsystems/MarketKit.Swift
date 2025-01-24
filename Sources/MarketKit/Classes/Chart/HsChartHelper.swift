@@ -13,7 +13,7 @@ public enum HsChartHelper {
     }
 
     public static func validIntervals(startTime: TimeInterval?) -> [HsTimePeriod] {
-        guard let startTime else { return HsTimePeriod.allCases }
+        guard let startTime else { return HsTimePeriod.all }
         let genesisDate = Date(timeIntervalSince1970: startTime)
         let dayCount = Calendar.current.dateComponents([.day], from: genesisDate, to: Date()).day
         let monthCount = Calendar.current.dateComponents([.month], from: genesisDate, to: Date()).month
