@@ -15,7 +15,6 @@ public enum TokenType {
     case derived(derivation: Derivation)
     case addressType(type: AddressType)
     case eip20(address: String)
-    case bep2(symbol: String)
     case spl(address: String)
     case jetton(address: String)
     case unsupported(type: String, reference: String?)
@@ -31,11 +30,6 @@ public enum TokenType {
             case "eip20":
                 if let reference {
                     self = .eip20(address: reference)
-                    return
-                }
-            case "bep2":
-                if let reference {
-                    self = .bep2(symbol: reference)
                     return
                 }
             case "spl":
@@ -91,7 +85,6 @@ public enum TokenType {
                 }
                 self = .addressType(type: type)
             case "eip20": self = .eip20(address: chunks[1])
-            case "bep2": self = .bep2(symbol: chunks[1])
             case "spl": self = .spl(address: chunks[1])
             case "the-open-network": self = .jetton(address: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
@@ -117,8 +110,6 @@ public enum TokenType {
             return ["address_type", type.rawValue].joined(separator: ":")
         case let .eip20(address):
             return ["eip20", address].joined(separator: ":")
-        case let .bep2(symbol):
-            return ["bep2", symbol].joined(separator: ":")
         case let .spl(address):
             return ["spl", address].joined(separator: ":")
         case let .jetton(address):
@@ -138,7 +129,6 @@ public enum TokenType {
         case let .derived(derivation): return (type: "derived:\(derivation.rawValue)", reference: nil)
         case let .addressType(type): return (type: "address_type:\(type.rawValue)", reference: nil)
         case let .eip20(address): return (type: "eip20", reference: address)
-        case let .bep2(symbol): return (type: "bep2", reference: symbol)
         case let .spl(address): return (type: "spl", reference: address)
         case let .jetton(address): return (type: "the-open-network", reference: address)
         case let .unsupported(type, reference): return (type: type, reference: reference)

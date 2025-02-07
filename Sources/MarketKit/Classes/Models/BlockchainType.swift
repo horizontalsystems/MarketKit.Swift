@@ -7,7 +7,6 @@ public enum BlockchainType {
     case zcash
     case ethereum
     case binanceSmartChain
-    case binanceChain
     case polygon
     case avalanche
     case optimism
@@ -30,7 +29,6 @@ public enum BlockchainType {
         case "zcash": self = .zcash
         case "ethereum": self = .ethereum
         case "binance-smart-chain": self = .binanceSmartChain
-        case "binancecoin": self = .binanceChain
         case "polygon-pos": self = .polygon
         case "avalanche": self = .avalanche
         case "optimistic-ethereum": self = .optimism
@@ -55,7 +53,6 @@ public enum BlockchainType {
         case .zcash: return "zcash"
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binance-smart-chain"
-        case .binanceChain: return "binancecoin"
         case .polygon: return "polygon-pos"
         case .avalanche: return "avalanche"
         case .optimism: return "optimistic-ethereum"
