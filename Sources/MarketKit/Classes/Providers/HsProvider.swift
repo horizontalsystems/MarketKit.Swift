@@ -182,13 +182,17 @@ extension HsProvider {
 
     // Coin Categories
 
-    func coinCategories(currencyCode: String? = nil) async throws -> [CoinCategory] {
+    func coinCategories(currencyCode: String? = nil, withTopCoins: Bool = false) async throws -> [CoinCategory] {
         var parameters: Parameters = [:]
         if let currencyCode {
             parameters["currency"] = currencyCode.lowercased()
         }
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/categories", method: .get, parameters: parameters, headers: headers)
+        var url = "\(baseUrl)/v1/categories"
+        if withTopCoins {
+            url += "/with-top-coins"
+        }
+        return try await networkManager.fetch(url: url, method: .get, parameters: parameters, headers: headers)
     }
 
     func coinCategoryMarketCapChart(category: String, currencyCode: String?, timePeriod: HsTimePeriod) async throws -> [CategoryMarketPoint] {
