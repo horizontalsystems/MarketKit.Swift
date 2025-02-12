@@ -486,12 +486,15 @@ extension HsProvider {
 
     // Personal Support
 
-    func requestPersonalSupport(telegramUsername: String) async throws {
+    func requestPersonalSupport(jws: String) async throws -> String {
         let parameters: Parameters = [
-            "username": telegramUsername,
+            "platform": "ios",
+            "subscription_id": jws,
         ]
 
-        _ = try await networkManager.fetchJson(url: "\(baseUrl)/v1/support/start-chat", method: .post, parameters: parameters, headers: proHeaders)
+        let response: GroupLinkResponse = try await networkManager.fetch(url: "\(baseUrl)/v1/support/create-group", method: .post, parameters: parameters, headers: proHeaders)
+
+        return response.groupLink
     }
 
     // Market Tickers
@@ -592,6 +595,14 @@ extension HsProvider {
 
         init(map: Map) throws {
             token = try map.value("token")
+        }
+    }
+
+    struct GroupLinkResponse: ImmutableMappable {
+        let groupLink: String
+
+        init(map: Map) throws {
+            groupLink = try map.value("group_link")
         }
     }
 
