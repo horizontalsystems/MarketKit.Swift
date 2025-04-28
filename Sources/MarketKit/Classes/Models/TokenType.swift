@@ -17,6 +17,7 @@ public enum TokenType {
     case eip20(address: String)
     case spl(address: String)
     case jetton(address: String)
+    case stellar(code: String, issuer: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -41,6 +42,14 @@ public enum TokenType {
                 if let reference {
                     self = .jetton(address: reference)
                     return
+                }
+            case "stellar":
+                if let reference {
+                    let components = reference.components(separatedBy: "-")
+                    if components.count == 2 {
+                        self = .stellar(code: components[0], issuer: components[1])
+                        return
+                    }
                 }
             default: ()
             }
@@ -87,6 +96,13 @@ public enum TokenType {
             case "eip20": self = .eip20(address: chunks[1])
             case "spl": self = .spl(address: chunks[1])
             case "the-open-network": self = .jetton(address: chunks[1])
+            case "stellar":
+                let components = chunks[1].components(separatedBy: "-")
+                if components.count == 2 {
+                    self = .stellar(code: components[0], issuer: components[1])
+                } else {
+                    return nil
+                }
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -114,6 +130,8 @@ public enum TokenType {
             return ["spl", address].joined(separator: ":")
         case let .jetton(address):
             return ["the-open-network", address].joined(separator: ":")
+        case let .stellar(code, issuer):
+            return ["stellar", [code, issuer].joined(separator: "-")].joined(separator: ":")
         case let .unsupported(type, reference):
             if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -131,6 +149,7 @@ public enum TokenType {
         case let .eip20(address): return (type: "eip20", reference: address)
         case let .spl(address): return (type: "spl", reference: address)
         case let .jetton(address): return (type: "the-open-network", reference: address)
+        case let .stellar(code, issuer): return (type: "stellar", reference: [code, issuer].joined(separator: "-"))
         case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }
