@@ -1,7 +1,7 @@
 import Foundation
 
 public enum HsTimePeriod: String, CaseIterable {
-    static var all: [Self] = [.day1, .week1, .week2, .month1, .month3, .month6, .year1, .year2, .year5]
+    static var chart: [Self] = [.day1, .week1, .week2, .month1, .month3, .month6, .year1, .year2, .year5]
 
     case hour24 = "24h"
     case day1 = "1d"
@@ -12,6 +12,8 @@ public enum HsTimePeriod: String, CaseIterable {
     case month6 = "6m"
     case year1 = "1y"
     case year2 = "2y"
+    case year3 = "3y"
+    case year4 = "4y"
     case year5 = "5y"
 
     private var range: TimeInterval {
@@ -25,6 +27,8 @@ public enum HsTimePeriod: String, CaseIterable {
         case .month6: return .days(180)
         case .year1: return .days(365)
         case .year2: return 2 * .days(365)
+        case .year3: return 3 * .days(365)
+        case .year4: return 4 * .days(365)
         case .year5: return 5 * .days(365)
         }
     }

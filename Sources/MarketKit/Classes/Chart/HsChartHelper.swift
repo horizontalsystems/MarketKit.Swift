@@ -8,12 +8,12 @@ public enum HsChartHelper {
         case .week2: return .hour8
         case .month1, .month3, .month6: return .day1
         case .year1, .year2: return .week1
-        case .year5: return .month1
+        case .year3, .year4, .year5: return .month1
         }
     }
 
     public static func validIntervals(startTime: TimeInterval?) -> [HsTimePeriod] {
-        guard let startTime else { return HsTimePeriod.all }
+        guard let startTime else { return HsTimePeriod.chart }
         let genesisDate = Date(timeIntervalSince1970: startTime)
         let dayCount = Calendar.current.dateComponents([.day], from: genesisDate, to: Date()).day
         let monthCount = Calendar.current.dateComponents([.month], from: genesisDate, to: Date()).month

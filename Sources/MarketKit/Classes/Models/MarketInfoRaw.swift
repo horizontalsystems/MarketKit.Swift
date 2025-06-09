@@ -12,6 +12,10 @@ struct MarketInfoRaw: ImmutableMappable {
     let priceChange90d: Decimal?
     let priceChange200d: Decimal?
     let priceChange1y: Decimal?
+    let priceChange2y: Decimal?
+    let priceChange3y: Decimal?
+    let priceChange4y: Decimal?
+    let priceChange5y: Decimal?
     let marketCap: Decimal?
     let marketCapRank: Int?
     let totalVolume: Decimal?
@@ -35,6 +39,10 @@ struct MarketInfoRaw: ImmutableMappable {
         priceChange90d = try? map.value("price_change_90d", using: Transform.stringToDecimalTransform)
         priceChange200d = try? map.value("price_change_200d", using: Transform.stringToDecimalTransform)
         priceChange1y = try? map.value("price_change_1y", using: Transform.stringToDecimalTransform)
+        priceChange2y = try? map.value("price_change_2y", using: Transform.stringToDecimalTransform)
+        priceChange3y = try? map.value("price_change_3y", using: Transform.stringToDecimalTransform)
+        priceChange4y = try? map.value("price_change_4y", using: Transform.stringToDecimalTransform)
+        priceChange5y = try? map.value("price_change_5y", using: Transform.stringToDecimalTransform)
         marketCap = try? map.value("market_cap", using: Transform.stringToDecimalTransform)
         marketCapRank = try? map.value("market_cap_rank")
         totalVolume = try? map.value("total_volume", using: Transform.stringToDecimalTransform)
@@ -64,6 +72,10 @@ struct MarketInfoRaw: ImmutableMappable {
             priceChange90d: priceChange90d,
             priceChange200d: priceChange200d,
             priceChange1y: priceChange1y,
+            priceChange2y: priceChange2y,
+            priceChange3y: priceChange3y,
+            priceChange4y: priceChange4y,
+            priceChange5y: priceChange5y,
             marketCap: marketCap,
             marketCapRank: marketCapRank,
             totalVolume: totalVolume,
