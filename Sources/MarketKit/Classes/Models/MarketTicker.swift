@@ -10,6 +10,7 @@ public struct MarketTicker: ImmutableMappable {
     public let fiatVolume: Decimal
     public let tradeUrl: String?
     public let verified: Bool
+    public let centralized: Bool
 
     public init(map: Map) throws {
         base = try map.value("base")
@@ -20,5 +21,6 @@ public struct MarketTicker: ImmutableMappable {
         fiatVolume = try map.value("volume_in_currency", using: Transform.stringToDecimalTransform)
         tradeUrl = try? map.value("trade_url")
         verified = try map.value("whitelisted")
+        centralized = try map.value("centralized")
     }
 }
