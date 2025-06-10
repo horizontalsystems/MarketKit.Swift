@@ -139,10 +139,26 @@ extension CoinStorage {
         }
     }
 
-    func topCoinTokenRecords(limit: Int) throws -> [CoinTokensRecord] {
+    private func filteredBy(allowedBlockchainTypes: [BlockchainType]?, tokens: HasManyAssociation<Coin, TokenRecord>) -> HasManyAssociation<Coin, TokenRecord> {
+        guard let allowedBlockchainTypes = allowedBlockchainTypes, !allowedBlockchainTypes.isEmpty else {
+            return tokens
+        }
+        
+        let allowedBlockchainUids = allowedBlockchainTypes.map(\.uid)
+        
+        return tokens
+            .filter(allowedBlockchainUids.contains(TokenRecord.Columns.blockchainUid))
+    }
+
+    func topCoinTokenRecords(limit: Int, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
+            let tokens = filteredBy(
+                allowedBlockchainTypes: allowedBlockchainTypes,
+                tokens: Coin.tokens.including(required: TokenRecord.blockchain)
+            )
+
             let request = Coin
-                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .including(all: tokens)
                 .order(literal: SQL(sql: """
                     CASE WHEN \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) IS NULL THEN 1 ELSE 0 END,
                     \(Coin.databaseTableName).\(Coin.Columns.marketCapRank) ASC
@@ -153,15 +169,20 @@ extension CoinStorage {
             return try CoinTokensRecord.fetchAll(db, request)
         }
     }
-
-    func coinTokenRecords(filter: String, limit: Int) throws -> [CoinTokensRecord] {
+    
+    func coinTokenRecords(filter: String, limit: Int, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
+            let tokens = filteredBy(
+                allowedBlockchainTypes: allowedBlockchainTypes,
+                tokens: Coin.tokens.including(required: TokenRecord.blockchain)
+            )
+            
             let request = Coin
-                .including(all: Coin.tokens.including(required: TokenRecord.blockchain))
+                .including(all: tokens)
                 .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
                 .order(literal: searchOrder(filter: filter))
                 .limit(limit)
-
+            
             return try CoinTokensRecord.fetchAll(db, request)
         }
     }
