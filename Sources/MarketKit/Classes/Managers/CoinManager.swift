@@ -23,13 +23,13 @@ extension CoinManager {
         try storage.coins(uids: uids)
     }
 
-    func topFullCoins(limit: Int) throws -> [FullCoin] {
-        try storage.topCoinTokenRecords(limit: limit)
+    func topFullCoins(limit: Int, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [FullCoin] {
+        try storage.topCoinTokenRecords(limit: limit, allowedBlockchainTypes: allowedBlockchainTypes)
             .map(\.fullCoin)
     }
 
-    func fullCoins(filter: String, limit: Int) throws -> [FullCoin] {
-        try storage.coinTokenRecords(filter: filter, limit: limit)
+    func fullCoins(filter: String, limit: Int, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [FullCoin] {
+        try storage.coinTokenRecords(filter: filter, limit: limit, allowedBlockchainTypes: allowedBlockchainTypes)
             .map(\.fullCoin)
     }
 

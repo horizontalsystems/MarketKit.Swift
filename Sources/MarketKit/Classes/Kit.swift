@@ -46,12 +46,12 @@ public extension Kit {
         coinSyncer.fullCoinsUpdatedPublisher
     }
 
-    func topFullCoins(limit: Int = 20) throws -> [FullCoin] {
-        try coinManager.topFullCoins(limit: limit)
+    func topFullCoins(limit: Int = 20, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [FullCoin] {
+        try coinManager.topFullCoins(limit: limit, allowedBlockchainTypes: allowedBlockchainTypes)
     }
 
-    func fullCoins(filter: String, limit: Int = 20) throws -> [FullCoin] {
-        try coinManager.fullCoins(filter: filter, limit: limit)
+    func fullCoins(filter: String, limit: Int = 20, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [FullCoin] {
+        try coinManager.fullCoins(filter: filter, limit: limit, allowedBlockchainTypes: allowedBlockchainTypes)
     }
 
     func fullCoins(coinUids: [String]) throws -> [FullCoin] {
