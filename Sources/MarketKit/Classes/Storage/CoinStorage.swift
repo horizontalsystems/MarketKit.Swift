@@ -140,12 +140,12 @@ extension CoinStorage {
     }
 
     private func filteredBy(allowedBlockchainTypes: [BlockchainType]?, tokens: HasManyAssociation<Coin, TokenRecord>) -> HasManyAssociation<Coin, TokenRecord> {
-        guard let allowedBlockchainTypes = allowedBlockchainTypes, !allowedBlockchainTypes.isEmpty else {
+        guard let allowedBlockchainTypes, !allowedBlockchainTypes.isEmpty else {
             return tokens
         }
-        
+
         let allowedBlockchainUids = allowedBlockchainTypes.map(\.uid)
-        
+
         return tokens
             .filter(allowedBlockchainUids.contains(TokenRecord.Columns.blockchainUid))
     }
@@ -169,20 +169,20 @@ extension CoinStorage {
             return try CoinTokensRecord.fetchAll(db, request)
         }
     }
-    
+
     func coinTokenRecords(filter: String, limit: Int, allowedBlockchainTypes: [BlockchainType]? = nil) throws -> [CoinTokensRecord] {
         try dbPool.read { db in
             let tokens = filteredBy(
                 allowedBlockchainTypes: allowedBlockchainTypes,
                 tokens: Coin.tokens.including(required: TokenRecord.blockchain)
             )
-            
+
             let request = Coin
                 .including(all: tokens)
                 .filter(Coin.Columns.name.like("%\(filter)%") || Coin.Columns.code.like("%\(filter)%"))
                 .order(literal: searchOrder(filter: filter))
                 .limit(limit)
-            
+
             return try CoinTokensRecord.fetchAll(db, request)
         }
     }

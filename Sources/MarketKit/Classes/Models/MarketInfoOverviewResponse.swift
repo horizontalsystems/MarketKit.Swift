@@ -37,11 +37,7 @@ class MarketInfoOverviewResponse: ImmutableMappable {
             }
         }
 
-        let convertedPerformance: [PerformanceRow] = performance.compactMap { base, changes -> PerformanceRow? in
-            guard let performanceBase = PerformanceBase(rawValue: base) else {
-                return nil
-            }
-
+        let convertedPerformance: [PerformanceRow] = performance.compactMap { baseUid, changes -> PerformanceRow? in
             var performanceChanges = [HsTimePeriod: Decimal]()
             for (timePeriodStr, change) in changes {
                 if let changeStr = change,
@@ -56,8 +52,8 @@ class MarketInfoOverviewResponse: ImmutableMappable {
                 return nil
             }
 
-            return PerformanceRow(base: performanceBase, changes: performanceChanges)
-        }.sorted { $0.base < $1.base }
+            return PerformanceRow(baseUid: baseUid, changes: performanceChanges)
+        }
 
         return MarketInfoOverview(
             fullCoin: fullCoin,
@@ -81,9 +77,31 @@ class MarketInfoOverviewResponse: ImmutableMappable {
         case "7d": return .week1
         case "14d": return .week2
         case "30d": return .month1
+        case "90d": return .month3
         case "200d": return .month6
         case "1y": return .year1
+        case "2y": return .year2
+        case "3y": return .year3
+        case "4y": return .year4
+        case "5y": return .year5
         default: return nil
+        }
+    }
+
+    static func hsTimePeriodStr(_ timePeriod: HsTimePeriod) -> String {
+        switch timePeriod {
+        case .day1: return "24h"
+        case .week1: return "7d"
+        case .week2: return "14d"
+        case .month1: return "30d"
+        case .month3: return "90d"
+        case .month6: return "200d"
+        case .year1: return "1y"
+        case .year2: return "2y"
+        case .year3: return "3y"
+        case .year4: return "4y"
+        case .year5: return "5y"
+        default: return "24h"
         }
     }
 }

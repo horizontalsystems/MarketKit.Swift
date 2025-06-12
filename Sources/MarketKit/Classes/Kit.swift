@@ -129,8 +129,8 @@ public extension Kit {
         return coinManager.marketInfos(rawMarketInfos: rawMarketInfos)
     }
 
-    func marketInfoOverview(coinUid: String, currencyCode: String, languageCode: String) async throws -> MarketInfoOverview {
-        let response = try await hsProvider.marketInfoOverview(coinUid: coinUid, currencyCode: currencyCode, languageCode: languageCode)
+    func marketInfoOverview(coinUid: String, roiUids: [String] = [], roiPeriods: [HsTimePeriod] = [], currencyCode: String, languageCode: String) async throws -> MarketInfoOverview {
+        let response = try await hsProvider.marketInfoOverview(coinUid: coinUid, roiUids: roiUids, roiPeriods: roiPeriods, currencyCode: currencyCode, languageCode: languageCode)
 
         guard let fullCoin = try? coinManager.fullCoin(uid: coinUid) else {
             throw Kit.KitError.noFullCoin
