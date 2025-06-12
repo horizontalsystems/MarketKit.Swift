@@ -139,11 +139,19 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/categories/\(categoryUid)/coins", method: .get, parameters: parameters, headers: headers)
     }
 
-    func marketInfoOverview(coinUid: String, currencyCode: String, languageCode: String) async throws -> MarketInfoOverviewResponse {
-        let parameters: Parameters = [
+    func marketInfoOverview(coinUid: String, roiUids: [String], roiPeriods: [HsTimePeriod], currencyCode: String, languageCode: String) async throws -> MarketInfoOverviewResponse {
+        var parameters: Parameters = [
             "currency": currencyCode.lowercased(),
             "language": languageCode.lowercased(),
         ]
+
+        if !roiUids.isEmpty {
+            parameters["roi_uids"] = roiUids.joined(separator: ",")
+        }
+
+        if !roiPeriods.isEmpty {
+            parameters["roi_periods"] = roiPeriods.map { MarketInfoOverviewResponse.hsTimePeriodStr($0) }.joined(separator: ",")
+        }
 
         return try await networkManager.fetch(url: "\(baseUrl)/v1/coins/\(coinUid)", method: .get, parameters: parameters, headers: headers)
     }
