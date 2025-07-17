@@ -131,6 +131,14 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/coins", method: .get, parameters: parameters, headers: headers)
     }
 
+    func stocks(currencyCode: String) async throws -> [StockInfo] {
+        let parameters: Parameters = [
+            "currency": currencyCode.lowercased(),
+        ]
+
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/stocks", method: .get, parameters: parameters, headers: headers)
+    }
+
     func marketInfos(categoryUid: String, currencyCode: String) async throws -> [MarketInfoRaw] {
         let parameters: Parameters = [
             "currency": currencyCode.lowercased(),
