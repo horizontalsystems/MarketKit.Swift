@@ -363,20 +363,22 @@ extension HsProvider {
 
     // Etf
 
-    func etfs(currencyCode: String) async throws -> [Etf] {
+    func etfs(category: String, currencyCode: String) async throws -> [Etf] {
         let parameters: Parameters = [
+            "category": category,
             "currency": currencyCode.lowercased(),
         ]
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs", method: .get, parameters: parameters, headers: headers)
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/all", method: .get, parameters: parameters, headers: headers)
     }
 
-    func etfPoints(currencyCode: String) async throws -> [EtfPoint] {
+    func etfPoints(category: String, currencyCode: String) async throws -> [EtfPoint] {
         let parameters: Parameters = [
+            "category": category,
             "currency": currencyCode.lowercased(),
         ]
 
-        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/total", method: .get, parameters: parameters, headers: headers)
+        return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/chart", method: .get, parameters: parameters, headers: headers)
     }
 
     // Pro Charts
