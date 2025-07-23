@@ -346,6 +346,16 @@ public extension Kit {
         try await hsProvider.etfPoints(category: category, currencyCode: currencyCode)
     }
 
+    // Vaults
+
+    func vaults(currencyCode: String) async throws -> [Vault] {
+        try await hsProvider.vaults(currencyCode: currencyCode)
+    }
+
+    func vault(address: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> Vault {
+        try await hsProvider.vault(address: address, currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
     // Pro Data
 
     func analytics(coinUid: String, currencyCode: String) async throws -> Analytics {
