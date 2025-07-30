@@ -5,6 +5,7 @@ public enum BlockchainType {
     case litecoin
     case dash
     case zcash
+    case monero
     case ethereum
     case binanceSmartChain
     case polygon
@@ -29,6 +30,7 @@ public enum BlockchainType {
         case "litecoin": self = .litecoin
         case "dash": self = .dash
         case "zcash": self = .zcash
+        case "monero": self = .monero
         case "ethereum": self = .ethereum
         case "binance-smart-chain": self = .binanceSmartChain
         case "polygon-pos": self = .polygon
@@ -55,6 +57,7 @@ public enum BlockchainType {
         case .litecoin: return "litecoin"
         case .dash: return "dash"
         case .zcash: return "zcash"
+        case .monero: return "monero"
         case .ethereum: return "ethereum"
         case .binanceSmartChain: return "binance-smart-chain"
         case .polygon: return "polygon-pos"
