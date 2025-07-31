@@ -13,7 +13,7 @@ public struct Vault: ImmutableMappable, Hashable {
     public let protocolLogo: String
     public let holders: Int?
     public let url: String?
-    public let apyChart: [ChartPoint]?
+    public let chart: [ChartPoint]?
 
     public init(map: Map) throws {
         address = try map.value("address")
@@ -31,16 +31,18 @@ public struct Vault: ImmutableMappable, Hashable {
         protocolLogo = try map.value("protocol_logo")
         holders = try? map.value("holders")
         url = try? map.value("url")
-        apyChart = try? map.value("apy_chart")
+        chart = try? map.value("chart")
     }
 
     public struct ChartPoint: ImmutableMappable, Hashable {
         public let timestamp: TimeInterval
         public let apy: Decimal
+        public let tvl: Decimal
 
         public init(map: Map) throws {
             timestamp = try map.value("timestamp")
             apy = try map.value("apy", using: Transform.stringToDecimalTransform)
+            tvl = try map.value("tvl", using: Transform.stringToDecimalTransform)
         }
     }
 }
