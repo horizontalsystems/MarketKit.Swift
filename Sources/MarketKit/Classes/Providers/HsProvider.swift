@@ -372,12 +372,12 @@ extension HsProvider {
         return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/all", method: .get, parameters: parameters, headers: headers)
     }
 
-    func etfPoints(category: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [EtfPoint] {
-        let parameters: Parameters = [
+    func etfPoints(category: String, currencyCode: String, timePeriod: HsTimePeriod?) async throws -> [EtfPoint] {
+        var parameters: Parameters = [
             "category": category,
             "currency": currencyCode.lowercased(),
-            "interval": timePeriod.rawValue,
         ]
+        parameters["interval"] = timePeriod?.rawValue ?? "all"
 
         return try await networkManager.fetch(url: "\(baseUrl)/v1/etfs/chart", method: .get, parameters: parameters, headers: headers)
     }
