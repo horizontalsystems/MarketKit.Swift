@@ -342,7 +342,7 @@ public extension Kit {
         try await hsProvider.etfs(category: category, currencyCode: currencyCode)
     }
 
-    func etfPoints(category: String, currencyCode: String, timePeriod: HsTimePeriod) async throws -> [EtfPoint] {
+    func etfPoints(category: String, currencyCode: String, timePeriod: HsTimePeriod?) async throws -> [EtfPoint] {
         try await hsProvider.etfPoints(category: category, currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
