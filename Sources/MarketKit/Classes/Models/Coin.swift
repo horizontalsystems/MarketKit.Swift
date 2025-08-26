@@ -72,6 +72,12 @@ public class Coin: Record, Decodable, ImmutableMappable {
     }
 }
 
+extension Coin: Identifiable {
+    public var id: String {
+        uid
+    }
+}
+
 extension Coin: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(uid)

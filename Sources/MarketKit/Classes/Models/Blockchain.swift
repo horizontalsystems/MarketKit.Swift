@@ -14,6 +14,12 @@ public struct Blockchain {
     }
 }
 
+extension Blockchain: Identifiable {
+    public var id: String {
+        uid
+    }
+}
+
 extension Blockchain: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(type)
