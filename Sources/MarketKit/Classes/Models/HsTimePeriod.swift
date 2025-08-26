@@ -43,6 +43,12 @@ public enum HsTimePeriod: String, CaseIterable {
     }
 }
 
+extension HsTimePeriod: Identifiable {
+    public var id: String {
+        rawValue
+    }
+}
+
 extension HsTimePeriod: Comparable {
     public static func < (lhs: HsTimePeriod, rhs: HsTimePeriod) -> Bool {
         lhs.range < rhs.range

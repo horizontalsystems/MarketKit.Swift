@@ -1,7 +1,7 @@
 import Foundation
 import ObjectMapper
 
-public class CoinCategory: ImmutableMappable {
+public class CoinCategory: ImmutableMappable, Identifiable {
     public let id: Int?
     public let uid: String
     public let name: String
