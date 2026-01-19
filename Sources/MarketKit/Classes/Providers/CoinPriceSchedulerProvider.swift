@@ -2,7 +2,6 @@ import Foundation
 
 protocol ICoinPriceCoinUidDataSource: AnyObject {
     func allCoinUids(currencyCode: String) -> [String]
-    func combinedCoinUids(currencyCode: String) -> ([String], [String])
 }
 
 class CoinPriceSchedulerProvider {
@@ -41,11 +40,11 @@ extension CoinPriceSchedulerProvider: ISchedulerProvider {
     }
 
     func sync() async throws {
-        guard let (coinUids, walletCoinUids) = dataSource?.combinedCoinUids(currencyCode: currencyCode), !coinUids.isEmpty else {
+        guard let coinUids = dataSource?.allCoinUids(currencyCode: currencyCode), !coinUids.isEmpty else {
             return
         }
 
-        let coinPrices = try await provider.coinPrices(coinUids: coinUids, walletCoinUids: walletCoinUids, currencyCode: currencyCode)
+        let coinPrices = try await provider.coinPrices(coinUids: coinUids, currencyCode: currencyCode)
         handle(updatedCoinPrices: coinPrices)
     }
 
