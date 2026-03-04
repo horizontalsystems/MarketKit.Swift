@@ -18,6 +18,7 @@ public enum TokenType {
     case spl(address: String)
     case jetton(address: String)
     case stellar(code: String, issuer: String)
+    case zanoAsset(id: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -50,6 +51,11 @@ public enum TokenType {
                         self = .stellar(code: components[0], issuer: components[1])
                         return
                     }
+                }
+            case "zano":
+                if let reference {
+                    self = .zanoAsset(id: reference)
+                    return
                 }
             default: ()
             }
@@ -103,6 +109,7 @@ public enum TokenType {
                 } else {
                     return nil
                 }
+            case "zano": self = .zanoAsset(id: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -132,6 +139,8 @@ public enum TokenType {
             return ["the-open-network", address].joined(separator: ":")
         case let .stellar(code, issuer):
             return ["stellar", [code, issuer].joined(separator: "-")].joined(separator: ":")
+        case let .zanoAsset(id):
+            return ["zano", id].joined(separator: ":")
         case let .unsupported(type, reference):
             if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -150,6 +159,7 @@ public enum TokenType {
         case let .spl(address): return (type: "spl", reference: address)
         case let .jetton(address): return (type: "the-open-network", reference: address)
         case let .stellar(code, issuer): return (type: "stellar", reference: [code, issuer].joined(separator: "-"))
+        case let .zanoAsset(id): return (type: "zano", reference: id)
         case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }
