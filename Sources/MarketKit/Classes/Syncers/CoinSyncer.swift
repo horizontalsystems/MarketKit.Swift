@@ -8,7 +8,7 @@ class CoinSyncer {
     private let keyTokensLastSyncTimestamp = "coin-syncer-tokens-last-sync-timestamp"
     private let keyInitialSyncVersion = "coin-syncer-initial-sync-version"
     private let limit = 1000
-    private let currentVersion = 2
+    private let currentVersion = 3
 
     private let storage: CoinStorage
     private let hsProvider: HsProvider
