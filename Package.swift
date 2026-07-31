@@ -32,5 +32,9 @@ let package = Package(
                 .copy("Dumps"),
             ]
         ),
+        .testTarget(
+            name: "MarketKitTests",
+            dependencies: ["MarketKit"]
+        ),
     ]
 )
