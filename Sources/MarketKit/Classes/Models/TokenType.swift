@@ -19,6 +19,7 @@ public enum TokenType {
     case jetton(address: String)
     case stellar(code: String, issuer: String)
     case zanoAsset(id: String)
+    case thorChainAsset(denom: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -55,6 +56,11 @@ public enum TokenType {
             case "zano":
                 if let reference {
                     self = .zanoAsset(id: reference)
+                    return
+                }
+            case "thorchain":
+                if let reference {
+                    self = .thorChainAsset(denom: reference)
                     return
                 }
             default: ()
@@ -110,6 +116,7 @@ public enum TokenType {
                     return nil
                 }
             case "zano": self = .zanoAsset(id: chunks[1])
+            case "thorchain": self = .thorChainAsset(denom: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -141,6 +148,8 @@ public enum TokenType {
             return ["stellar", [code, issuer].joined(separator: "-")].joined(separator: ":")
         case let .zanoAsset(id):
             return ["zano", id].joined(separator: ":")
+        case let .thorChainAsset(denom):
+            return ["thorchain", denom].joined(separator: ":")
         case let .unsupported(type, reference):
             if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -160,6 +169,7 @@ public enum TokenType {
         case let .jetton(address): return (type: "the-open-network", reference: address)
         case let .stellar(code, issuer): return (type: "stellar", reference: [code, issuer].joined(separator: "-"))
         case let .zanoAsset(id): return (type: "zano", reference: id)
+        case let .thorChainAsset(denom): return (type: "thorchain", reference: denom)
         case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }

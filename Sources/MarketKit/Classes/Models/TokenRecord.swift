@@ -57,6 +57,7 @@ class TokenRecord: Record, Decodable, ImmutableMappable {
         case "eip20": reference >>> map["address"]
         case "bep2": reference >>> map["symbol"]
         case "spl": reference >>> map["address"]
+        case "thorchain": reference >>> map["address"]
         case "unsupported":
             if let reference {
                 reference >>> map["address"]
