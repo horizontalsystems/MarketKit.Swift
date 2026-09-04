@@ -1,5 +1,5 @@
-import XCTest
 @testable import MarketKit
+import XCTest
 
 final class ThorChainMetadataTests: XCTestCase {
     func testThorChainTypeRoundTrip() {
