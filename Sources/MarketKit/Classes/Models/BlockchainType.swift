@@ -24,6 +24,7 @@ public enum BlockchainType {
     case stellar
     case thorChain
     case mayaChain
+    case xrp
     case unsupported(uid: String)
 
     public init(uid: String) {
@@ -53,6 +54,7 @@ public enum BlockchainType {
         case "stellar": self = .stellar
         case "thorchain": self = .thorChain
         case "mayachain": self = .mayaChain
+        case "xrp": self = .xrp
         default: self = .unsupported(uid: uid)
         }
     }
@@ -84,6 +86,7 @@ public enum BlockchainType {
         case .stellar: return "stellar"
         case .thorChain: return "thorchain"
         case .mayaChain: return "mayachain"
+        case .xrp: return "xrp"
         case let .unsupported(uid): return uid
         }
     }
