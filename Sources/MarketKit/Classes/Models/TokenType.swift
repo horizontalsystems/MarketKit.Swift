@@ -22,6 +22,8 @@ public enum TokenType {
     case thorChainAsset(denom: String)
     // XRP Ledger issued currency (trust-line token): `currency` in ledger form (3-char code or 40 hex), `issuer` — classic r-address
     case xrpAsset(currency: String, issuer: String)
+    // NEAR NEP-141 fungible token: `contractId` — token contract account id, e.g. `usdt.tether-token.near`
+    case nep141(contractId: String)
     case unsupported(type: String, reference: String?)
 
     public init(type: String, reference: String? = nil) {
@@ -72,6 +74,11 @@ public enum TokenType {
                         self = .xrpAsset(currency: components[0], issuer: components[1])
                         return
                     }
+                }
+            case "near-protocol":
+                if let reference, !reference.isEmpty {
+                    self = .nep141(contractId: reference)
+                    return
                 }
             default: ()
             }
@@ -134,6 +141,7 @@ public enum TokenType {
                 } else {
                     return nil
                 }
+            case "near-protocol": self = .nep141(contractId: chunks[1])
             case "unsupported": self = .unsupported(type: chunks[1], reference: nil)
             default: return nil
             }
@@ -169,6 +177,8 @@ public enum TokenType {
             return ["thorchain", denom].joined(separator: ":")
         case let .xrpAsset(currency, issuer):
             return ["xrp", [currency, issuer].joined(separator: "-")].joined(separator: ":")
+        case let .nep141(contractId):
+            return ["near-protocol", contractId].joined(separator: ":")
         case let .unsupported(type, reference):
             if let reference {
                 return ["unsupported", type, reference].joined(separator: ":")
@@ -190,6 +200,7 @@ public enum TokenType {
         case let .zanoAsset(id): return (type: "zano", reference: id)
         case let .thorChainAsset(denom): return (type: "thorchain", reference: denom)
         case let .xrpAsset(currency, issuer): return (type: "xrp", reference: [currency, issuer].joined(separator: "-"))
+        case let .nep141(contractId): return (type: "near-protocol", reference: contractId)
         case let .unsupported(type, reference): return (type: type, reference: reference)
         }
     }
